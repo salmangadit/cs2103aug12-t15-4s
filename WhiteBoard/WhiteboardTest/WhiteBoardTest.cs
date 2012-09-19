@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace WhiteboardTest
 {
     [TestClass]
-    public class UnitTest1
+    public class WhiteBoardTest
     {
         [TestMethod]
         public void TestMethod1()
