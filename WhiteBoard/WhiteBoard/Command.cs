@@ -7,5 +7,6 @@ namespace WhiteBoard
 {
     abstract class Command
     {
+        public abstract string Execute();
     }
 }
