@@ -9,7 +9,7 @@ namespace WhiteBoard
     {
         protected FileHandler fileHandler;
 
-        public void Command(FileHandler fileHandler)
+        public Command(FileHandler fileHandler)
         {
             this.fileHandler = fileHandler;
         }
