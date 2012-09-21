@@ -7,6 +7,13 @@ namespace WhiteBoard
 {
     abstract class Command
     {
-        public abstract string Execute();
+        protected FileHandler fileHandler;
+
+        public void Command(FileHandler fileHandler)
+        {
+            this.fileHandler = fileHandler;
+        }
+
+        public abstract ToDo Execute();
     }
 }

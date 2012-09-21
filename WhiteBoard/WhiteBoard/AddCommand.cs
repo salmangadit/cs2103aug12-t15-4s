@@ -7,9 +7,18 @@ namespace WhiteBoard
 {
     class AddCommand : Command
     {
-        public override string Execute()
+        ToDo taskToAdd;
+
+        public AddCommand(ToDo taskToAdd)
         {
-            throw new NotImplementedException();
+            this.taskToAdd = taskToAdd;
+        }
+
+        public override ToDo Execute()
+        {
+            fileHandler.WriteToFile(taskToAdd.ToString());
+
+            return taskToAdd;
         }
     }
 }
