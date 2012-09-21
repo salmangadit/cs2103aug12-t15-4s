@@ -9,7 +9,8 @@ namespace WhiteBoard
     {
         ToDo taskToAdd;
 
-        public AddCommand(ToDo taskToAdd)
+        public AddCommand(FileHandler fileHandler, ToDo taskToAdd)
+            : base(fileHandler)
         {
             this.taskToAdd = taskToAdd;
         }
