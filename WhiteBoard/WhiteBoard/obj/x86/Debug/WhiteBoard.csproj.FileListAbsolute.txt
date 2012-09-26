@@ -11,3 +11,17 @@ C:\Users\Salman\NUS\CS2103\WhiteBoard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\o
 C:\Users\Salman\NUS\CS2103\WhiteBoard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
 C:\Users\Salman\NUS\CS2103\WhiteBoard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
 C:\Users\Salman\NUS\CS2103\WhiteBoard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.exe
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\bin\Debug\WhiteBoard.exe
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\bin\Debug\WhiteBoard.pdb
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.g.cs
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.baml
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.g.resources
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.Properties.Resources.resources
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.write.1.tlog
