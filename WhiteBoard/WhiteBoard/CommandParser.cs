@@ -47,7 +47,7 @@ namespace WhiteBoard
             {
                 foreach (string keyword in COMMAND_COMPARE)
                 {
-                    if(String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase))
+                    if(String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && index<userCommand.Count()-1)
                     {
                         next = index + 1;
                         previous = next - 2;
@@ -68,7 +68,7 @@ namespace WhiteBoard
             }
 
             taskToAdd.Deadline = dateTime;
-            taskToAdd.TaskDesciption = taskDescription;
+            taskToAdd.TaskDescription = taskDescription;
             AddCommand addcommand = new AddCommand(fileHandler, taskToAdd);
             return addcommand;
         }

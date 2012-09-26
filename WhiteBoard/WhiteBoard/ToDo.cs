@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace WhiteBoard
 {
@@ -14,13 +15,14 @@ namespace WhiteBoard
 
         DateTime taskDeadline;
 
-        public string TaskDesciption
+        public string TaskDescription
         {
             get
             {
                 if (taskDescription == null)
                 {
-                    throw new ArgumentNullException("Task Description is not set");
+                    return "Task Description is not set";
+                    //throw new ArgumentNullException("Task Description is not set");
                 }
 
                 return taskDescription;
@@ -81,5 +83,6 @@ namespace WhiteBoard
                 this.taskDeadline = value;
             }
         }
+
     }
 }
