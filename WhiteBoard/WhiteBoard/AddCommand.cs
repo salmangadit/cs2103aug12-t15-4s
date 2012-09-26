@@ -17,7 +17,7 @@ namespace WhiteBoard
 
         public override ToDo Execute()
         {
-            fileHandler.WriteToFile(taskToAdd.ToString());
+            fileHandler.WriteToFile(taskToAdd);
 
             return taskToAdd;
         }
