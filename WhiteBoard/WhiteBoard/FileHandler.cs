@@ -8,6 +8,9 @@ namespace WhiteBoard
 {
     class FileHandler
     {
-        
+        public void WriteToFile(ToDo taskToAdd)
+        {
+
+        }
     }
 }
