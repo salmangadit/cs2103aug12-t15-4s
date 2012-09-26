@@ -13,6 +13,15 @@ namespace WhiteBoard
             : base(fileHandler)
         {
             this.taskToAdd = taskToAdd;
+            this.commandType = CommandType.Add;
+        }
+
+        public override CommandType CommandType
+        {
+            get
+            {
+                return commandType;
+            }
         }
 
         public override ToDo Execute()
