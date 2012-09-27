@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace WhiteBoard
 {
-    class ToDo
+    public class ToDo
     {
         string taskDescription;
 
