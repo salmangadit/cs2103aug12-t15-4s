@@ -32,16 +32,12 @@ namespace WhiteBoard
         internal void WriteToFile(ToDo taskToAdd)
         {
             List<ToDo> listOfTasksToAdd = new List<ToDo>();
-
+            
+            //deserialize 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<ToDo>));
-
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
-            {
-                listOfTasksToAdd = (List<ToDo>)objXmlSer.Deserialize(objStrRead);
-            }
-
-            objStrRead.Close();
+            listOfTasksToAdd = (List<ToDo>)objXmlSer.Deserialize(objStrRead); // will check if this is valid for empty xml file
+    
             listOfTasksToAdd.Add(taskToAdd);
 
             StreamWriter objStrWrt = new StreamWriter(filePath);
