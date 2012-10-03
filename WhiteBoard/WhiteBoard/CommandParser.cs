@@ -15,7 +15,7 @@ namespace WhiteBoard
         private DateTime dateTime;
         private string[] userCommandArray;
         private FileHandler fileHandler;
-        private ToDo taskToAdd = new ToDo();
+        private Task taskToAdd = new Task();
 
         private List<string> taskDescriptionList = new List<string>();
         private List<string> userCommand = new List<string>();
