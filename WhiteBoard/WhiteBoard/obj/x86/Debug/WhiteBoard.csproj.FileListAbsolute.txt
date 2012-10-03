@@ -25,3 +25,10 @@ D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoar
 D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.Properties.Resources.resources
 D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.read.1.tlog
 D:\Project Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.exe
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
