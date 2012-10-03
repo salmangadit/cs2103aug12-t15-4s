@@ -8,12 +8,32 @@ namespace WhiteBoard
 {
     class ToDo
     {
+        int taskId;
         string taskDescription;
 
         DateTime taskStartTime;
         DateTime taskEndTime;
 
         DateTime taskDeadline;
+
+        public int TaskId
+        {
+            get
+            {
+                if (taskId == null)
+                {
+                    throw new ArgumentNullException("Task ID is not set");
+                }
+
+                return taskId;
+            }
+
+            set
+            {
+                this.taskId = value;
+            }
+
+        }
 
         public string TaskDescription
         {
@@ -27,6 +47,7 @@ namespace WhiteBoard
 
                 return taskDescription;
             }
+
             set
             {
                 this.taskDescription = value;
@@ -44,6 +65,7 @@ namespace WhiteBoard
 
                 return taskStartTime;
             }
+
             set
             {
                 this.taskStartTime = value;
@@ -61,6 +83,7 @@ namespace WhiteBoard
 
                 return taskEndTime;
             }
+
             set
             {
                 this.taskEndTime = value;
@@ -78,6 +101,7 @@ namespace WhiteBoard
 
                 return taskDeadline;
             }
+
             set
             {
                 this.taskDeadline = value;
