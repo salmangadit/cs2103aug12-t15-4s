@@ -11,16 +11,25 @@ namespace WhiteBoard
         int taskId;
         string taskDescription;
 
-        DateTime taskStartTime;
-        DateTime taskEndTime;
+        DateTime? taskStartTime;
+        DateTime? taskEndTime;
 
-        DateTime taskDeadline;
+        DateTime? taskDeadline;
 
-        public int TaskId
+        public Task(int taskId = 0, string taskDescription = null, DateTime? taskStartTime = null, DateTime? taskEndTime = null, DateTime? taskDeadline = null)
+        {
+            this.taskId = taskId;
+            this.taskDescription = taskDescription;
+            this.taskStartTime = taskStartTime;
+            this.taskEndTime = taskEndTime;
+            this.taskDeadline = taskDeadline;
+        }
+
+        public int Id
         {
             get
             {
-                if (taskId == null)
+                if (taskId == 0)
                 {
                     throw new ArgumentNullException("Task ID is not set");
                 }
@@ -35,7 +44,7 @@ namespace WhiteBoard
 
         }
 
-        public string TaskDescription
+        public string Description
         {
             get
             {

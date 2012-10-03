@@ -68,7 +68,7 @@ namespace WhiteBoard
             }
 
             taskToAdd.Deadline = dateTime;
-            taskToAdd.TaskDescription = taskDescription;
+            taskToAdd.Description = taskDescription;
             AddCommand addcommand = new AddCommand(fileHandler, taskToAdd);
             return addcommand;
         }

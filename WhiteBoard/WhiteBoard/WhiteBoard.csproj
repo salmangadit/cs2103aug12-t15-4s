@@ -56,7 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommandType.cs" />
-    <Compile Include="ToDo.cs" />
+    <Compile Include="EditCommand.cs" />
+    <Compile Include="Task.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
