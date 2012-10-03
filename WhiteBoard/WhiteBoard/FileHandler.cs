@@ -29,14 +29,14 @@ namespace WhiteBoard
             }
         }
 
-        internal void WriteToFile(ToDo taskToAdd)
+        internal void WriteToFile(Task taskToAdd)
         {
-            List<ToDo> listOfTasksToAdd = new List<ToDo>();
+            List<Task> listOfTasksToAdd = new List<Task>();
             
             //deserialize 
-            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<ToDo>));
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
             StreamReader objStrRead = new StreamReader(filePath);
-            listOfTasksToAdd = (List<ToDo>)objXmlSer.Deserialize(objStrRead); // will check if this is valid for empty xml file
+            listOfTasksToAdd = (List<Task>)objXmlSer.Deserialize(objStrRead); // will check if this is valid for empty xml file
     
             listOfTasksToAdd.Add(taskToAdd);
 

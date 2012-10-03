@@ -22,14 +22,14 @@ namespace WhiteBoard
     public partial class MainWindow : Window
     {
         Controller controller;
-        ObservableCollection<ToDo> tasksList;
+        ObservableCollection<Task> tasksList;
         DispatcherTimer toastTimer;
 
         public MainWindow()
         {
             InitializeComponent();
             controller = new Controller();
-            tasksList = new ObservableCollection<ToDo>();
+            tasksList = new ObservableCollection<Task>();
 
             lstTasks.DataContext = tasksList;
             lstTasks.ItemsSource = tasksList;

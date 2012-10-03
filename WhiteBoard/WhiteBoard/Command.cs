@@ -20,7 +20,7 @@ namespace WhiteBoard
             get;
         }
 
-        public abstract ToDo Execute();
+        public abstract Task Execute();
 
     }
 }

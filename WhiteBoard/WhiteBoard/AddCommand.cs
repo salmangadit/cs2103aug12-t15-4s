@@ -7,9 +7,9 @@ namespace WhiteBoard
 {
     class AddCommand : Command
     {
-        ToDo taskToAdd;
+        Task taskToAdd;
 
-        public AddCommand(FileHandler fileHandler, ToDo taskToAdd)
+        public AddCommand(FileHandler fileHandler, Task taskToAdd)
             : base(fileHandler)
         {
             this.taskToAdd = taskToAdd;
@@ -24,7 +24,7 @@ namespace WhiteBoard
             }
         }
 
-        public override ToDo Execute()
+        public override Task Execute()
         {
             fileHandler.WriteToFile(taskToAdd);
 
