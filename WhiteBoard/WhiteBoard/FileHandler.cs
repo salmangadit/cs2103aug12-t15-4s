@@ -29,15 +29,19 @@ namespace WhiteBoard
             }
         }
 
-        internal void WriteToFile(Task taskToAdd)
+        internal void AddTaskToFile(Task taskToAdd)
         {
             List<Task> listOfTasksToAdd = new List<Task>();
-            
-            //deserialize 
+
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
             StreamReader objStrRead = new StreamReader(filePath);
-            listOfTasksToAdd = (List<Task>)objXmlSer.Deserialize(objStrRead); // will check if this is valid for empty xml file
-    
+            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
+            {
+                listOfTasksToAdd = (List<Task>)objXmlSer.Deserialize(objStrRead);
+            }
+
+            objStrRead.Close();
             listOfTasksToAdd.Add(taskToAdd);
 
             StreamWriter objStrWrt = new StreamWriter(filePath);
@@ -46,6 +50,15 @@ namespace WhiteBoard
 
             // Clear list
             listOfTasksToAdd.Clear();
+        }
+
+        internal Task GetTaskFromFile(int editedTaskId)
+        {
+        }
+
+        internal void WriteEditedTaskToFile(Task editedTask)
+        {
+
         }
     }
 }
