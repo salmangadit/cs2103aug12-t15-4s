@@ -77,8 +77,8 @@ namespace WhiteBoard
 
                 XmlElement newTaskElement = taskListDoc.CreateElement("taskId"); // Create element named taskId
                 newTaskElement.InnerText = newTaskIdString; // Specify text of new task element
-                XmlNodeList childrenOfTasks = rootElement.LastChild.ChildNodes;
-                rootElement.LastChild.InsertBefore(newTaskElement, childrenOfTasks[0]);
+                XmlNodeList childrenOfTask = rootElement.LastChild.ChildNodes;
+                rootElement.LastChild.InsertBefore(newTaskElement, childrenOfTask[0]);
                 
 
             }
