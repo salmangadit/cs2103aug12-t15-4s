@@ -63,7 +63,7 @@ namespace WhiteBoard
             }
         }
 
-        public DateTime StartTime
+        public DateTime? StartTime
         {
             get
             {
@@ -81,7 +81,7 @@ namespace WhiteBoard
             }
         }
 
-        public DateTime EndTime
+        public DateTime? EndTime
         {
             get
             {
@@ -99,7 +99,7 @@ namespace WhiteBoard
             }
         }
 
-        public DateTime Deadline
+        public DateTime? Deadline
         {
             get
             {
