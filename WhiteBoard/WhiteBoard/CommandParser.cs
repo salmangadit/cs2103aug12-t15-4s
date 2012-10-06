@@ -16,24 +16,26 @@ namespace WhiteBoard
         private const string COMMAND_RANGE = "TO";
         private const string COMMAND_RANGE_ALT = "-";
 
-        protected string inputCommand;
-        public string taskDescription = null;
-        public DateTime? deadlineDate = null;
-        public DateTime? startDate = null;
-        public DateTime? endDate = null;
-        protected string[] userCommandArray;
+        private string inputCommand;
+        private string taskDescription = null;
+        private DateTime? deadlineDate = null;
+        private DateTime? startDate = null;
+        private DateTime? endDate = null;
+        private string[] userCommandArray;
         private FileHandler fileHandler;
         private Task taskToAdd;
+        private string taskId = null;
 
-        protected int keywordFlag = 0;
-        protected int dateFlag = 0;
-        protected int currentIndex = 0;
-        protected int nextIndex = 0;
-        protected int previousIndex = 0;
+        private int dateKeywordFlag = 0;
+        private int modifyKeywordFlag = 0;
+        private int dateFlag = 0;
+        private int currentIndex = 0;
+        private int nextIndex = 0;
+        private int previousIndex = 0;
 
         private List<string> taskDescriptionList = new List<string>();
         private List<string> startEndDate = new List<string>();
-        protected List<string> userCommand = new List<string>();
+        private List<string> userCommand = new List<string>();
 
         public CommandParser(string usercommand, FileHandler filehandler)
         {
@@ -50,10 +52,56 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Parses the user command and determines the date and the taskdescription
+        /// Parses the user command and determines the action to be done i.e Add, Modify, Delete etc.
         /// </summary>
         /// <returns>Returns a command object with details of the ToDo item</returns>
         public Command ParseCommand()
+        {
+            foreach (string str in userCommand)
+            {
+                foreach (string keyword in COMMAND_MODIFY)
+                {
+                    if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                    {
+                        nextIndex = currentIndex + 1;
+                        previousIndex = currentIndex - 1;
+                        if (IsValidTaskId(userCommand[nextIndex]))
+                        {
+                            taskId = userCommand[nextIndex];
+                            modifyKeywordFlag = 1;
+                        }
+                    }
+                }
+            }
+            if (modifyKeywordFlag != 0)
+            {
+                if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 2, userCommand.Count - 1);
+                }
+                else
+                {
+                    taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 1, userCommand.Count - 1);
+                }
+
+                Task taskToEdit = new Task(0, taskDescription, startDate, endDate, deadlineDate);
+                EditCommand edit = new EditCommand(fileHandler, taskToEdit);
+                return edit;
+            }
+            else
+            {
+                ParseDate();
+                taskToAdd = new Task(0, taskDescription, startDate, endDate, deadlineDate);
+                AddCommand add = new AddCommand(fileHandler, taskToAdd);
+                return add;
+            }
+
+        }
+
+        /// <summary>
+        /// Parses the user command and determines the date and the taskdescription
+        /// </summary>
+        private void ParseDate()
         {
             foreach (string str in userCommand)
             {
@@ -63,11 +111,11 @@ namespace WhiteBoard
                     {
                         nextIndex = currentIndex + 1;
                         previousIndex = nextIndex - 2;
-                        keywordFlag = 1;
+                        dateKeywordFlag = 1;
                     }
                 }
 
-                if (keywordFlag != 0)
+                if (dateKeywordFlag != 0)
                 {
                     if (IsDateRange(userCommand[nextIndex]) == 2)
                     {
@@ -87,9 +135,9 @@ namespace WhiteBoard
                     }
                     if (dateFlag == 1)
                     {
-                        taskDescription = ConvertToString(userCommand, taskDescriptionList, previousIndex);
+                        taskDescription = ConvertToString(userCommand, taskDescriptionList, 0, previousIndex);
                     }
-                    keywordFlag = 0;
+                    dateKeywordFlag = 0;
                 }
                 currentIndex++;
             }
@@ -99,10 +147,6 @@ namespace WhiteBoard
                 taskDescription = inputCommand;
                 deadlineDate = startDate = endDate = null;
             }
-
-                taskToAdd = new Task(0, taskDescription, startDate, endDate, deadlineDate);
-                AddCommand add = new AddCommand(fileHandler, taskToAdd);
-                return add;
         }
 
         /// <summary>
@@ -169,6 +213,31 @@ namespace WhiteBoard
         }
 
         /// <summary>
+        /// Checks whether the string is a task ID
+        /// </summary>
+        /// <param name="str">The string to be checked</param>
+        /// <returns>Returns true if string is a valid task ID</returns>
+        private bool IsValidTaskId(string str)
+        {
+            if (str[0] != 'T')
+            {
+                return false;
+            }
+            else
+            {
+                for (int i = 1; i < str.Length; ++i)
+                {
+                    int temp = (int)Char.GetNumericValue(str[i]);
+                    if (!(temp >= 0 && temp <= 9))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Checks if the date is a valid date
         /// </summary>
         /// <param name="datestring">A string containing the date information</param>
@@ -199,11 +268,11 @@ namespace WhiteBoard
         /// <param name="templist">The list containing the strings upto the index</param>
         /// <param name="index">The specified index upto which the strings are retrieved</param>
         /// <returns></returns>
-        private string ConvertToString(List<string> list, List<string> templist, int index)
+        private string ConvertToString(List<string> list, List<string> templist, int startindex, int endindex)
         {
             string tempstring;
             templist.Clear();
-            for (int i = 0; i <= index; ++i)
+            for (int i = startindex; i <= endindex; ++i)
             {
                 templist.Add(list[i]);
             }

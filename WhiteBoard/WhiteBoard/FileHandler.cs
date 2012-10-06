@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace WhiteBoard
@@ -32,8 +31,6 @@ namespace WhiteBoard
 
         internal void AddTaskToFile(Task taskToAdd)
         {
-            //int taskId;
-            int newTaskId;
             List<Task> listOfTasksToAdd = new List<Task>();
 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
@@ -53,45 +50,17 @@ namespace WhiteBoard
 
             // Clear list
             listOfTasksToAdd.Clear();
-
-            XmlDocument taskListDoc = new XmlDocument();
-
-            if (File.Exists(filePath))
-            {
-                taskListDoc.Load(filePath);
-                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
-                XmlNodeList listOfTasks = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
-
-                if (listOfTasks.Count > 0)
-                {
-                    int indexOfLastTask = listOfTasks.Count - 1;
-                    string lastTaskIdString = listOfTasks[indexOfLastTask].Value; // Get the value of the last task
-                    newTaskId = int.Parse(lastTaskIdString) + 1; // Increase value
-                }
-                else
-                {
-                    newTaskId = 1;
-                }
-
-                string newTaskIdString = newTaskId.ToString(); // Convert back to string
-
-                XmlElement newTaskElement = taskListDoc.CreateElement("taskId"); // Create element named taskId
-                newTaskElement.InnerText = newTaskIdString; // Specify text of new task element
-                XmlNodeList childrenOfTask = rootElement.LastChild.ChildNodes;
-                rootElement.LastChild.InsertBefore(newTaskElement, childrenOfTask[0]);
-                
-
-            }
-            
         }
 
-        internal Task GetTaskFromFile(int editedTaskId)
+        internal static Task GetTaskFromFile(int editedTaskId)
         {
+            Task T = new Task();
+            return T;
         }
 
-        internal void WriteEditedTaskToFile(Task editedTask)
+        internal static void WriteEditedTaskToFile(Task editedTask)
         {
-
+           
         }
     }
 }
