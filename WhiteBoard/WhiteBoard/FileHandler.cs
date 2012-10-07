@@ -87,14 +87,16 @@ namespace WhiteBoard
                     listOfTasks[indexOfNewTask].AppendChild(taskIdValue);
                 }
 
+                taskListDoc.Save(filePath);
+
             }
+            
         }
 
         internal Task GetTaskFromFile(int editedTaskId)
         {
             Task taskToBeEdited = new Task();
             string editedTaskIdString = editedTaskId.ToString();
-
 
             XmlDocument taskListDoc = new XmlDocument();
 
@@ -126,6 +128,43 @@ namespace WhiteBoard
 
         internal void WriteEditedTaskToFile(Task editedTask)
         {
+            string editedTaskIdString = editedTask.Id.ToString();
+
+            XmlDocument taskListDoc = new XmlDocument();
+
+            if (File.Exists(filePath))
+            {
+                taskListDoc.Load(filePath);
+                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
+                XmlNodeList listOfTaskIds = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
+
+                foreach(XmlNode node in listOfTaskIds)
+                {
+                    if (node.Value == editedTaskIdString)
+                    {
+                        XmlNode parent_Task = node.ParentNode;
+                        XmlNodeList listOfChildrenForTask = parent_Task.ChildNodes;
+
+                        for(int i=1; i<listOfChildrenForTask.Count; i++) //Starts from index 1 since taskId cannot change
+                        {
+                            listOfChildrenForTask[i].RemoveAll();
+                        }
+ 
+                        XmlText taskDescriptionValue = taskListDoc.CreateTextNode(editedTask.Description);
+                        listOfChildrenForTask[1].AppendChild(taskDescriptionValue);
+                        XmlText taskStartTimeValue = taskListDoc.CreateTextNode(editedTask.StartTime.ToString());
+                        listOfChildrenForTask[2].AppendChild(taskStartTimeValue);
+                        XmlText taskEndTimeValue = taskListDoc.CreateTextNode(editedTask.EndTime.ToString());
+                        listOfChildrenForTask[3].AppendChild(taskEndTimeValue);
+                        XmlText taskDeadlineValue = taskListDoc.CreateTextNode(editedTask.Deadline.ToString());
+                        listOfChildrenForTask[4].AppendChild(taskDeadlineValue);
+                        break;
+
+                    }
+                }
+                taskListDoc.Save(filePath);
+
+            }
            
         }
     }
