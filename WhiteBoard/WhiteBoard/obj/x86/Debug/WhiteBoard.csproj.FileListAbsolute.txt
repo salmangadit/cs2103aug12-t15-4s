@@ -50,3 +50,11 @@ D:\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\Whi
 D:\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.Properties.Resources.resources
 D:\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.csproj.GenerateResource.Cache
 D:\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\bin\Debug\WhiteBoard.exe
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\bin\Debug\WhiteBoard.pdb
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.baml
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.g.resources
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.Properties.Resources.resources
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb

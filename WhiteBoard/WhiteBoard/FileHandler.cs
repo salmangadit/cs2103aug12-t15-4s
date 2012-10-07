@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace WhiteBoard
@@ -31,6 +32,11 @@ namespace WhiteBoard
 
         internal void AddTaskToFile(Task taskToAdd)
         {
+            int newTaskId;
+            int indexOfLastTask;
+            string lastTaskIdString;
+            string newTaskIdString;
+            int indexOfNewTask;
             List<Task> listOfTasksToAdd = new List<Task>();
 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
@@ -50,6 +56,38 @@ namespace WhiteBoard
 
             // Clear list
             listOfTasksToAdd.Clear();
+
+            XmlDocument taskListDoc = new XmlDocument();
+
+            if (File.Exists(filePath))
+            {
+                taskListDoc.Load(filePath);
+                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
+                XmlNodeList listOfTasks = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
+
+                if (listOfTasks.Count > 0)
+                {
+                    indexOfLastTask = listOfTasks.Count - 2;
+                    lastTaskIdString = listOfTasks[indexOfLastTask].Value; // Get the value of the last task
+                    newTaskId = int.Parse(lastTaskIdString) + 1; // Increase value
+                }
+
+                else
+                {
+                    newTaskId = 1;
+                }
+
+                newTaskIdString = newTaskId.ToString(); // Convert back to string
+                indexOfNewTask = listOfTasks.Count - 1;
+
+                if (listOfTasks[indexOfNewTask].Value == "0")
+                {
+                    listOfTasks[indexOfNewTask].RemoveAll();
+                    XmlText taskIdValue = taskListDoc.CreateTextNode(newTaskIdString);
+                    listOfTasks[indexOfNewTask].AppendChild(taskIdValue);
+                }
+
+            }
         }
 
         internal static Task GetTaskFromFile(int editedTaskId)
