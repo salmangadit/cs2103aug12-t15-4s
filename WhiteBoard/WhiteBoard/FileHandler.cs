@@ -90,13 +90,41 @@ namespace WhiteBoard
             }
         }
 
-        internal static Task GetTaskFromFile(int editedTaskId)
+        internal Task GetTaskFromFile(int editedTaskId)
         {
-            Task T = new Task();
-            return T;
+            Task taskToBeEdited = new Task();
+            string editedTaskIdString = editedTaskId.ToString();
+
+
+            XmlDocument taskListDoc = new XmlDocument();
+
+            if (File.Exists(filePath))
+            {
+                taskListDoc.Load(filePath);
+                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
+                XmlNodeList listOfTaskIds = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
+
+                foreach (XmlNode node in listOfTaskIds)
+                {
+                    if (node.Value == editedTaskIdString)
+                    {
+                        XmlNode parent_Task = node.ParentNode;
+                        XmlNodeList listOfChildrenForTask = parent_Task.ChildNodes;
+
+                        taskToBeEdited.Id = int.Parse(listOfChildrenForTask[0].Value);
+                        taskToBeEdited.Description = listOfChildrenForTask[1].Value;
+                        taskToBeEdited.StartTime = DateTime.Parse(listOfChildrenForTask[2].Value);
+                        taskToBeEdited.EndTime = DateTime.Parse(listOfChildrenForTask[3].Value);
+                        taskToBeEdited.Deadline = DateTime.Parse(listOfChildrenForTask[4].Value);
+                        break;
+                    }
+                }
+            }
+
+            return taskToBeEdited;
         }
 
-        internal static void WriteEditedTaskToFile(Task editedTask)
+        internal void WriteEditedTaskToFile(Task editedTask)
         {
            
         }
