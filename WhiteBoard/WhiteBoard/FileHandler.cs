@@ -60,37 +60,41 @@ namespace WhiteBoard
 
             XmlDocument taskListDoc = new XmlDocument();
 
-            if (File.Exists(filePath))
+            try
             {
                 taskListDoc.Load(filePath);
-                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
-                XmlNodeList listOfTasks = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
-
-                if (listOfTasks.Count > 0)
-                {
-                    indexOfLastTask = listOfTasks.Count - 2;
-                    lastTaskIdString = listOfTasks[indexOfLastTask].Value; // Get the value of the last task
-                    newTaskId = int.Parse(lastTaskIdString) + 1; // Increase value
-                }
-
-                else
-                {
-                    newTaskId = 1;
-                }
-
-                newTaskIdString = newTaskId.ToString(); // Convert back to string
-                indexOfNewTask = listOfTasks.Count - 1;
-
-                if (listOfTasks[indexOfNewTask].Value == "0")
-                {
-                    listOfTasks[indexOfNewTask].RemoveAll();
-                    XmlText taskIdValue = taskListDoc.CreateTextNode(newTaskIdString);
-                    listOfTasks[indexOfNewTask].AppendChild(taskIdValue);
-                }
-
-                taskListDoc.Save(filePath);
-
             }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
+            XmlNodeList listOfTasks = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
+
+            if (listOfTasks.Count > 0)
+            {
+                indexOfLastTask = listOfTasks.Count - 2;
+                lastTaskIdString = listOfTasks[indexOfLastTask].Value; // Get the value of the last task
+                newTaskId = int.Parse(lastTaskIdString) + 1; // Increase value
+            }
+
+            else
+            {
+                newTaskId = 1;
+            }
+
+            newTaskIdString = newTaskId.ToString(); // Convert back to string
+            indexOfNewTask = listOfTasks.Count - 1;
+
+            if (listOfTasks[indexOfNewTask].Value == "0")
+            {
+                listOfTasks[indexOfNewTask].RemoveAll();
+                XmlText taskIdValue = taskListDoc.CreateTextNode(newTaskIdString);
+                listOfTasks[indexOfNewTask].AppendChild(taskIdValue);
+            }
+
+            taskListDoc.Save(filePath);
             
         }
 
