@@ -24,7 +24,8 @@ namespace WhiteBoard
         private string[] userCommandArray;
         private FileHandler fileHandler;
         private Task taskToAdd;
-        private string taskId = null;
+        private int taskId = 0;
+        private int checkId = 0;
 
         private int dateKeywordFlag = 0;
         private int modifyKeywordFlag = 0;
@@ -57,34 +58,43 @@ namespace WhiteBoard
         /// <returns>Returns a command object with details of the ToDo item</returns>
         public Command ParseCommand()
         {
-            foreach (string str in userCommand)
+            currentIndex = 0;
+            nextIndex = currentIndex + 1;
+
+            foreach (string keyword in COMMAND_MODIFY)
             {
-                foreach (string keyword in COMMAND_MODIFY)
+                if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                 {
-                    if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                    checkId = IsValidTaskId(userCommand[nextIndex]);
+                    if (checkId > 0)
                     {
-                        nextIndex = currentIndex + 1;
-                        previousIndex = currentIndex - 1;
-                        if (IsValidTaskId(userCommand[nextIndex]))
-                        {
-                            taskId = userCommand[nextIndex];
-                            modifyKeywordFlag = 1;
-                        }
+                        taskId = checkId;
+                        modifyKeywordFlag = 1;
                     }
                 }
             }
+
             if (modifyKeywordFlag != 0)
             {
-                if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase))
+                if (nextIndex < userCommand.Count - 1)
                 {
-                    taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 2, userCommand.Count - 1);
-                }
-                else
-                {
-                    taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 1, userCommand.Count - 1);
+                    if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 2, userCommand.Count - 1);
+                    }
+                    else
+                    {
+                        taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 1, userCommand.Count - 1);
+
+                    }
                 }
 
-                Task taskToEdit = new Task(0, taskDescription, startDate, endDate, deadlineDate);
+                else
+                {
+                    taskDescription = null;
+                }
+
+                Task taskToEdit = new Task(taskId, taskDescription, startDate, endDate, deadlineDate);
                 EditCommand edit = new EditCommand(fileHandler, taskToEdit);
                 return edit;
             }
@@ -217,11 +227,12 @@ namespace WhiteBoard
         /// </summary>
         /// <param name="str">The string to be checked</param>
         /// <returns>Returns true if string is a valid task ID</returns>
-        private bool IsValidTaskId(string str)
+        private int IsValidTaskId(string str)
         {
+            int taskid = -1;
             if (str[0] != 'T')
             {
-                return false;
+                return -1;
             }
             else
             {
@@ -230,11 +241,13 @@ namespace WhiteBoard
                     int temp = (int)Char.GetNumericValue(str[i]);
                     if (!(temp >= 0 && temp <= 9))
                     {
-                        return false;
+                        return -1;
                     }
                 }
+                str = str.Substring(1);
+                taskid = Convert.ToInt32(str);
+                return taskid;
             }
-            return true;
         }
 
         /// <summary>
