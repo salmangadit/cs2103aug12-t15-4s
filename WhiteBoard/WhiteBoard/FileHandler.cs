@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace WhiteBoard
 {
@@ -96,6 +97,7 @@ namespace WhiteBoard
         internal Task GetTaskFromFile(int editedTaskId)
         {
             Task taskToBeEdited = new Task();
+            Debug.Assert(editedTaskId > 0, "Task Id needs to be greater than 0");
             string editedTaskIdString = editedTaskId.ToString();
 
             XmlDocument taskListDoc = new XmlDocument();
@@ -129,7 +131,6 @@ namespace WhiteBoard
         internal void WriteEditedTaskToFile(Task editedTask)
         {
             string editedTaskIdString = editedTask.Id.ToString();
-
             XmlDocument taskListDoc = new XmlDocument();
 
             if (File.Exists(filePath))
