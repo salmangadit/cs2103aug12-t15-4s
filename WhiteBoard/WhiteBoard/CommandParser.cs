@@ -12,6 +12,7 @@ namespace WhiteBoard
     {
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
         private string[] COMMAND_MODIFY = { "MODIFY", "CHANGE", "UPDATE" };
+        private string[] COMMAND_NEW_DATE = { "START", "END" };
         private const int DATE_COUNT = 2;
         private const string COMMAND_RANGE = "TO";
         private const string COMMAND_RANGE_ALT = "-";
@@ -33,6 +34,9 @@ namespace WhiteBoard
         private int currentIndex = 0;
         private int nextIndex = 0;
         private int previousIndex = 0;
+        private int taskIndex = 0;
+        private int startDateIndex = 0;
+        private int endDateIndex = 0;
 
         private List<string> taskDescriptionList = new List<string>();
         private List<string> startEndDate = new List<string>();
@@ -76,16 +80,79 @@ namespace WhiteBoard
 
             if (modifyKeywordFlag != 0)
             {
-                if (nextIndex < userCommand.Count - 1)
+                currentIndex = 0;
+                int date_count = 0;
+
+                foreach (string str in userCommand)
                 {
-                    if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase))
+                    foreach (string keyword in COMMAND_NEW_DATE)
+                    {
+                        if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                        {
+                            if (IsValidDate(userCommand[currentIndex + 1]) && date_count <= 2)
+                            {
+                                nextIndex = currentIndex + 1;
+
+                                if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    startDateIndex = currentIndex;
+                                    startDate = DateTime.Parse(userCommand[nextIndex]);
+                                }
+                                if (String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    endDateIndex = currentIndex;
+                                    endDate = DateTime.Parse(userCommand[nextIndex]);
+                                }
+                                date_count++; ;
+                            }
+                        }
+                    }
+                    currentIndex++;
+                }
+
+                if (date_count > 0)
+                {
+                    dateFlag = 1;
+                }
+
+                if (dateFlag == 0 && nextIndex < userCommand.Count - 1)
+                {
+                    if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase) && nextIndex < userCommand.Count - 2)
                     {
                         taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 2, userCommand.Count - 1);
                     }
                     else
                     {
                         taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 1, userCommand.Count - 1);
+                    }
+                }
 
+                else if (dateFlag == 1)
+                {
+                    taskIndex = 2;
+                    if (String.Equals(userCommand[taskIndex], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        taskIndex += 1;
+                    }
+
+                    if (startDateIndex > 0 && endDateIndex > 0)
+                    {
+                        if (startDateIndex < endDateIndex)
+                        {
+                            taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, startDateIndex - 1);
+                        }
+                        else
+                        {
+                            taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, endDateIndex - 1);
+                        }
+                    }
+                    else if (startDateIndex > 0)
+                    {
+                        taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, startDateIndex - 1);
+                    }
+                    else
+                    {
+                        taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, endDateIndex - 1);
                     }
                 }
 

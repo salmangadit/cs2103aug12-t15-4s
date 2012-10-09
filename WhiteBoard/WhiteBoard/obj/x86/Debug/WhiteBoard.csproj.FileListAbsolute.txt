@@ -58,3 +58,9 @@ D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.Pr
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.read.1.tlog
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.write.1.tlog
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
+C:\Users\Asus\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.exe
+C:\Users\Asus\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Asus\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Asus\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
+C:\Users\Asus\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
+C:\Users\Asus\Vg's Stuff\NUS\4th Year I\CS2103\Whiteboard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
