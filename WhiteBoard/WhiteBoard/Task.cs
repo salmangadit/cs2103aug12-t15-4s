@@ -13,16 +13,17 @@ namespace WhiteBoard
 
         DateTime? taskStartTime;
         DateTime? taskEndTime;
-
         DateTime? taskDeadline;
+        bool archive;
 
-        public Task(int taskId = 0, string taskDescription = null, DateTime? taskStartTime = null, DateTime? taskEndTime = null, DateTime? taskDeadline = null)
+        public Task(int taskId = 0, string taskDescription = null, DateTime? taskStartTime = null, DateTime? taskEndTime = null, DateTime? taskDeadline = null, bool archive=false)
         {
             this.taskId = taskId;
             this.taskDescription = taskDescription;
             this.taskStartTime = taskStartTime;
             this.taskEndTime = taskEndTime;
             this.taskDeadline = taskDeadline;
+            this.archive = archive;
         }
 
         public int Id
@@ -114,6 +115,19 @@ namespace WhiteBoard
             set
             {
                 this.taskDeadline = value;
+            }
+        }
+
+        public bool Archive
+        {
+            get
+            {
+                return archive;
+            }
+
+            set
+            {
+                this.archive = value;
             }
         }
 

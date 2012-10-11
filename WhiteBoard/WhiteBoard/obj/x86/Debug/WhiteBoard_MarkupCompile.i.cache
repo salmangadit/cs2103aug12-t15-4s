@@ -4,17 +4,30 @@
 winexe
 C#
 .cs
+<<<<<<< local
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\
+=======
+C:\Users\Salman\NUS\CS2103\WhiteBoard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\
+>>>>>>> other
 WhiteBoard
 none
 false
 DEBUG;TRACE
+<<<<<<< local
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\App.xaml
+=======
+C:\Users\Salman\NUS\CS2103\WhiteBoard\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\App.xaml
+>>>>>>> other
 11151548125
 
+<<<<<<< local
 141680615921
 12-1547151337
+=======
+151034450905
+12-1381780322
+>>>>>>> other
 MainWindow.xaml;
 
-True
+False
 
