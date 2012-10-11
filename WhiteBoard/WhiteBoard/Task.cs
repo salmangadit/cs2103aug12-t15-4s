@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace WhiteBoard
 {
-    class Task
+    public class Task
     {
         int taskId;
         string taskDescription;
@@ -15,6 +15,10 @@ namespace WhiteBoard
         DateTime? taskEndTime;
         DateTime? taskDeadline;
         bool archive;
+
+        public Task()
+        {
+        }
 
         public Task(int taskId = 0, string taskDescription = null, DateTime? taskStartTime = null, DateTime? taskEndTime = null, DateTime? taskDeadline = null, bool archive=false)
         {

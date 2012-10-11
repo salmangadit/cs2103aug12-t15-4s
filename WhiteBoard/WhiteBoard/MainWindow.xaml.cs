@@ -48,13 +48,19 @@ namespace WhiteBoard
 
                 Command command = controller.GetCommandObject(userCommand, tasksOnScreen);
 
-                if (command is AddCommand)
+                if (command.CommandType == CommandType.Add)
                 {
                     Task taskToAdd = (command.Execute())[0];
                     tasksOnScreen.Add(taskToAdd);
+                    ShowToast("Task Added!");
                 }
-
-                ShowToast("Task Added!");
+                else if (command.CommandType == CommandType.Edit)
+                {
+                    Task editedTask = (command.Execute())[0];
+                    tasksOnScreen.Clear();
+                    tasksOnScreen.Add(editedTask);
+                    ShowToast("Task with Id " + editedTask.Id + " edited!");
+                }
 
                 lstTasks.DataContext = tasksOnScreen;
                 lstTasks.ItemsSource = tasksOnScreen;
