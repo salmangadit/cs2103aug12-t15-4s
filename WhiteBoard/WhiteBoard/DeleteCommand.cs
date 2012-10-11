@@ -27,7 +27,7 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            bool isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
+            bool isTaskDeleted = fileHandler.IsDeleteTaskFromFile(taskIdToDelete);
 
             if (!isTaskDeleted)
                 throw new ApplicationException("Unable To Delete Task");

@@ -3,3 +3,10 @@ C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow
 C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
 C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
 C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.exe
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.g.cs
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref

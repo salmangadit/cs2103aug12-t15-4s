@@ -173,7 +173,7 @@ namespace WhiteBoard
            
         }
 
-        internal bool DeleteTaskFromFile(int deletedTaskId)
+        internal bool IsDeleteTaskFromFile(int deletedTaskId)
         {
             bool deleted = false;
             List<Task> listOfTasks = new List<Task>();

@@ -37,7 +37,7 @@ namespace WhiteBoard
 
         public override ObservableCollection<Task> Undo()
         {
-            if (fileHandler.DeleteTaskFromFile(taskToAdd.Id))
+            if (fileHandler.IsDeleteTaskFromFile(taskToAdd.Id))
                 return screenState;
             
             return null;
