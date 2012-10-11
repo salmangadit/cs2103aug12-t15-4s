@@ -188,6 +188,7 @@ namespace WhiteBoard
                     if (taskToBeRemoved.Id == deletedTaskId)
                     {
                         listOfTasks.Remove(taskToBeRemoved);
+                        deleted = true;
                         break;
                     }
                 }
@@ -195,10 +196,8 @@ namespace WhiteBoard
                 StreamWriter objStrWrt = new StreamWriter(filePath);
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
-                deleted = true;
             }
             // If file is already empty it will return false. Is that ok?
-
             return deleted;
         }
     }
