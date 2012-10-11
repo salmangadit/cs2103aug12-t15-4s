@@ -172,5 +172,34 @@ namespace WhiteBoard
             }
            
         }
+
+        internal bool DeleteTaskFromFile(int deletedTaskId)
+        {
+            bool deleted = false;
+            List<Task> listOfTasks = new List<Task>();
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // If file is not empty
+            {
+                listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach (Task taskToBeRemoved in listOfTasks)
+                {
+                    if (taskToBeRemoved.Id == deletedTaskId)
+                    {
+                        listOfTasks.Remove(taskToBeRemoved);
+                        break;
+                    }
+                }
+                objStrRead.Close();
+                StreamWriter objStrWrt = new StreamWriter(filePath);
+                objXmlSer.Serialize(objStrWrt, listOfTasks);
+                objStrWrt.Close();
+                deleted = true;
+            }
+            // If file is already empty it will return false. Is that ok?
+
+            return deleted;
+        }
     }
 }
