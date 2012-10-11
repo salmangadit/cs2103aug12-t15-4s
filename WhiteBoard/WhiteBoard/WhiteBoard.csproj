@@ -58,6 +58,7 @@
     <Compile Include="CommandType.cs" />
     <Compile Include="EditCommand.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="ViewCommand.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

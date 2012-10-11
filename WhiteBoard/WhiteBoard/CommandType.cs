@@ -8,6 +8,7 @@ namespace WhiteBoard
     public enum CommandType
     {
         Add,
-        Edit
+        Edit,
+        View
     }
 }
