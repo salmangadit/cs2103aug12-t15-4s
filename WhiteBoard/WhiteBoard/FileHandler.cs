@@ -200,5 +200,33 @@ namespace WhiteBoard
             // If file is already empty it will return false. Is that ok?
             return deleted;
         }
+
+        internal bool ArchiveTaskInFile(int archivedTaskId)
+        {
+            bool archived = false;
+            List<Task> listOfTasks = new List<Task>();
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // If file is not empty
+            {
+                listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach(Task taskToBeArchived in listOfTasks)
+                {
+                    if(taskToBeArchived.Id == archivedTaskId)
+                    {
+                        taskToBeArchived.Archive = true;
+                        archived = true;
+                        break;
+                    }
+                }
+                objStrRead.Close();
+                StreamWriter objStrWrt = new StreamWriter(filePath);
+                objXmlSer.Serialize(objStrWrt, listOfTasks);
+                objStrWrt.Close();
+            }
+
+            return archived;
+        }
     }
 }
