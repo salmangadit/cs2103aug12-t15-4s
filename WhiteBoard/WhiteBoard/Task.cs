@@ -8,7 +8,7 @@ namespace WhiteBoard
 {
     public class Task
     {
-        int taskId;
+        int taskId = 0;
         string taskDescription;
 
         DateTime? taskStartTime;
