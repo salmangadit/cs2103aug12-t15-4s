@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace WhiteBoard
 {
@@ -9,8 +10,8 @@ namespace WhiteBoard
     {
         Task tasksToView;
 
-        public ViewCommand(FileHandler fileHandler, Task viewTaskDetails)
-            : base(fileHandler)
+        public ViewCommand(FileHandler fileHandler, Task viewTaskDetails, ObservableCollection<Task> screenState)
+            : base(fileHandler, screenState)
         {
             this.tasksToView = viewTaskDetails;
             this.commandType = CommandType.View;
@@ -28,19 +29,19 @@ namespace WhiteBoard
         {
             if (tasksToView.Archive == true)
             {
-                return fileHandler.ViewArchive();
+                //return fileHandler.ViewArchive();
             }
             else if (tasksToView.Archive == false && tasksToView.Deadline == null && tasksToView.StartTime == null && tasksToView.EndTime == null)
             {
-                return fileHandler.ViewAll();
+                //return fileHandler.ViewAll();
             }
             else if (tasksToView.Archive == false && tasksToView.Deadline == null)
             {
-                return fileHandler.View(tasksToView.StartTime, tasksToView.EndTime);
+                //return fileHandler.View(tasksToView.StartTime, tasksToView.EndTime);
             }
             else if (tasksToView.Archive == false && tasksToView.StartTime == null && tasksToView.EndTime == null)
             {
-                return fileHandler.View(tasksToView.Deadline);
+                //return fileHandler.View(tasksToView.Deadline);
             }
             else
             {
@@ -50,5 +51,9 @@ namespace WhiteBoard
             return null;
         }
 
+        public override ObservableCollection<Task> Undo()
+        {
+            return screenState;
+        }
     }
 }
