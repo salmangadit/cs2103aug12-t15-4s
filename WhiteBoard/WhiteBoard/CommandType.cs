@@ -10,6 +10,7 @@ namespace WhiteBoard
         Add,
         Edit,
         View,
-        Delete
+        Delete,
+        Search
     }
 }

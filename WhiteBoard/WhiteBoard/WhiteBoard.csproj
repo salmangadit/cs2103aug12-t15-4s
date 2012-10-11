@@ -56,7 +56,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommandType.cs" />
+    <Compile Include="DeleteCommand.cs" />
     <Compile Include="EditCommand.cs" />
+    <Compile Include="SearchCommand.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="ViewCommand.cs" />
     <Page Include="MainWindow.xaml">
