@@ -9,3 +9,11 @@ D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
 D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.exe
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\bin\Debug\WhiteBoard.exe
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\bin\Debug\WhiteBoard.pdb
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.baml
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.g.resources
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.Properties.Resources.resources
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\New Repo\cs2103aug12-t15-4s\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard.pdb
