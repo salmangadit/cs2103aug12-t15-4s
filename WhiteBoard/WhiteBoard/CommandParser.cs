@@ -4,6 +4,7 @@ using System.Linq;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 
 namespace WhiteBoard
@@ -42,10 +43,15 @@ namespace WhiteBoard
         private List<string> startEndDate = new List<string>();
         private List<string> userCommand = new List<string>();
 
-        public CommandParser(string usercommand, FileHandler filehandler)
+        private ObservableCollection<Task> screenState;
+        private Stack<Command> taskHistory;
+
+        public CommandParser(string usercommand, FileHandler filehandler, ObservableCollection<Task> screenState, Stack<Command> taskHistory)
         {
             inputCommand = usercommand;
             fileHandler = filehandler;
+            this.screenState = screenState;
+            this.taskHistory = taskHistory;
             inputCommand = Regex.Replace(inputCommand, @"\s+", " ");
             userCommandArray = inputCommand.Split(' ');
             foreach (string str in userCommandArray)
@@ -162,14 +168,16 @@ namespace WhiteBoard
                 }
 
                 Task taskToEdit = new Task(taskId, taskDescription, startDate, endDate, deadlineDate);
-                EditCommand edit = new EditCommand(fileHandler, taskToEdit);
+                EditCommand edit = new EditCommand(fileHandler, taskToEdit, screenState);
+                taskHistory.Push(edit);
                 return edit;
             }
             else
             {
                 ParseDate();
                 taskToAdd = new Task(0, taskDescription, startDate, endDate, deadlineDate);
-                AddCommand add = new AddCommand(fileHandler, taskToAdd);
+                AddCommand add = new AddCommand(fileHandler, taskToAdd, screenState);
+                taskHistory.Push(add);
                 return add;
             }
 

@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace WhiteBoard
 {
     class Controller
     {
         FileHandler fileHandler;
+        Stack<Command> history;
 
         public Controller()
         {
             fileHandler = new FileHandler();
+            history = new Stack<Command>();
         }
 
-        public Command GetCommandObject(string userString)
+        public Command GetCommandObject(string userString, ObservableCollection<Task> screenState)
         {
-            CommandParser commandParser = new CommandParser(userString, fileHandler);
+            CommandParser commandParser = new CommandParser(userString, fileHandler, screenState, history);
             return commandParser.ParseCommand();
         }
     }

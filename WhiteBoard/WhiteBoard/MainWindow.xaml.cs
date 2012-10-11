@@ -22,17 +22,17 @@ namespace WhiteBoard
     public partial class MainWindow : Window
     {
         Controller controller;
-        ObservableCollection<Task> tasksList;
+        ObservableCollection<Task> tasksOnScreen;
         DispatcherTimer toastTimer;
 
         public MainWindow()
         {
             InitializeComponent();
             controller = new Controller();
-            tasksList = new ObservableCollection<Task>();
+            tasksOnScreen = new ObservableCollection<Task>();
 
-            lstTasks.DataContext = tasksList;
-            lstTasks.ItemsSource = tasksList;
+            lstTasks.DataContext = tasksOnScreen;
+            lstTasks.ItemsSource = tasksOnScreen;
             //@TODO add method to check file and refresh list with tasks
         }
 
@@ -46,17 +46,18 @@ namespace WhiteBoard
                 // Clear search box
                 txtCommand.Text = string.Empty;
 
-                Command command = controller.GetCommandObject(userCommand);
+                Command command = controller.GetCommandObject(userCommand, tasksOnScreen);
 
                 if (command is AddCommand)
                 {
-                    tasksList.Add(command.Execute());
+                    Task taskToAdd = (command.Execute())[0];
+                    tasksOnScreen.Add(taskToAdd);
                 }
 
                 ShowToast("Task Added!");
 
-                lstTasks.DataContext = tasksList;
-                lstTasks.ItemsSource = tasksList;
+                lstTasks.DataContext = tasksOnScreen;
+                lstTasks.ItemsSource = tasksOnScreen;
                 lstTasks.Items.Refresh();
             }
         }
