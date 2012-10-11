@@ -27,7 +27,7 @@ namespace WhiteBoard
         public override Task Execute()
         {
             int editedTaskId = editTaskDetails.Id;
-            Task oldTask = FileHandler.GetTaskFromFile(editedTaskId);
+            Task oldTask = fileHandler.GetTaskFromFile(editedTaskId);
 
             string editedTaskDescription = (editTaskDetails.Description == null) ? oldTask.Description : editTaskDetails.Description;
             DateTime? editedTaskStartTime = (editTaskDetails.StartTime == null) ? oldTask.StartTime : editTaskDetails.StartTime;
@@ -36,7 +36,7 @@ namespace WhiteBoard
 
             Task editedTask = new Task(editedTaskId, editedTaskDescription, editedTaskStartTime, editedTaskEndTime, editedTaskDeadline);
 
-            FileHandler.WriteEditedTaskToFile(editedTask);
+            fileHandler.WriteEditedTaskToFile(editedTask);
 
             return editedTask;
         }

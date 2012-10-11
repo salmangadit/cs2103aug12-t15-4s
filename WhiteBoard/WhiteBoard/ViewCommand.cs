@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace WhiteBoard
+{
+    class ViewCommand : Command
+    {
+        Task tasksToView;
+
+        public ViewCommand(FileHandler fileHandler, Task viewTaskDetails)
+            : base(fileHandler)
+        {
+            this.tasksToView = viewTaskDetails;
+            this.commandType = CommandType.View;
+        }
+
+        public override CommandType CommandType
+        {
+            get
+            {
+                return commandType;
+            }
+        }
+
+        public override List<Task> Execute()
+        {
+            if (tasksToView.Archive == true)
+            {
+                return fileHandler.ViewArchive();
+            }
+            else if (tasksToView.Archive == false && tasksToView.Deadline == null && tasksToView.StartTime == null && tasksToView.EndTime == null)
+            {
+                return fileHandler.ViewAll();
+            }
+            else if (tasksToView.Archive == false && tasksToView.Deadline == null)
+            {
+                return fileHandler.View(tasksToView.StartTime, tasksToView.EndTime);
+            }
+            else if (tasksToView.Archive == false && tasksToView.StartTime == null && tasksToView.EndTime == null)
+            {
+                return fileHandler.View(tasksToView.Deadline);
+            }
+            else
+            {
+                throw new NotImplementedException("There is no such criteria for file viewing!");
+            }
+
+            return null;
+        }
+
+    }
+}
