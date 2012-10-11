@@ -14,10 +14,20 @@ namespace WhiteBoard
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
         private string[] COMMAND_MODIFY = { "MODIFY", "CHANGE", "UPDATE" };
         private string[] COMMAND_NEW_DATE = { "START", "END" };
-        private const int DATE_COUNT = 2;
+        private string[] COMMAND_TASKS_DAY = { "ON", "AT" };
+        private string[] COMMAND_TASKS_RANGE = { "ON", "FROM", "BETWEEN" };
+        private string[] COMMAND_TASKS_ENDING = { "BY", "BEFORE", "ENDING" };
+        private const string COMMAND_MARK = "DONE";
+        private const string COMMAND_MARK_AS = "AS DONE";
+        private const string COMMAND_ALL = "ALL";
+        private const string COMMAND_ARCHIVE = "ARCHIVE";
+        private const string COMMAND_WEEK = "WEEK";
         private const string COMMAND_RANGE = "TO";
         private const string COMMAND_RANGE_ALT = "-";
+        private const string COMMAND_RANGE_AND = "AND";
+        private const int DATE_COUNT = 2;
 
+        private string searchString;
         private string inputCommand;
         private string taskDescription = null;
         private DateTime? deadlineDate = null;
@@ -29,8 +39,10 @@ namespace WhiteBoard
         private int taskId = 0;
         private int checkId = 0;
 
+        private bool archiveFlag = false;
         private int dateKeywordFlag = 0;
-        private int modifyKeywordFlag = 0;
+        private int modifyFlag = 0;
+        private int tasksFlag = 0;
         private int dateFlag = 0;
         private int currentIndex = 0;
         private int nextIndex = 0;
@@ -39,7 +51,7 @@ namespace WhiteBoard
         private int startDateIndex = 0;
         private int endDateIndex = 0;
 
-        private List<string> taskDescriptionList = new List<string>();
+        private List<string> stringList = new List<string>();
         private List<string> startEndDate = new List<string>();
         private List<string> userCommand = new List<string>();
 
@@ -68,6 +80,254 @@ namespace WhiteBoard
         /// <returns>Returns a command object with details of the ToDo item</returns>
         public Command ParseCommand()
         {
+            switch (userCommand[0].ToString().ToUpper())
+            {
+                case "SEARCH:":
+                    {
+                        return ParseSearch();
+                    }
+               // I'm commenting out the undo code, cuz i need an UndoCommand Class
+               // Scroll down and look at the ParseUndo function for more details
+               // case "UNDO:":
+               //   {
+               //     return ParseUndo();
+               //   }
+                case "DELETE":
+                case "REMOVE":
+                    {
+                        return ParseDelete();
+                    }
+                case "MARK":
+                    {
+                        return ParseDone();
+                    }
+                case "TASKS":
+                    {
+                        return ParseView();
+                    }
+                case "MODIFY":
+                case "CHANGE":
+                case "UPDATE":
+                    {
+                        return ParseModify();
+                    }
+                default:
+                    {
+                        return ParseNewTask();
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Returns the string to be searched
+        /// </summary>
+        /// <returns>The information that is to be searched</returns>
+        private Command ParseSearch()
+        {
+            searchString = ConvertToString(userCommand, stringList, 1, userCommand.Count - 1);
+            SearchCommand search = new SearchCommand(fileHandler, searchString, screenState);
+            taskHistory.Push(search);
+            return search;
+        }
+
+/*      Salman im commenting out the undo function
+ *      Im expecting an UndoCommand Class which accepts the last command object executed as one 
+ *      of the parameters
+ *      Sai could implement this class for me?
+ *      
+        private Command ParseUndo()
+        {
+            Command lastcommand = taskHistory.Pop();
+            //UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
+            //return undo;
+        }
+ */
+        /// <summary>
+        /// Checks which task to delete based on the Task ID
+        /// </summary>
+        /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
+        private Command ParseDelete()
+        {
+            currentIndex = 0;
+            nextIndex = currentIndex + 1;
+            checkId = IsValidTaskId(userCommand[nextIndex]);
+            if (checkId > 0)
+            {
+                taskId = checkId;
+                archiveFlag = false;
+                DeleteCommand delete = new DeleteCommand(fileHandler, taskId, screenState);
+                taskHistory.Push(delete);
+                return delete;
+            }
+            else
+            {
+               return ParseNewTask();
+            }
+        }
+
+        /// <summary>
+        /// Checks whic task to mark as done based on the Task ID
+        /// </summary>
+        /// /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
+        private Command ParseDone()
+        {
+            currentIndex = 0;
+            nextIndex = currentIndex + 1;
+            checkId = IsValidTaskId(userCommand[nextIndex]);
+            if (checkId > 0)
+            {
+                string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);
+                temp = temp.Trim();
+                if (String.Equals(temp, COMMAND_MARK, StringComparison.CurrentCultureIgnoreCase)
+                    || String.Equals(temp, COMMAND_MARK_AS, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    archiveFlag = true;
+                    taskId = checkId;
+                    DeleteCommand markdone = new DeleteCommand(fileHandler, taskId, screenState);
+                    taskHistory.Push(markdone);
+                    return markdone;
+                }
+            }
+                return ParseNewTask();
+        }
+        /// <summary>
+        /// Parses the command and extracts the parameters for the View Command
+        /// </summary>
+        private Command ParseView()
+        {
+            tasksFlag = 0;
+            currentIndex = 0;
+            nextIndex = currentIndex + 1;
+
+            if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+            {
+                startDate = endDate = deadlineDate = null;
+                archiveFlag = false;
+                tasksFlag = 1;
+            }
+
+            else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+            {
+                startDate = endDate = deadlineDate = null;
+                archiveFlag = true;
+                tasksFlag = 1;
+            }
+
+            else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+            {
+                DayOfWeek today = DateTime.Now.DayOfWeek;
+                int days = today - DayOfWeek.Monday;
+                DateTime temp_start = DateTime.Now.AddDays(-days);
+                DateTime temp_end = temp_start.AddDays(6);
+                startDate = temp_start;
+                endDate = temp_end;
+                deadlineDate = null;
+                archiveFlag = false;
+                tasksFlag = 1;
+                //Need to make time 12:00 AM?
+            }
+
+            if ((tasksFlag == 0) && (currentIndex < userCommand.Count - 1) && (IsValidDate(userCommand[nextIndex])))
+            {
+                deadlineDate = DateTime.Parse(userCommand[nextIndex]);
+                startDate = endDate = null;
+                archiveFlag = false;
+                tasksFlag = 1;
+            }
+
+
+            if (tasksFlag == 0)
+            {
+                dateKeywordFlag = 0;
+                currentIndex = 1;
+                int enddateflag = 0;
+
+                foreach (string keyword in COMMAND_TASKS_RANGE)
+                {
+                    if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                    {
+                        nextIndex = currentIndex + 1;
+                        dateKeywordFlag = 1;
+                    }
+                }
+                if (dateKeywordFlag == 0)
+                {
+                    foreach (string keyword in COMMAND_TASKS_ENDING)
+                    {
+                        if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                        {
+                            nextIndex = currentIndex + 1;
+                            enddateflag = 1;
+                        }
+                    }
+                }
+
+                if (dateKeywordFlag != 0)
+                {
+                    if (IsDateRange(userCommand[nextIndex]) == 2)
+                    {
+                        startEndDate.Sort((a, b) => a.CompareTo(b));
+                        startDate = DateTime.Parse(startEndDate[0]);
+                        endDate = DateTime.Parse(startEndDate[1]);
+                        deadlineDate = null;
+                        archiveFlag = false;
+                        tasksFlag = 1;
+                    }
+                }
+                else if (enddateflag == 1)
+                {
+                    if (IsValidDate(userCommand[nextIndex]))
+                    {
+                        endDate = DateTime.Parse(userCommand[nextIndex]);
+                        startDate = DateTime.Now;
+                        startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
+                        deadlineDate = null;
+                        archiveFlag = false;
+                        tasksFlag = 1;
+                    }
+                }
+            }
+
+            if (tasksFlag == 0)
+            {
+                currentIndex = 0;
+                nextIndex = currentIndex + 1;
+
+                foreach (string keyword in COMMAND_TASKS_DAY)
+                {
+                    if (String.Equals(keyword, userCommand[nextIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                    {
+                        if (IsValidDate(userCommand[nextIndex + 1]))
+                        {
+                            deadlineDate = DateTime.Parse(userCommand[nextIndex + 1]);
+                            startDate = endDate = null;
+                            archiveFlag = false;
+                            tasksFlag = 1;
+                        }
+                    }
+                }
+            }
+
+            if (tasksFlag == 1)
+            {
+                Task viewtaskdetails = new Task(0,null,startDate,endDate,deadlineDate,archiveFlag);
+                ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
+                taskHistory.Push(view);
+                return view;
+            }
+
+            else
+            {
+               return ParseNewTask();
+            }
+        }
+
+        /// <summary>
+        /// Parses the user command and determines the date and the taskdescription
+        /// </summary>
+        /// <returns>Returns a command object with details of the ToDo item</returns>
+        private Command ParseModify()
+        {
             currentIndex = 0;
             nextIndex = currentIndex + 1;
 
@@ -79,12 +339,12 @@ namespace WhiteBoard
                     if (checkId > 0)
                     {
                         taskId = checkId;
-                        modifyKeywordFlag = 1;
+                        modifyFlag = 1;
                     }
                 }
             }
 
-            if (modifyKeywordFlag != 0)
+            if (modifyFlag != 0)
             {
                 currentIndex = 0;
                 int date_count = 0;
@@ -125,11 +385,11 @@ namespace WhiteBoard
                 {
                     if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase) && nextIndex < userCommand.Count - 2)
                     {
-                        taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 2, userCommand.Count - 1);
+                        taskDescription = ConvertToString(userCommand, stringList, nextIndex + 2, userCommand.Count - 1);
                     }
                     else
                     {
-                        taskDescription = ConvertToString(userCommand, taskDescriptionList, nextIndex + 1, userCommand.Count - 1);
+                        taskDescription = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);
                     }
                 }
 
@@ -145,20 +405,20 @@ namespace WhiteBoard
                     {
                         if (startDateIndex < endDateIndex)
                         {
-                            taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, startDateIndex - 1);
+                            taskDescription = ConvertToString(userCommand, stringList, taskIndex, startDateIndex - 1);
                         }
                         else
                         {
-                            taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, endDateIndex - 1);
+                            taskDescription = ConvertToString(userCommand, stringList, taskIndex, endDateIndex - 1);
                         }
                     }
                     else if (startDateIndex > 0)
                     {
-                        taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, startDateIndex - 1);
+                        taskDescription = ConvertToString(userCommand, stringList, taskIndex, startDateIndex - 1);
                     }
                     else
                     {
-                        taskDescription = ConvertToString(userCommand, taskDescriptionList, taskIndex, endDateIndex - 1);
+                        taskDescription = ConvertToString(userCommand, stringList, taskIndex, endDateIndex - 1);
                     }
                 }
 
@@ -166,7 +426,6 @@ namespace WhiteBoard
                 {
                     taskDescription = null;
                 }
-
                 Task taskToEdit = new Task(taskId, taskDescription, startDate, endDate, deadlineDate);
                 EditCommand edit = new EditCommand(fileHandler, taskToEdit, screenState);
                 taskHistory.Push(edit);
@@ -174,11 +433,7 @@ namespace WhiteBoard
             }
             else
             {
-                ParseDate();
-                taskToAdd = new Task(0, taskDescription, startDate, endDate, deadlineDate);
-                AddCommand add = new AddCommand(fileHandler, taskToAdd, screenState);
-                taskHistory.Push(add);
-                return add;
+               return ParseNewTask();
             }
 
         }
@@ -186,8 +441,11 @@ namespace WhiteBoard
         /// <summary>
         /// Parses the user command and determines the date and the taskdescription
         /// </summary>
-        private void ParseDate()
+        private Command ParseNewTask()
         {
+            currentIndex = 0;
+            dateFlag = 0;
+
             foreach (string str in userCommand)
             {
                 foreach (string keyword in COMMAND_DATE)
@@ -195,7 +453,7 @@ namespace WhiteBoard
                     if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                     {
                         nextIndex = currentIndex + 1;
-                        previousIndex = nextIndex - 2;
+                        previousIndex = currentIndex - 1;
                         dateKeywordFlag = 1;
                     }
                 }
@@ -204,6 +462,7 @@ namespace WhiteBoard
                 {
                     if (IsDateRange(userCommand[nextIndex]) == 2)
                     {
+                        deadlineDate = null;
                         startEndDate.Sort((a, b) => a.CompareTo(b));
                         startDate = DateTime.Parse(startEndDate[0]);
                         endDate = DateTime.Parse(startEndDate[1]);
@@ -212,6 +471,7 @@ namespace WhiteBoard
                     else if (IsValidDate(userCommand[nextIndex]))
                     {
                         deadlineDate = DateTime.Parse(userCommand[nextIndex]);
+                        startDate = endDate = null;
                         dateFlag = 1;
                     }
                     else
@@ -220,7 +480,7 @@ namespace WhiteBoard
                     }
                     if (dateFlag == 1)
                     {
-                        taskDescription = ConvertToString(userCommand, taskDescriptionList, 0, previousIndex);
+                        taskDescription = ConvertToString(userCommand, stringList, 0, previousIndex);
                     }
                     dateKeywordFlag = 0;
                 }
@@ -232,9 +492,13 @@ namespace WhiteBoard
                 taskDescription = inputCommand;
                 deadlineDate = startDate = endDate = null;
             }
+
+            taskToAdd = new Task(0, taskDescription, startDate, endDate, deadlineDate);
+            AddCommand add = new AddCommand(fileHandler, taskToAdd, screenState);
+            taskHistory.Push(add);
+            return add;
         }
 
-        /// <summary>
         /// Checks if a date range is given and extracts the start and end date
         /// </summary>
         /// <param name="checkdate">The string to be parsed and checked</param>
@@ -251,6 +515,7 @@ namespace WhiteBoard
                 int enddateindex = startdateindex + 2;
 
                 if (String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
+                    || String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
                     || String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE_ALT))
                 {
                     if ((IsValidDate(checkdate)) && (IsValidDate(userCommand[enddateindex])))
@@ -296,6 +561,7 @@ namespace WhiteBoard
             }
             return isRange;
         }
+
 
         /// <summary>
         /// Checks whether the string is a task ID
