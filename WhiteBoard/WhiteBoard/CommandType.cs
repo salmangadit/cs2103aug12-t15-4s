@@ -9,6 +9,7 @@ namespace WhiteBoard
     {
         Add,
         Edit,
-        View
+        View,
+        Delete
     }
 }

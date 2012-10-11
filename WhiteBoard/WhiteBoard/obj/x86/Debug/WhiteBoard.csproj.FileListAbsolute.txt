@@ -1,0 +1,5 @@
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\App.g.cs
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.cache
+C:\Users\Sai\Documents\WhiteBoard\WhiteBoard\WhiteBoard\obj\x86\Debug\WhiteBoard_MarkupCompile.lref
