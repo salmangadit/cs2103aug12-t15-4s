@@ -27,7 +27,18 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            
+            List<Task> listOfTasks = fileHandler.ViewAll();
+            List<Task> tasksContainingSearchString = new List<Task>();
+
+            for (int i = 0; i < listOfTasks.Count; i++)
+            {
+                if(listOfTasks[i].Description.Contains(searchString))
+                {
+                    tasksContainingSearchString.Add(listOfTasks[i]);
+                }
+            }
+
+            return tasksContainingSearchString;
         }
 
         public override ObservableCollection<Task> Undo()
