@@ -228,5 +228,27 @@ namespace WhiteBoard
 
             return archived;
         }
+
+        internal List<Task> ViewAll()
+        {
+            List<Task> listOfAllTasks = new List<Task>();
+            List<Task> listOfNonArchivedTasks = new List<Task>();
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // If file is not empty
+            {
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach (Task nonArchivedTask in listOfAllTasks)
+                {
+                    if (nonArchivedTask.Archive == false)
+                    {
+                        listOfNonArchivedTasks.Add(nonArchivedTask);
+                    }
+                }
+            }
+
+            return listOfNonArchivedTasks; // will return empty list if file is empty or no non-archived tasks
+        }
     }
 }
