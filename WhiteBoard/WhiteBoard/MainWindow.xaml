@@ -26,6 +26,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical" Margin="5">
+                            <TextBlock FontSize="20" Text="{Binding Id}" />
                             <TextBlock FontSize="20" Text="{Binding TaskDescription}" />
                             <TextBlock Text="{Binding Deadline}"/>
                             <TextBlock Text="{Binding StartTime}"/>
