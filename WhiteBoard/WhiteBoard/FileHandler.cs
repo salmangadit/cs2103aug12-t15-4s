@@ -33,69 +33,42 @@ namespace WhiteBoard
 
         internal void AddTaskToFile(Task taskToAdd)
         {
-            int newTaskId;
-            int indexOfLastTask;
-            string lastTaskIdString;
-            string newTaskIdString;
-            int indexOfNewTask;
-            List<Task> listOfTasksToAdd = new List<Task>();
+            //int newTaskId;
+            //int indexOfLastTask;
+            //string lastTaskIdString;
+            //string newTaskIdString;
+            //int indexOfNewTask;
+            List<Task> listOfAllTasks = new List<Task>();
+            int lastTaskIndex;
+            int newTaskId = 1;
 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
             if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
             {
-                listOfTasksToAdd = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                lastTaskIndex = listOfAllTasks.Count - 1;
+                newTaskId = listOfAllTasks[lastTaskIndex].Id + 1;
             }
-
             objStrRead.Close();
-            listOfTasksToAdd.Add(taskToAdd);
 
+            taskToAdd.Id = newTaskId;
+            listOfAllTasks.Add(taskToAdd);
             StreamWriter objStrWrt = new StreamWriter(filePath);
-            objXmlSer.Serialize(objStrWrt, listOfTasksToAdd);
-            objStrWrt.Close();
-
-            // Clear list
-            listOfTasksToAdd.Clear();
-
-            XmlDocument taskListDoc = new XmlDocument();
-
             try
             {
-                taskListDoc.Load(filePath);
+                objXmlSer.Serialize(objStrWrt, listOfAllTasks);
             }
-            catch (FileNotFoundException ex)
+            catch (ArgumentNullException e)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine("Unable to serialize null values");
             }
-
-            XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
-            XmlNodeList listOfTasks = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
-
-            if (listOfTasks.Count > 0)
+            catch (InvalidOperationException e)
             {
-                indexOfLastTask = listOfTasks.Count - 2;
-                lastTaskIdString = listOfTasks[indexOfLastTask].Value; // Get the value of the last task
-                newTaskId = int.Parse(lastTaskIdString) + 1; // Increase value
+                Console.WriteLine("There was an error generating the XML document");
             }
-
-            else
-            {
-                newTaskId = 1;
-            }
-
-            newTaskIdString = newTaskId.ToString(); // Convert back to string
-            indexOfNewTask = listOfTasks.Count - 1;
-
-            if (listOfTasks[indexOfNewTask].Value == "0")
-            {
-                listOfTasks[indexOfNewTask].RemoveAll();
-                XmlText taskIdValue = taskListDoc.CreateTextNode(newTaskIdString);
-                listOfTasks[indexOfNewTask].AppendChild(taskIdValue);
-            }
-
-            taskListDoc.Save(filePath);
-            
+            objStrWrt.Close();  
         }
 
         internal Task GetTaskFromFile(int editedTaskId)
