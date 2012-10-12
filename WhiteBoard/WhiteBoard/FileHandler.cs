@@ -33,11 +33,6 @@ namespace WhiteBoard
 
         internal void AddTaskToFile(Task taskToAdd)
         {
-            //int newTaskId;
-            //int indexOfLastTask;
-            //string lastTaskIdString;
-            //string newTaskIdString;
-            //int indexOfNewTask;
             List<Task> listOfAllTasks = new List<Task>();
             int lastTaskIndex;
             int newTaskId = 1;
@@ -200,6 +195,34 @@ namespace WhiteBoard
             }
 
             return archived;
+        }
+
+        internal bool UnarchiveTaskInFile(int unarchivedTaskId)
+        {
+            bool unarchived = false;
+            List<Task> listOfTasks = new List<Task>();
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // If file is not empty
+            {
+                listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach (Task taskToBeUnarchived in listOfTasks)
+                {
+                    if (taskToBeUnarchived.Id == unarchivedTaskId)
+                    {
+                        taskToBeUnarchived.Archive = false;
+                        unarchived = true;
+                        break;
+                    }
+                }
+                objStrRead.Close();
+                StreamWriter objStrWrt = new StreamWriter(filePath);
+                objXmlSer.Serialize(objStrWrt, listOfTasks);
+                objStrWrt.Close();
+            }
+
+            return unarchived;
         }
 
         internal List<Task> ViewAll()
