@@ -71,7 +71,6 @@ namespace WhiteBoard
             Task taskToBeEdited = new Task();
             List<Task> listOfAllTasks = new List<Task>();
             Debug.Assert(editedTaskId > 0, "Task Id needs to be greater than 0");
-            //string editedTaskIdString = editedTaskId.ToString();
 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
@@ -92,45 +91,35 @@ namespace WhiteBoard
             return taskToBeEdited;
         }
 
-        internal void WriteEditedTaskToFile(Task editedTask)
+        internal bool WriteEditedTaskToFile(Task editedTask)
         {
-            string editedTaskIdString = editedTask.Id.ToString();
-            XmlDocument taskListDoc = new XmlDocument();
+            bool edited = false;
+            List<Task> listOfAllTasks = new List<Task>();
+            int indexOfEditedTask;
 
-            if (File.Exists(filePath))
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
             {
-                taskListDoc.Load(filePath);
-                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
-                XmlNodeList listOfTaskIds = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
-
-                foreach(XmlNode node in listOfTaskIds)
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach (Task t in listOfAllTasks)
                 {
-                    if (node.Value == editedTaskIdString)
+                    if (t.Id == editedTask.Id)
                     {
-                        XmlNode parent_Task = node.ParentNode;
-                        XmlNodeList listOfChildrenForTask = parent_Task.ChildNodes;
-
-                        for(int i=1; i<listOfChildrenForTask.Count; i++) //Starts from index 1 since taskId cannot change
-                        {
-                            listOfChildrenForTask[i].RemoveAll();
-                        }
- 
-                        XmlText taskDescriptionValue = taskListDoc.CreateTextNode(editedTask.Description);
-                        listOfChildrenForTask[1].AppendChild(taskDescriptionValue);
-                        XmlText taskStartTimeValue = taskListDoc.CreateTextNode(editedTask.StartTime.ToString());
-                        listOfChildrenForTask[2].AppendChild(taskStartTimeValue);
-                        XmlText taskEndTimeValue = taskListDoc.CreateTextNode(editedTask.EndTime.ToString());
-                        listOfChildrenForTask[3].AppendChild(taskEndTimeValue);
-                        XmlText taskDeadlineValue = taskListDoc.CreateTextNode(editedTask.Deadline.ToString());
-                        listOfChildrenForTask[4].AppendChild(taskDeadlineValue);
+                        indexOfEditedTask = listOfAllTasks.IndexOf(t);
+                        listOfAllTasks.Remove(t);
+                        listOfAllTasks.Insert(indexOfEditedTask, editedTask);
+                        edited = true;
                         break;
-
                     }
                 }
-                taskListDoc.Save(filePath);
-
+                objStrRead.Close();
+                StreamWriter objStrWrt = new StreamWriter(filePath);
+                objXmlSer.Serialize(objStrWrt, listOfAllTasks);
+                objStrWrt.Close();
             }
-           
+            return edited;
         }
 
         internal bool DeleteTaskFromFile(int deletedTaskId)
