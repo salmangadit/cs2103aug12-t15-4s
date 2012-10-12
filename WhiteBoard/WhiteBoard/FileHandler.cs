@@ -78,11 +78,11 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach(Task editTask in listOfAllTasks)
+                foreach(Task t in listOfAllTasks)
                 {
-                    if(editTask.Id == editedTaskId)
+                    if(t.Id == editedTaskId)
                     {
-                        taskToBeEdited = editTask;
+                        taskToBeEdited = t;
                         break;
                     }
                 }
@@ -132,11 +132,11 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach (Task taskToBeRemoved in listOfTasks)
+                foreach (Task t in listOfTasks)
                 {
-                    if (taskToBeRemoved.Id == deletedTaskId)
+                    if (t.Id == deletedTaskId)
                     {
-                        listOfTasks.Remove(taskToBeRemoved);
+                        listOfTasks.Remove(t);
                         deleted = true;
                         break;
                     }
@@ -160,11 +160,11 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach(Task taskToBeArchived in listOfTasks)
+                foreach(Task t in listOfTasks)
                 {
-                    if(taskToBeArchived.Id == archivedTaskId)
+                    if(t.Id == archivedTaskId)
                     {
-                        taskToBeArchived.Archive = true;
+                        t.Archive = true;
                         archived = true;
                         break;
                     }
@@ -188,11 +188,11 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach (Task taskToBeUnarchived in listOfTasks)
+                foreach (Task t in listOfTasks)
                 {
-                    if (taskToBeUnarchived.Id == unarchivedTaskId)
+                    if (t.Id == unarchivedTaskId)
                     {
-                        taskToBeUnarchived.Archive = false;
+                        t.Archive = false;
                         unarchived = true;
                         break;
                     }
@@ -216,11 +216,11 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach (Task nonArchivedTask in listOfAllTasks)
+                foreach (Task t in listOfAllTasks)
                 {
-                    if (nonArchivedTask.Archive == false)
+                    if (t.Archive == false)
                     {
-                        listOfNonArchivedTasks.Add(nonArchivedTask);
+                        listOfNonArchivedTasks.Add(t);
                     }
                 }
                 objStrRead.Close();
@@ -239,17 +239,40 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach (Task archivedTask in listOfAllTasks)
+                foreach (Task t in listOfAllTasks)
                 {
-                    if (archivedTask.Archive == true)
+                    if (t.Archive == true)
                     {
-                        listOfArchivedTasks.Add(archivedTask);
+                        listOfArchivedTasks.Add(t);
                     }
                 }
                 objStrRead.Close();
             }
 
             return listOfArchivedTasks; // Will return empty list if file is empty or if file contains no archived tasks
+        }
+
+        internal List<Task> ViewTasks(DateTime startDate, DateTime endDate)
+        {
+            List<Task> listOfAllTasks = new List<Task>();
+            List<Task> listOfTasksWithinRange = new List<Task>();
+
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // If file is not empty
+            {
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach (Task t in listOfAllTasks)
+                {
+                    if ((!t.Archive) && (((t.StartTime >= startDate) && (t.StartTime <= endDate)) || ((t.EndTime >= startDate) && (t.EndTime <= endDate))))
+                    {
+                        listOfTasksWithinRange.Add(t);
+                    }
+                }
+            }
+            objStrRead.Close();
+            return listOfTasksWithinRange;
         }
     }
 }
