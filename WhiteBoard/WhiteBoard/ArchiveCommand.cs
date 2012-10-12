@@ -9,7 +9,7 @@ namespace WhiteBoard
     class ArchiveCommand : Command
     {
         int taskIdToArchive;
-
+         
         public ArchiveCommand(FileHandler fileHandler, int taskIdToArchive, ObservableCollection<Task> screenState)
             : base(fileHandler, screenState)
         {
