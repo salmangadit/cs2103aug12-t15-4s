@@ -11,6 +11,7 @@ namespace WhiteBoard
         Edit,
         View,
         Delete,
-        Search
+        Search,
+        Archive
     }
 }
