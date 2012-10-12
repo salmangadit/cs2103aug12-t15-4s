@@ -9,8 +9,9 @@ namespace WhiteBoard
     class AddCommand : Command
     {
         Task taskToAdd;
+        List<Task> addedTask = new List<Task>();
 
-        public AddCommand(FileHandler fileHandler, Task taskToAdd, ObservableCollection<Task> screenState)
+        public AddCommand(FileHandler fileHandler, Task taskToAdd, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.taskToAdd = taskToAdd;
@@ -28,16 +29,14 @@ namespace WhiteBoard
         public override List<Task> Execute()
         {
             fileHandler.AddTaskToFile(taskToAdd);
-
-            List<Task> addedTask = new List<Task>();
             addedTask.Add(taskToAdd);
 
             return addedTask;
         }
 
-        public override ObservableCollection<Task> Undo()
+        public override List<Task> Undo()
         {
-            if (fileHandler.DeleteTaskFromFile(taskToAdd.Id))
+            if (fileHandler.DeleteTaskFromFile(addedTask[0].Id))
                 return screenState;
             
             return null;

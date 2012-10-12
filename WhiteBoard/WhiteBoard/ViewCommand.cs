@@ -10,7 +10,7 @@ namespace WhiteBoard
     {
         Task tasksToView;
 
-        public ViewCommand(FileHandler fileHandler, Task viewTaskDetails, ObservableCollection<Task> screenState)
+        public ViewCommand(FileHandler fileHandler, Task viewTaskDetails, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.tasksToView = viewTaskDetails;
@@ -29,11 +29,11 @@ namespace WhiteBoard
         {
             if (tasksToView.Archive == true)
             {
-                //return fileHandler.ViewArchive();
+                return fileHandler.ViewArchive();
             }
             else if (tasksToView.Archive == false && tasksToView.Deadline == null && tasksToView.StartTime == null && tasksToView.EndTime == null)
             {
-                //return fileHandler.ViewAll();
+                return fileHandler.ViewAll();
             }
             else if (tasksToView.Archive == false && tasksToView.Deadline == null)
             {
@@ -51,7 +51,7 @@ namespace WhiteBoard
             return null;
         }
 
-        public override ObservableCollection<Task> Undo()
+        public override List<Task> Undo()
         {
             return screenState;
         }

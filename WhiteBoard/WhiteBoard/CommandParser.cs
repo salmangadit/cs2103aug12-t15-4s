@@ -55,10 +55,10 @@ namespace WhiteBoard
         private List<string> startEndDate = new List<string>();
         private List<string> userCommand = new List<string>();
 
-        private ObservableCollection<Task> screenState;
+        private List<Task> screenState;
         private Stack<Command> taskHistory;
 
-        public CommandParser(string usercommand, FileHandler filehandler, ObservableCollection<Task> screenState, Stack<Command> taskHistory)
+        public CommandParser(string usercommand, FileHandler filehandler, List<Task> screenState, Stack<Command> taskHistory)
         {
             inputCommand = usercommand;
             fileHandler = filehandler;
@@ -71,7 +71,7 @@ namespace WhiteBoard
                 str.Trim();
                 userCommand.Add(str);
             }
-            ParseCommand();
+            //ParseCommand();
         }
 
         /// <summary>
@@ -86,12 +86,10 @@ namespace WhiteBoard
                     {
                         return ParseSearch();
                     }
-               // I'm commenting out the undo code, cuz i need an UndoCommand Class
-               // Scroll down and look at the ParseUndo function for more details
-               // case "UNDO:":
-               //   {
-               //     return ParseUndo();
-               //   }
+                case "UNDO:":
+                    {
+                        return ParseUndo();
+                    }
                 case "DELETE":
                 case "REMOVE":
                     {
@@ -130,18 +128,18 @@ namespace WhiteBoard
             return search;
         }
 
-/*      Salman im commenting out the undo function
- *      Im expecting an UndoCommand Class which accepts the last command object executed as one 
- *      of the parameters
- *      Sai could implement this class for me?
- *      
+        /*      Salman im commenting out the undo function
+         *      Im expecting an UndoCommand Class which accepts the last command object executed as one 
+         *      of the parameters
+         *      Sai could implement this class for me?
+         */
         private Command ParseUndo()
         {
             Command lastcommand = taskHistory.Pop();
-            //UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
-            //return undo;
+            UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
+            return undo;
         }
- */
+
         /// <summary>
         /// Checks which task to delete based on the Task ID
         /// </summary>
@@ -161,7 +159,7 @@ namespace WhiteBoard
             }
             else
             {
-               return ParseNewTask();
+                return ParseNewTask();
             }
         }
 
@@ -188,7 +186,7 @@ namespace WhiteBoard
                     return markdone;
                 }
             }
-                return ParseNewTask();
+            return ParseNewTask();
         }
         /// <summary>
         /// Parses the command and extracts the parameters for the View Command
@@ -310,7 +308,7 @@ namespace WhiteBoard
 
             if (tasksFlag == 1)
             {
-                Task viewtaskdetails = new Task(0,null,startDate,endDate,deadlineDate,archiveFlag);
+                Task viewtaskdetails = new Task(0, null, startDate, endDate, deadlineDate, archiveFlag);
                 ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
                 taskHistory.Push(view);
                 return view;
@@ -318,7 +316,7 @@ namespace WhiteBoard
 
             else
             {
-               return ParseNewTask();
+                return ParseNewTask();
             }
         }
 
@@ -433,7 +431,7 @@ namespace WhiteBoard
             }
             else
             {
-               return ParseNewTask();
+                return ParseNewTask();
             }
 
         }

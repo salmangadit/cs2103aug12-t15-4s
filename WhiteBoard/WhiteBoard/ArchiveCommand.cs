@@ -9,8 +9,8 @@ namespace WhiteBoard
     class ArchiveCommand : Command
     {
         int taskIdToArchive;
-        
-        public ArchiveCommand(FileHandler fileHandler, int taskIdToArchive, ObservableCollection<Task> screenState)
+
+        public ArchiveCommand(FileHandler fileHandler, int taskIdToArchive, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.taskIdToArchive = taskIdToArchive;
@@ -35,10 +35,16 @@ namespace WhiteBoard
             return null;
         }
 
-        public override ObservableCollection<Task> Undo()
+        public override List<Task> Undo()
         {
-            // salman to add his code here
-            return null;
+            //fileHandler.Unarchive(taskIdToArchive);
+            //return screenState;
+            throw new NotImplementedException("Cannot work till 'unarchive' method is ready");
+        }
+
+        public int GetArchivedTaskId()
+        {
+            return taskIdToArchive;
         }
     }
 }

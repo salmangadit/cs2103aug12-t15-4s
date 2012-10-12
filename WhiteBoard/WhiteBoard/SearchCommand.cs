@@ -10,7 +10,7 @@ namespace WhiteBoard
     {
         string searchString;
 
-        public SearchCommand(FileHandler fileHandler, string searchString, ObservableCollection<Task> screenState)
+        public SearchCommand(FileHandler fileHandler, string searchString, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.searchString = searchString;
@@ -41,10 +41,14 @@ namespace WhiteBoard
             return tasksContainingSearchString;
         }
 
-        public override ObservableCollection<Task> Undo()
+        public override List<Task> Undo()
         {
-            //salman to add his code here 
-            return null;
+            return screenState;
+        }
+
+        public string GetSearchString()
+        {
+            return searchString;
         }
     }
 }

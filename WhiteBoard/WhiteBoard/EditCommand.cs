@@ -11,7 +11,7 @@ namespace WhiteBoard
         Task editTaskDetails;
         Task uneditedTask;
 
-        public EditCommand(FileHandler fileHandler, Task editTaskDetails, ObservableCollection<Task> screenState)
+        public EditCommand(FileHandler fileHandler, Task editTaskDetails, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.editTaskDetails = editTaskDetails;
@@ -46,7 +46,7 @@ namespace WhiteBoard
             return editedTasks;
         }
 
-        public override ObservableCollection<Task> Undo()
+        public override List<Task> Undo()
         {
             fileHandler.WriteEditedTaskToFile(uneditedTask);
             return screenState;
