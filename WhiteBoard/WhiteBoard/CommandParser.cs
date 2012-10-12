@@ -183,7 +183,7 @@ namespace WhiteBoard
                 {
                     archiveFlag = true;
                     taskId = checkId;
-                    DeleteCommand markdone = new DeleteCommand(fileHandler, taskId, screenState);
+                    ArchiveCommand markdone = new ArchiveCommand(fileHandler, taskId, screenState);
                     taskHistory.Push(markdone);
                     return markdone;
                 }
