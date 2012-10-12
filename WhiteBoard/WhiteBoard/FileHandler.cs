@@ -69,34 +69,26 @@ namespace WhiteBoard
         internal Task GetTaskFromFile(int editedTaskId)
         {
             Task taskToBeEdited = new Task();
+            List<Task> listOfAllTasks = new List<Task>();
             Debug.Assert(editedTaskId > 0, "Task Id needs to be greater than 0");
-            string editedTaskIdString = editedTaskId.ToString();
+            //string editedTaskIdString = editedTaskId.ToString();
 
-            XmlDocument taskListDoc = new XmlDocument();
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
-            if (File.Exists(filePath))
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
             {
-                taskListDoc.Load(filePath);
-                XmlElement rootElement = taskListDoc.DocumentElement; // Get reference to root node
-                XmlNodeList listOfTaskIds = taskListDoc.GetElementsByTagName("taskId"); // Create a list of nodes whose name is taskId
-
-                foreach (XmlNode node in listOfTaskIds)
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach(Task editTask in listOfAllTasks)
                 {
-                    if (node.Value == editedTaskIdString)
+                    if(editTask.Id == editedTaskId)
                     {
-                        XmlNode parent_Task = node.ParentNode;
-                        XmlNodeList listOfChildrenForTask = parent_Task.ChildNodes;
-
-                        taskToBeEdited.Id = int.Parse(listOfChildrenForTask[0].Value);
-                        taskToBeEdited.Description = listOfChildrenForTask[1].Value;
-                        taskToBeEdited.StartTime = DateTime.Parse(listOfChildrenForTask[2].Value);
-                        taskToBeEdited.EndTime = DateTime.Parse(listOfChildrenForTask[3].Value);
-                        taskToBeEdited.Deadline = DateTime.Parse(listOfChildrenForTask[4].Value);
+                        taskToBeEdited = editTask;
                         break;
                     }
                 }
             }
-
+            objStrRead.Close();
             return taskToBeEdited;
         }
 
