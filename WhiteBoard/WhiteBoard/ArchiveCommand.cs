@@ -37,9 +37,8 @@ namespace WhiteBoard
 
         public override List<Task> Undo()
         {
-            //fileHandler.Unarchive(taskIdToArchive);
-            //return screenState;
-            throw new NotImplementedException("Cannot work till 'unarchive' method is ready");
+            fileHandler.UnarchiveTaskInFile(taskIdToArchive);
+            return screenState;
         }
 
         public int GetArchivedTaskId()
