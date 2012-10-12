@@ -12,6 +12,7 @@ namespace WhiteBoard
         View,
         Delete,
         Search,
-        Archive
+        Archive,
+        Undo
     }
 }

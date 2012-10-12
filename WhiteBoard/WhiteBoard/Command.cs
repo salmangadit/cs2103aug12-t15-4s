@@ -10,9 +10,9 @@ namespace WhiteBoard
     {
         protected FileHandler fileHandler;
         protected CommandType commandType;
-        protected ObservableCollection<Task> screenState;
+        protected List<Task> screenState;
 
-        public Command(FileHandler fileHandler, ObservableCollection<Task> screenState)
+        public Command(FileHandler fileHandler, List<Task> screenState)
         {
             this.fileHandler = fileHandler;
             this.screenState = screenState;
@@ -24,6 +24,6 @@ namespace WhiteBoard
         }
 
         public abstract List<Task> Execute();
-        public abstract ObservableCollection<Task> Undo();
+        public abstract List<Task> Undo();
     }
 }

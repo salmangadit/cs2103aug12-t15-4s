@@ -9,8 +9,9 @@ namespace WhiteBoard
     class DeleteCommand : Command
     {
         int taskIdToDelete;
+        Task taskToDelete;
 
-        public DeleteCommand(FileHandler fileHandler, int taskIdToDelete, ObservableCollection<Task> screenState)
+        public DeleteCommand(FileHandler fileHandler, int taskIdToDelete, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.taskIdToDelete = taskIdToDelete;
@@ -27,6 +28,7 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
+            taskToDelete = fileHandler.GetTaskFromFile(taskIdToDelete);
             bool isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
 
             if (!isTaskDeleted)
@@ -35,10 +37,15 @@ namespace WhiteBoard
             return null;
         }
 
-        public override ObservableCollection<Task> Undo()
+        public override List<Task> Undo()
         {
-            // salman to add his code here
-            return null;
+            fileHandler.AddTaskToFile(taskToDelete);
+            return screenState;
+        }
+
+        public int GetDeletedTaskId()
+        {
+            return taskIdToDelete;
         }
     }
 }

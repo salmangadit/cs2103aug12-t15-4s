@@ -17,7 +17,7 @@ namespace WhiteBoard
             history = new Stack<Command>();
         }
 
-        public Command GetCommandObject(string userString, ObservableCollection<Task> screenState)
+        public Command GetCommandObject(string userString, List<Task> screenState)
         {
             CommandParser commandParser = new CommandParser(userString, fileHandler, screenState, history);
             return commandParser.ParseCommand();

@@ -61,6 +61,7 @@
     <Compile Include="EditCommand.cs" />
     <Compile Include="SearchCommand.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="UndoCommand.cs" />
     <Compile Include="ViewCommand.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -46,7 +46,7 @@ namespace WhiteBoard
                 // Clear search box
                 txtCommand.Text = string.Empty;
 
-                Command command = controller.GetCommandObject(userCommand, tasksOnScreen);
+                Command command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
 
                 if (command.CommandType == CommandType.Add)
                 {
@@ -60,6 +60,62 @@ namespace WhiteBoard
                     tasksOnScreen.Clear();
                     tasksOnScreen.Add(editedTask);
                     ShowToast("Task with Id " + editedTask.Id + " edited!");
+                }
+                else if (command.CommandType == CommandType.View)
+                {
+                    List<Task> tasksToView = command.Execute();
+                    tasksOnScreen.Clear();
+                    foreach (Task task in tasksToView)
+                    {
+                        tasksOnScreen.Add(task);
+                    }
+                }
+                else if (command.CommandType == CommandType.Delete)
+                {
+                    int deletedTaskId = ((DeleteCommand)command).GetDeletedTaskId();
+                    int traversalIndex = 0;
+                    foreach (Task task in tasksOnScreen)
+                    {
+                        if (task.Id == deletedTaskId)
+                            tasksOnScreen.RemoveAt(traversalIndex);
+                        traversalIndex++;
+                    }
+
+                    ShowToast("Deleted task with Id: " + deletedTaskId);
+                }
+                else if (command.CommandType == CommandType.Archive)
+                {
+                    int archiveTaskId = ((ArchiveCommand)command).GetArchivedTaskId();
+                    int traversalIndex = 0;
+                    foreach (Task task in tasksOnScreen)
+                    {
+                        if (task.Id == archiveTaskId)
+                            tasksOnScreen.RemoveAt(traversalIndex);
+                        traversalIndex++;
+                    }
+
+                    ShowToast("Archived task with Id: " + archiveTaskId);
+                }
+                else if (command.CommandType == CommandType.Search)
+                {
+                    List<Task> searchResult = command.Execute();
+                    string searchString = ((SearchCommand)command).GetSearchString();
+                    tasksOnScreen.Clear();
+                    foreach (Task task in searchResult)
+                    {
+                        tasksOnScreen.Add(task);
+                    }
+                    ShowToast("Search results for: " + searchString);
+                }
+                else if (command.CommandType == CommandType.Undo)
+                {
+                    List<Task> previousScreenState = command.Execute();
+                    tasksOnScreen.Clear();
+                    foreach (Task task in previousScreenState)
+                    {
+                        tasksOnScreen.Add(task);
+                    }
+                    ShowToast("Command type undone: " + ((UndoCommand)command).GetUndoCommandType().ToString());
                 }
 
                 lstTasks.DataContext = tasksOnScreen;

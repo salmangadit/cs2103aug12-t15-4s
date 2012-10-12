@@ -74,7 +74,7 @@ namespace WhiteBoard
             {
                 if (taskStartTime == null)
                 {
-                    throw new ArgumentNullException("Start time is not set");
+                    //throw new ArgumentNullException("Start time is not set");
                 }
 
                 return taskStartTime;
@@ -92,7 +92,7 @@ namespace WhiteBoard
             {
                 if (taskEndTime == null)
                 {
-                    throw new ArgumentNullException("Start time is not set");
+                    //throw new ArgumentNullException("Start time is not set");
                 }
 
                 return taskEndTime;
@@ -110,7 +110,7 @@ namespace WhiteBoard
             {
                 if (taskDeadline == null)
                 {
-                    throw new ArgumentNullException("Start time is not set");
+                    //throw new ArgumentNullException("Start time is not set");
                 }
 
                 return taskDeadline;
