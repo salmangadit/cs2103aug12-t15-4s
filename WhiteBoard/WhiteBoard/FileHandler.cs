@@ -252,7 +252,7 @@ namespace WhiteBoard
             return listOfArchivedTasks; // Will return empty list if file is empty or if file contains no archived tasks
         }
 
-        internal List<Task> ViewTasks(DateTime startDate, DateTime endDate)
+        internal List<Task> ViewTasks(DateTime? startDate, DateTime? endDate)
         {
             List<Task> listOfAllTasks = new List<Task>();
             List<Task> listOfTasksWithinRange = new List<Task>();
