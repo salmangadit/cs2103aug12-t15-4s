@@ -21,7 +21,6 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="0" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListBox Name="lstTasks" ItemContainerStyle="{StaticResource BorderedItem}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -34,7 +33,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </ScrollViewer>
         <Label Name="lblToast" Visibility="Collapsed" Background="Cornsilk" BorderBrush="Black" BorderThickness="1" Grid.Row="0" Width="50" Height="30" VerticalAlignment="Bottom" HorizontalContentAlignment="Center">
             <Label.Margin>
                 <Thickness Bottom="10"/>

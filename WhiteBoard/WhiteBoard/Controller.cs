@@ -22,5 +22,11 @@ namespace WhiteBoard
             CommandParser commandParser = new CommandParser(userString, fileHandler, screenState, history);
             return commandParser.ParseCommand();
         }
+
+        public Command GetAllTasks(List<Task> screenState)
+        {
+            CommandParser commandParser = new CommandParser("TASKS ALL", fileHandler, screenState, history);
+            return commandParser.ParseCommand();
+        }
     }
 }
