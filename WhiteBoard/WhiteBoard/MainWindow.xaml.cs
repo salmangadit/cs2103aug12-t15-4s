@@ -74,7 +74,8 @@ namespace WhiteBoard
                 {
                     int deletedTaskId = ((DeleteCommand)command).GetDeletedTaskId();
                     int traversalIndex = 0;
-                    foreach (Task task in tasksOnScreen)
+                    List<Task> tasks = tasksOnScreen.ToList<Task>();
+                    foreach (Task task in tasks)
                     {
                         if (task.Id == deletedTaskId)
                             tasksOnScreen.RemoveAt(traversalIndex);
@@ -87,7 +88,8 @@ namespace WhiteBoard
                 {
                     int archiveTaskId = ((ArchiveCommand)command).GetArchivedTaskId();
                     int traversalIndex = 0;
-                    foreach (Task task in tasksOnScreen)
+                    List<Task> tasks = tasksOnScreen.ToList<Task>();
+                    foreach (Task task in tasks)
                     {
                         if (task.Id == archiveTaskId)
                             tasksOnScreen.RemoveAt(traversalIndex);
