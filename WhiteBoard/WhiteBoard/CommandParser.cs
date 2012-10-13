@@ -197,123 +197,131 @@ namespace WhiteBoard
             currentIndex = 0;
             nextIndex = currentIndex + 1;
 
-            if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+            if (userCommand.Count > 1)
             {
-                startDate = endDate = deadlineDate = null;
-                archiveFlag = false;
-                tasksFlag = 1;
-            }
-
-            else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
-            {
-                startDate = endDate = deadlineDate = null;
-                archiveFlag = true;
-                tasksFlag = 1;
-            }
-
-            else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
-            {
-                DayOfWeek today = DateTime.Now.DayOfWeek;
-                int days = today - DayOfWeek.Monday;
-                DateTime temp_start = DateTime.Now.AddDays(-days);
-                DateTime temp_end = temp_start.AddDays(6);
-                startDate = temp_start;
-                endDate = temp_end;
-                deadlineDate = null;
-                archiveFlag = false;
-                tasksFlag = 1;
-                //Need to make time 12:00 AM?
-            }
-
-            if ((tasksFlag == 0) && (currentIndex < userCommand.Count - 1) && (IsValidDate(userCommand[nextIndex])))
-            {
-                deadlineDate = DateTime.Parse(userCommand[nextIndex]);
-                startDate = endDate = null;
-                archiveFlag = false;
-                tasksFlag = 1;
-            }
-
-
-            if (tasksFlag == 0)
-            {
-                dateKeywordFlag = 0;
-                currentIndex = 1;
-                int enddateflag = 0;
-
-                foreach (string keyword in COMMAND_TASKS_RANGE)
+                if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
                 {
-                    if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
-                    {
-                        nextIndex = currentIndex + 1;
-                        dateKeywordFlag = 1;
-                    }
+                    startDate = endDate = deadlineDate = null;
+                    archiveFlag = false;
+                    tasksFlag = 1;
                 }
-                if (dateKeywordFlag == 0)
+
+                else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
                 {
-                    foreach (string keyword in COMMAND_TASKS_ENDING)
+                    startDate = endDate = deadlineDate = null;
+                    archiveFlag = true;
+                    tasksFlag = 1;
+                }
+
+                else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+                {
+                    DayOfWeek today = DateTime.Now.DayOfWeek;
+                    int days = today - DayOfWeek.Monday;
+                    DateTime temp_start = DateTime.Now.AddDays(-days);
+                    DateTime temp_end = temp_start.AddDays(6);
+                    startDate = temp_start;
+                    endDate = temp_end;
+                    deadlineDate = null;
+                    archiveFlag = false;
+                    tasksFlag = 1;
+                    //Need to make time 12:00 AM?
+                }
+
+                if ((tasksFlag == 0) && (currentIndex < userCommand.Count - 1) && (IsValidDate(userCommand[nextIndex])))
+                {
+                    deadlineDate = DateTime.Parse(userCommand[nextIndex]);
+                    startDate = endDate = null;
+                    archiveFlag = false;
+                    tasksFlag = 1;
+                }
+
+
+                if (tasksFlag == 0)
+                {
+                    dateKeywordFlag = 0;
+                    currentIndex = 1;
+                    int enddateflag = 0;
+
+                    foreach (string keyword in COMMAND_TASKS_RANGE)
                     {
                         if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                         {
                             nextIndex = currentIndex + 1;
-                            enddateflag = 1;
+                            dateKeywordFlag = 1;
                         }
                     }
-                }
-
-                if (dateKeywordFlag != 0)
-                {
-                    if (IsDateRange(userCommand[nextIndex]) == 2)
+                    if (dateKeywordFlag == 0)
                     {
-                        startEndDate.Sort((a, b) => a.CompareTo(b));
-                        startDate = DateTime.Parse(startEndDate[0]);
-                        endDate = DateTime.Parse(startEndDate[1]);
-                        deadlineDate = null;
-                        archiveFlag = false;
-                        tasksFlag = 1;
-                    }
-                }
-                else if (enddateflag == 1)
-                {
-                    if (IsValidDate(userCommand[nextIndex]))
-                    {
-                        endDate = DateTime.Parse(userCommand[nextIndex]);
-                        startDate = DateTime.Now;
-                        startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
-                        deadlineDate = null;
-                        archiveFlag = false;
-                        tasksFlag = 1;
-                    }
-                }
-            }
-
-            if (tasksFlag == 0)
-            {
-                currentIndex = 0;
-                nextIndex = currentIndex + 1;
-
-                foreach (string keyword in COMMAND_TASKS_DAY)
-                {
-                    if (String.Equals(keyword, userCommand[nextIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
-                    {
-                        if (IsValidDate(userCommand[nextIndex + 1]))
+                        foreach (string keyword in COMMAND_TASKS_ENDING)
                         {
-                            deadlineDate = DateTime.Parse(userCommand[nextIndex + 1]);
-                            startDate = endDate = null;
+                            if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                            {
+                                nextIndex = currentIndex + 1;
+                                enddateflag = 1;
+                            }
+                        }
+                    }
+
+                    if (dateKeywordFlag != 0)
+                    {
+                        if (IsDateRange(userCommand[nextIndex]) == 2)
+                        {
+                            startEndDate.Sort((a, b) => a.CompareTo(b));
+                            startDate = DateTime.Parse(startEndDate[0]);
+                            endDate = DateTime.Parse(startEndDate[1]);
+                            deadlineDate = null;
+                            archiveFlag = false;
+                            tasksFlag = 1;
+                        }
+                    }
+                    else if (enddateflag == 1)
+                    {
+                        if (IsValidDate(userCommand[nextIndex]))
+                        {
+                            endDate = DateTime.Parse(userCommand[nextIndex]);
+                            startDate = DateTime.Now;
+                            startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
+                            deadlineDate = null;
                             archiveFlag = false;
                             tasksFlag = 1;
                         }
                     }
                 }
-            }
 
-            if (tasksFlag == 1)
-            {
-                Task viewtaskdetails = new Task(0, null, startDate, endDate, deadlineDate, archiveFlag);
-                ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
-                taskHistory.Push(view);
-                return view;
-            }
+                if (tasksFlag == 0)
+                {
+                    currentIndex = 0;
+                    nextIndex = currentIndex + 1;
 
+                    foreach (string keyword in COMMAND_TASKS_DAY)
+                    {
+                        if (String.Equals(keyword, userCommand[nextIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                        {
+                            if (IsValidDate(userCommand[nextIndex + 1]))
+                            {
+                                deadlineDate = DateTime.Parse(userCommand[nextIndex + 1]);
+                                startDate = endDate = null;
+                                archiveFlag = false;
+                                tasksFlag = 1;
+                            }
+                        }
+                    }
+                }
+
+                if (tasksFlag == 1)
+                {
+                    Task viewtaskdetails = new Task(0, null, startDate, endDate, deadlineDate, archiveFlag);
+                    ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
+                    taskHistory.Push(view);
+                    return view;
+                }
+
+
+                else
+                {
+                    return ParseNewTask();
+                }
+            }
             else
             {
                 return ParseNewTask();
