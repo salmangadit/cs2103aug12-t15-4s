@@ -135,9 +135,14 @@ namespace WhiteBoard
          */
         private Command ParseUndo()
         {
-            Command lastcommand = taskHistory.Pop();
-            UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
-            return undo;
+            Command lastcommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
+            if (lastcommand != null)
+            {
+                UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
+                return undo;
+            }
+            else
+                return null;
         }
 
         /// <summary>

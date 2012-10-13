@@ -37,7 +37,7 @@ namespace WhiteBoard
             }
             else if (tasksToView.Archive == false && tasksToView.Deadline == null)
             {
-                //return fileHandler.View(tasksToView.StartTime, tasksToView.EndTime);
+                return fileHandler.ViewTasks(tasksToView.StartTime, tasksToView.EndTime);
             }
             else if (tasksToView.Archive == false && tasksToView.StartTime == null && tasksToView.EndTime == null)
             {
