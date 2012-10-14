@@ -19,14 +19,14 @@ namespace WhiteBoard
 
         public Command GetCommandObject(string userString, List<Task> screenState)
         {
-            CommandParser commandParser = new CommandParser(userString, fileHandler, screenState, history);
-            return commandParser.ParseCommand();
+            CommandParser commandParser = new CommandParser(fileHandler, screenState, history);
+            return commandParser.ParseCommand(userString);
         }
 
         public Command GetAllTasks(List<Task> screenState)
         {
-            CommandParser commandParser = new CommandParser("TASKS ALL", fileHandler, screenState, history);
-            return commandParser.ParseCommand();
+            CommandParser commandParser = new CommandParser(fileHandler, screenState, history);
+            return commandParser.ParseCommand("VIEW: ALL");
         }
     }
 }
