@@ -265,10 +265,33 @@ namespace WhiteBoard
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
                 {
-                    if ((!t.Archive) && (((t.StartTime >= startDate) && (t.StartTime <= endDate)) || ((t.EndTime >= startDate) && (t.EndTime <= endDate))))
+                    if (!t.Archive)
                     {
-                        listOfTasksWithinRange.Add(t);
-                    }
+                        if((t.StartTime.HasValue) && (t.StartTime >= startDate) && (t.StartTime <= endDate))
+                        {
+                            listOfTasksWithinRange.Add(t);
+                        }
+
+                        else if ((t.EndTime.HasValue) && (t.EndTime >= startDate) && (t.EndTime <= endDate))
+                        {
+                            listOfTasksWithinRange.Add(t);
+                        }
+
+                        else if ((t.Deadline.HasValue) && (t.Deadline >= startDate) && (t.Deadline <= endDate))
+                        {
+                            listOfTasksWithinRange.Add(t);
+                        }
+
+                        else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.EndTime.HasValue) && (t.EndTime >= endDate))
+                        {
+                            listOfTasksWithinRange.Add(t);
+                        }
+
+                        else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.Deadline.HasValue) && (t.Deadline >= endDate))
+                        {
+                            listOfTasksWithinRange.Add(t);
+                        }
+                    }  
                 }
             }
             objStrRead.Close();
