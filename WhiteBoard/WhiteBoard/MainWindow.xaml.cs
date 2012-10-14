@@ -86,6 +86,7 @@ namespace WhiteBoard
                 else if (command.CommandType == CommandType.Delete)
                 {
                     int deletedTaskId = ((DeleteCommand)command).GetDeletedTaskId();
+                    List<Task> deleted = command.Execute();
                     int traversalIndex = 0;
                     List<Task> tasks = tasksOnScreen.ToList<Task>();
                     foreach (Task task in tasks)
@@ -100,6 +101,7 @@ namespace WhiteBoard
                 else if (command.CommandType == CommandType.Archive)
                 {
                     int archiveTaskId = ((ArchiveCommand)command).GetArchivedTaskId();
+                    List<Task> archived = command.Execute();
                     int traversalIndex = 0;
                     List<Task> tasks = tasksOnScreen.ToList<Task>();
                     foreach (Task task in tasks)
