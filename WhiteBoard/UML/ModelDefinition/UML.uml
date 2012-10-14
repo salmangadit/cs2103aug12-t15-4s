@@ -30,9 +30,24 @@
         <lifelines>
           <lifeline
             Id="ecdb9c66-358b-4982-94f1-d3dd4a89a9f4"
-            name="Lifeline1"
+            name="GUI"
             isActor="false"
-            lifelineDisplayName="Lifeline1" />
+            lifelineDisplayName="GUI" />
+          <lifeline
+            Id="cfc638fe-a477-4df4-9398-87f0dd7855f5"
+            name="Controller"
+            isActor="false"
+            lifelineDisplayName="Controller" />
+          <lifeline
+            Id="80ef6746-c512-4500-9b65-9527591f2287"
+            name="CommandParser"
+            isActor="false"
+            lifelineDisplayName="CommandParser" />
+          <lifeline
+            Id="bcdf2ba6-5877-49c5-ba31-de14218c55ae"
+            name="FileHandler"
+            isActor="false"
+            lifelineDisplayName="FileHandler" />
         </lifelines>
       </interaction>
     </packageHasNamedElement>

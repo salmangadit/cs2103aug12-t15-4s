@@ -19,8 +19,17 @@
       <interaction Id="4d230a2d-b653-493f-a2d6-02beed539dc2" name="WhiteBoard" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
         <elementDefinition Id="29739e61-1be7-4c79-8d5e-b73da0ac8282" />
         <lifelines>
-          <lifeline Id="0b4f58c6-caea-4802-8180-ef800959ae3a" name="Lifeline1" isActor="false" lifelineDisplayName="Lifeline1">
+          <lifeline Id="0b4f58c6-caea-4802-8180-ef800959ae3a" name="GUI" isActor="false" lifelineDisplayName="GUI">
             <elementDefinition Id="ecdb9c66-358b-4982-94f1-d3dd4a89a9f4" />
+          </lifeline>
+          <lifeline Id="f86396b6-fd7a-4d81-af2b-35740603fc94" name="Controller" isActor="false" lifelineDisplayName="Controller">
+            <elementDefinition Id="cfc638fe-a477-4df4-9398-87f0dd7855f5" />
+          </lifeline>
+          <lifeline Id="ee3e4be6-df18-4477-8355-2b4af369248c" name="CommandParser" isActor="false" lifelineDisplayName="CommandParser">
+            <elementDefinition Id="80ef6746-c512-4500-9b65-9527591f2287" />
+          </lifeline>
+          <lifeline Id="b2a49251-fa2c-4819-b234-7002745cb551" name="FileHandler" isActor="false" lifelineDisplayName="FileHandler">
+            <elementDefinition Id="bcdf2ba6-5877-49c5-ba31-de14218c55ae" />
           </lifeline>
         </lifelines>
       </interaction>
