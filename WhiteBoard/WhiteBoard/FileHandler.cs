@@ -252,6 +252,29 @@ namespace WhiteBoard
             return listOfArchivedTasks; // Will return empty list if file is empty or if file contains no archived tasks
         }
 
+        internal List<Task> ViewTasks(DateTime? date)
+        {
+            List<Task> listOfAllTasks = new List<Task>();
+            List<Task> listOfTasksForTheDay = new List<Task>();
+
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            StreamReader objStrRead = new StreamReader(filePath);
+            if (objStrRead.Peek() >= 0) // If file is not empty
+            {
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                foreach (Task t in listOfAllTasks)
+                {
+                    if ((!t.Archive) && ((t.StartTime == date) || (t.EndTime == date) || (t.Deadline) == date))
+                    {
+                        listOfAllTasks.Add(t);
+                    }
+                }
+            }
+            objStrRead.Close();
+            return listOfTasksForTheDay;
+        }
+
         internal List<Task> ViewTasks(DateTime? startDate, DateTime? endDate)
         {
             List<Task> listOfAllTasks = new List<Task>();
