@@ -54,6 +54,9 @@ namespace WhiteBoard
             {
                 string userCommand = txtCommand.Text;
 
+                if (userCommand == string.Empty)
+                    return;
+
                 // Clear search box
                 txtCommand.Text = string.Empty;
 
