@@ -12,7 +12,7 @@ namespace WhiteBoard
     class CommandParser
     {
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
-        private string[] COMMAND_MODIFY = { "MODIFY", "CHANGE", "UPDATE" };
+        private string[] COMMAND_MODIFY = { "MODIFY:", "CHANGE:", "UPDATE:" };
         private string[] COMMAND_NEW_DATE = { "START", "END" };
         private string[] COMMAND_TASKS_DAY = { "ON", "AT" };
         private string[] COMMAND_TASKS_RANGE = { "ON", "FROM", "BETWEEN" };
@@ -58,12 +58,20 @@ namespace WhiteBoard
         private List<Task> screenState;
         private Stack<Command> taskHistory;
 
-        public CommandParser(string usercommand, FileHandler filehandler, List<Task> screenState, Stack<Command> taskHistory)
+        public CommandParser(FileHandler filehandler, List<Task> screenState, Stack<Command> taskHistory)
         {
-            inputCommand = usercommand;
             fileHandler = filehandler;
             this.screenState = screenState;
             this.taskHistory = taskHistory;
+        }
+
+        /// <summary>
+        /// Splits usercommand string and adds to list
+        /// </summary>
+        /// <param name="usercommand">The string input by user5</param>
+        private void SplitString(string usercommand)
+        {
+            inputCommand = usercommand;
             inputCommand = Regex.Replace(inputCommand, @"\s+", " ");
             userCommandArray = inputCommand.Split(' ');
             foreach (string str in userCommandArray)
@@ -71,15 +79,14 @@ namespace WhiteBoard
                 str.Trim();
                 userCommand.Add(str);
             }
-            //ParseCommand();
         }
-
         /// <summary>
         /// Parses the user command and determines the action to be done i.e Add, Modify, Delete etc.
         /// </summary>
         /// <returns>Returns a command object with details of the ToDo item</returns>
-        public Command ParseCommand()
+        public Command ParseCommand(string usercommand)
         {
+            SplitString(usercommand);
             switch (userCommand[0].ToString().ToUpper())
             {
                 case "SEARCH:":
@@ -90,22 +97,22 @@ namespace WhiteBoard
                     {
                         return ParseUndo();
                     }
-                case "DELETE":
-                case "REMOVE":
+                case "DELETE:":
+                case "REMOVE:":
                     {
                         return ParseDelete();
                     }
-                case "MARK":
+                case "MARK:":
                     {
                         return ParseDone();
                     }
-                case "TASKS":
+                case "VIEW:":
                     {
                         return ParseView();
                     }
-                case "MODIFY":
-                case "CHANGE":
-                case "UPDATE":
+                case "MODIFY:":
+                case "CHANGE:":
+                case "UPDATE:":
                     {
                         return ParseModify();
                     }
@@ -153,14 +160,21 @@ namespace WhiteBoard
         {
             currentIndex = 0;
             nextIndex = currentIndex + 1;
-            checkId = IsValidTaskId(userCommand[nextIndex]);
-            if (checkId > 0)
+            if (userCommand.Count>1)
             {
-                taskId = checkId;
-                archiveFlag = false;
-                DeleteCommand delete = new DeleteCommand(fileHandler, taskId, screenState);
-                taskHistory.Push(delete);
-                return delete;
+                checkId = IsValidTaskId(userCommand[nextIndex]);
+                if (checkId > 0)
+                {
+                    taskId = checkId;
+                    archiveFlag = false;
+                    DeleteCommand delete = new DeleteCommand(fileHandler, taskId, screenState);
+                    taskHistory.Push(delete);
+                    return delete;
+                }
+                else
+                {
+                    return ParseNewTask();
+                }
             }
             else
             {
