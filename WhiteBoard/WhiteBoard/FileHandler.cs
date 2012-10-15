@@ -267,7 +267,7 @@ namespace WhiteBoard
                 {
                     if ((!t.Archive) && ((t.StartTime == date) || (t.EndTime == date) || (t.Deadline) == date))
                     {
-                        listOfAllTasks.Add(t);
+                        listOfTasksForTheDay.Add(t);
                     }
                 }
             }
