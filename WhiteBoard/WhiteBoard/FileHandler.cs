@@ -94,8 +94,9 @@ namespace WhiteBoard
         internal bool WriteEditedTaskToFile(Task editedTask)
         {
             bool edited = false;
+            bool foundEditedTask = false;
             List<Task> listOfAllTasks = new List<Task>();
-            int indexOfEditedTask;
+            int indexOfEditedTask = -1;
 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
@@ -108,6 +109,16 @@ namespace WhiteBoard
                     if (t.Id == editedTask.Id)
                     {
                         indexOfEditedTask = listOfAllTasks.IndexOf(t);
+                        foundEditedTask = true;
+                    }
+
+                    if ((foundEditedTask) && (editedTask.Description == null))
+                    {
+                        editedTask.Description = t.Description;
+                    }
+
+                    if (foundEditedTask)
+                    {
                         listOfAllTasks.Remove(t);
                         listOfAllTasks.Insert(indexOfEditedTask, editedTask);
                         edited = true;
