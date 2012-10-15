@@ -445,6 +445,11 @@ namespace WhiteBoard
                     {
                         taskDescription = ConvertToString(userCommand, stringList, taskIndex, endDateIndex - 1);
                     }
+
+                    if (taskDescription == String.Empty)
+                    {
+                        taskDescription = null;
+                    }
                 }
 
                 else
