@@ -55,7 +55,7 @@ namespace WhiteBoard
             {
                 if (taskDescription == null)
                 {
-                    return "Task Description is not set";
+                    //return "Task Description is not set";
                     //throw new ArgumentNullException("Task Description is not set");
                 }
 
