@@ -21,18 +21,19 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-            <ListBox Name="lstTasks" ItemContainerStyle="{StaticResource BorderedItem}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Vertical" Margin="5">
-                            <TextBlock FontSize="20" Text="{Binding Id}" />
-                            <TextBlock FontSize="20" Text="{Binding Description}" />
-                            <TextBlock Text="{Binding Deadline}"/>
-                            <TextBlock Text="{Binding StartTime}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+        <ListBox Name="lstTasks" ItemContainerStyle="{StaticResource BorderedItem}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock FontSize="20" Text="{Binding Id}" />
+                        <TextBlock FontSize="20" Text="{Binding Description}" />
+                        <TextBlock Text="{Binding StartTime}"/>
+                        <TextBlock Text="{Binding EndTime}"/>
+                        <TextBlock Text="{Binding Deadline}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Label Name="lblToast" Visibility="Collapsed" Background="Cornsilk" BorderBrush="Black" BorderThickness="1" Grid.Row="0" Width="50" Height="30" VerticalAlignment="Bottom" HorizontalContentAlignment="Center">
             <Label.Margin>
                 <Thickness Bottom="10"/>
