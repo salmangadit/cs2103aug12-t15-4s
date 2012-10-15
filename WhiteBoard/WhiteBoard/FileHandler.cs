@@ -44,7 +44,7 @@ namespace WhiteBoard
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 lastTaskIndex = listOfAllTasks.Count - 1;
-                while (lastTaskIndex >= 0)
+                if (lastTaskIndex >= 0)
                 {
                     newTaskId = listOfAllTasks[lastTaskIndex].Id + 1;
                 }
