@@ -47,8 +47,6 @@ namespace WhiteBoard
             {
                 throw new NotImplementedException("There is no such criteria for file viewing!");
             }
-
-            return null;
         }
 
         public override List<Task> Undo()
