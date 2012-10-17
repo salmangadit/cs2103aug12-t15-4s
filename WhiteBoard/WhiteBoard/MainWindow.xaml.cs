@@ -42,7 +42,7 @@ namespace WhiteBoard
 
             lstTasks.DataContext = tasksOnScreen;
             lstTasks.ItemsSource = tasksOnScreen;
-
+            txtCommand.Focus();
 
             //@TODO add method to check file and refresh list with tasks
         }
