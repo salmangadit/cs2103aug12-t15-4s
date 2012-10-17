@@ -33,7 +33,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>aAIAEAgGAYAwGBCDATAAEAkwBIDiKAAIMBwAAAhgAGA=</HashCode>
+      <HashCode>aAKAEAgGAYAwGBCDATAAEAkwBIDiKAAIMBwAAAhgAGA=</HashCode>
       <FileName>CommandParser.cs</FileName>
     </TypeIdentifier>
   </Class>
