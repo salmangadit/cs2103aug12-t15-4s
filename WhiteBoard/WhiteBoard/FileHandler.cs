@@ -58,11 +58,11 @@ namespace WhiteBoard
             {
                 objXmlSer.Serialize(objStrWrt, listOfAllTasks);
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException)
             {
                 Console.WriteLine("Unable to serialize null values");
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 Console.WriteLine("There was an error generating the XML document");
             }
