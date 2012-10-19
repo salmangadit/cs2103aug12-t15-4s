@@ -34,9 +34,8 @@ namespace WhiteBoard
             string editedTaskDescription = (editTaskDetails.Description == null) ? uneditedTask.Description : editTaskDetails.Description;
             DateTime? editedTaskStartTime = (editTaskDetails.StartTime == null) ? uneditedTask.StartTime : editTaskDetails.StartTime;
             DateTime? editedTaskEndTime = (editTaskDetails.EndTime == null) ? uneditedTask.EndTime : editTaskDetails.EndTime;
-            DateTime? editedTaskDeadline = (editTaskDetails.Deadline == null) ? uneditedTask.Deadline : editTaskDetails.Deadline;
 
-            Task editedTask = new Task(editedTaskId, editedTaskDescription, editedTaskStartTime, editedTaskEndTime, editedTaskDeadline);
+            Task editedTask = new Task(editedTaskId, editedTaskDescription, editedTaskStartTime, editedTaskEndTime);
 
             fileHandler.WriteEditedTaskToFile(editedTask);
 
