@@ -69,6 +69,58 @@ namespace WhiteBoard
             objStrWrt.Close();  
         }
 
+        internal void AddTaskToFile(Task taskToAdd, int taskId)
+        {
+            List<Task> listOfAllTasks = new List<Task>();
+            //int indexOfTaskToAdd;
+            taskToAdd.Id = taskId;
+            XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+            StreamReader objStrRead = new StreamReader(filePath);
+            try
+            {
+                listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+            }
+            catch
+            {
+                // put exception message here
+            }
+            objStrRead.Close();
+
+            if (listOfAllTasks.Count == 0) // If no tasks in file
+            {
+                listOfAllTasks.Add(taskToAdd);
+            }
+
+            else if (listOfAllTasks.Count > 0) // If there are tasks in file
+            {
+                int indexOfTaskToAdd;
+                int lastTaskIndex = listOfAllTasks.Count - 1;
+                if (taskId < listOfAllTasks[0].Id) // If inserting at the top of the list
+                {
+                    indexOfTaskToAdd = 0;
+                    listOfAllTasks.Insert(indexOfTaskToAdd, taskToAdd);
+                }
+
+                for (int index = 0; index < (listOfAllTasks.Count - 1); index++)
+                {
+                    if ((taskId > listOfAllTasks[index].Id) && (taskId < listOfAllTasks[index + 1].Id)) // If inserting at the middle of the list
+                    {
+                        indexOfTaskToAdd = index + 1;
+                        listOfAllTasks.Insert(indexOfTaskToAdd, taskToAdd);
+                        break;
+                    }
+                }
+
+                if (taskId > listOfAllTasks[lastTaskIndex].Id) // If inserting at the end of the list
+                {
+                    listOfAllTasks.Add(taskToAdd);
+                }
+            }
+            StreamWriter objStrWrt = new StreamWriter(filePath);
+            objXmlSer.Serialize(objStrWrt, listOfAllTasks);
+            objStrWrt.Close(); 
+        }
+
         internal Task GetTaskFromFile(int editedTaskId)
         {
             Task taskToBeEdited = new Task();
@@ -268,7 +320,7 @@ namespace WhiteBoard
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
                 {
-                    if ((!t.Archive) && ((t.StartTime == date) || (t.EndTime == date) || (t.Deadline) == date))
+                    if ((!t.Archive) && ((t.StartTime == date) || (t.EndTime == date)))
                     {
                         listOfTasksForTheDay.Add(t);
                     }
@@ -303,20 +355,20 @@ namespace WhiteBoard
                             listOfTasksWithinRange.Add(t);
                         }
 
-                        else if ((t.Deadline.HasValue) && (t.Deadline >= startDate) && (t.Deadline <= endDate))
-                        {
-                            listOfTasksWithinRange.Add(t);
-                        }
+                        //else if ((t.Deadline.HasValue) && (t.Deadline >= startDate) && (t.Deadline <= endDate))
+                        //{
+                        //    listOfTasksWithinRange.Add(t);
+                        //}
 
                         else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.EndTime.HasValue) && (t.EndTime >= endDate))
                         {
                             listOfTasksWithinRange.Add(t);
                         }
 
-                        else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.Deadline.HasValue) && (t.Deadline >= endDate))
-                        {
-                            listOfTasksWithinRange.Add(t);
-                        }
+                        //else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.Deadline.HasValue) && (t.Deadline >= endDate))
+                        //{
+                        //    listOfTasksWithinRange.Add(t);
+                        //}
                     }  
                 }
             }
