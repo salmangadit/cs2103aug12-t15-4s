@@ -35,7 +35,6 @@
                             <TextBlock FontSize="20" Text=" to "/>
                             <TextBlock Text="{Binding EndTime}"/>        
                         </StackPanel>
-                        <TextBlock Text="{Binding Deadline}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

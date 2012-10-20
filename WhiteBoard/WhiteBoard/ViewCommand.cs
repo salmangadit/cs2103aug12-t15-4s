@@ -31,17 +31,17 @@ namespace WhiteBoard
             {
                 return fileHandler.ViewArchive();
             }
-            else if (tasksToView.Archive == false && tasksToView.Deadline == null && tasksToView.StartTime == null && tasksToView.EndTime == null)
+            else if (tasksToView.Archive == false && tasksToView.StartTime == null && tasksToView.EndTime == null)
             {
                 return fileHandler.ViewAll();
             }
-            else if (tasksToView.Archive == false && tasksToView.Deadline == null)
+            else if (tasksToView.Archive == false && tasksToView.EndTime == null)
+            {
+                return fileHandler.ViewTasks(tasksToView.StartTime);
+            }
+            else if (tasksToView.Archive == false)
             {
                 return fileHandler.ViewTasks(tasksToView.StartTime, tasksToView.EndTime);
-            }
-            else if (tasksToView.Archive == false && tasksToView.StartTime == null && tasksToView.EndTime == null)
-            {
-                return fileHandler.ViewTasks(tasksToView.Deadline);
             }
             else
             {
