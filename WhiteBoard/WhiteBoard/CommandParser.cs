@@ -12,7 +12,7 @@ namespace WhiteBoard
     class CommandParser
     {
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
-        private string[] COMMAND_MODIFY = { "MODIFY:", "CHANGE:", "UPDATE:" };
+        private string[] COMMAND_MODIFY = { "MODIFY", "CHANGE", "UPDATE" };
         private string[] COMMAND_NEW_DATE = { "START", "END" };
         private string[] COMMAND_TASKS_DAY = { "ON", "AT" };
         private string[] COMMAND_TASKS_RANGE = { "ON", "FROM", "BETWEEN" };
@@ -97,22 +97,22 @@ namespace WhiteBoard
                     {
                         return ParseUndo();
                     }
-                case "DELETE:":
-                case "REMOVE:":
+                case "DELETE":
+                case "REMOVE":
                     {
                         return ParseDelete();
                     }
-                case "MARK:":
+                case "MARK":
                     {
                         return ParseDone();
                     }
-                case "VIEW:":
+                case "VIEW":
                     {
                         return ParseView();
                     }
-                case "MODIFY:":
-                case "CHANGE:":
-                case "UPDATE:":
+                case "MODIFY":
+                case "CHANGE":
+                case "UPDATE":
                     {
                         return ParseModify();
                     }
