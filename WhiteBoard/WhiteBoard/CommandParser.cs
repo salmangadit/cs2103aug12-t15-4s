@@ -11,12 +11,13 @@ namespace WhiteBoard
 {
     class CommandParser
     {
+        private string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
         private string[] COMMAND_MODIFY = { "MODIFY", "CHANGE", "UPDATE" };
         private string[] COMMAND_NEW_DATE = { "START", "END" };
-        private string[] COMMAND_TASKS_DAY = { "ON", "AT" };
-        private string[] COMMAND_TASKS_RANGE = { "ON", "FROM", "BETWEEN" };
-        private string[] COMMAND_TASKS_ENDING = { "BY", "BEFORE", "ENDING" };
+        private string[] COMMAND_VIEW_DAY = { "ON", "AT" };
+        private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
+        private string[] COMMAND_VIEW_ENDING = { "BY", "BEFORE", "ENDING" };
         private const string COMMAND_MARK = "DONE";
         private const string COMMAND_MARK_AS = "AS DONE";
         private const string COMMAND_ALL = "ALL";
@@ -30,7 +31,6 @@ namespace WhiteBoard
         private string searchString;
         private string inputCommand;
         private string taskDescription = null;
-        private DateTime? deadlineDate = null;
         private DateTime? startDate = null;
         private DateTime? endDate = null;
         private string[] userCommandArray;
@@ -38,6 +38,8 @@ namespace WhiteBoard
         private Task taskToAdd;
         private int taskId = 0;
         private int checkId = 0;
+        private int checkFirstDate = 0;
+        private int checkSecondDate = 0;
 
         private bool archiveFlag = false;
         private int dateKeywordFlag = 0;
@@ -52,7 +54,7 @@ namespace WhiteBoard
         private int endDateIndex = 0;
 
         private List<string> stringList = new List<string>();
-        private List<string> startEndDate = new List<string>();
+        private List<DateHolder> startEndDate = new List<DateHolder>();
         private List<string> userCommand = new List<string>();
 
         private List<Task> screenState;
@@ -135,11 +137,11 @@ namespace WhiteBoard
             return search;
         }
 
-        /*      Salman im commenting out the undo function
-         *      Im expecting an UndoCommand Class which accepts the last command object executed as one 
-         *      of the parameters
-         *      Sai could implement this class for me?
-         */
+        /// <summary>
+        /// Returns an undo command object containing the last executed command
+        /// from the taskHistory stack
+        /// </summary>
+        /// <returns>UndoCommand Object</returns>
         private Command ParseUndo()
         {
             Command lastcommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
@@ -220,14 +222,14 @@ namespace WhiteBoard
             {
                 if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
                 {
-                    startDate = endDate = deadlineDate = null;
+                    startDate = endDate = null;
                     archiveFlag = false;
                     tasksFlag = 1;
                 }
 
                 else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
                 {
-                    startDate = endDate = deadlineDate = null;
+                    startDate = endDate = null;
                     archiveFlag = true;
                     tasksFlag = 1;
                 }
@@ -240,16 +242,16 @@ namespace WhiteBoard
                     DateTime temp_end = temp_start.AddDays(6);
                     startDate = temp_start;
                     endDate = temp_end;
-                    deadlineDate = null;
                     archiveFlag = false;
                     tasksFlag = 1;
                     //Need to make time 12:00 AM?
                 }
 
-                if ((tasksFlag == 0) && (currentIndex < userCommand.Count - 1) && (IsValidDate(userCommand[nextIndex])))
+                if ((tasksFlag == 0) && (currentIndex < userCommand.Count - 1) && ((checkFirstDate = IsValidDate(userCommand[nextIndex])) > 0))
                 {
-                    deadlineDate = DateTime.Parse(userCommand[nextIndex]);
-                    startDate = endDate = null;
+                    DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
+                    startDate = date.DateParse();
+                    endDate = null;
                     archiveFlag = false;
                     tasksFlag = 1;
                 }
@@ -261,7 +263,7 @@ namespace WhiteBoard
                     currentIndex = 1;
                     int enddateflag = 0;
 
-                    foreach (string keyword in COMMAND_TASKS_RANGE)
+                    foreach (string keyword in COMMAND_VIEW_RANGE)
                     {
                         if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                         {
@@ -271,7 +273,7 @@ namespace WhiteBoard
                     }
                     if (dateKeywordFlag == 0)
                     {
-                        foreach (string keyword in COMMAND_TASKS_ENDING)
+                        foreach (string keyword in COMMAND_VIEW_ENDING)
                         {
                             if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                             {
@@ -285,22 +287,20 @@ namespace WhiteBoard
                     {
                         if (IsDateRange(userCommand[nextIndex]) == 2)
                         {
-                            startEndDate.Sort((a, b) => a.CompareTo(b));
-                            startDate = DateTime.Parse(startEndDate[0]);
-                            endDate = DateTime.Parse(startEndDate[1]);
-                            deadlineDate = null;
+                            startDate = startEndDate[0].DateParse();
+                            endDate = startEndDate[1].DateParse();
                             archiveFlag = false;
                             tasksFlag = 1;
                         }
                     }
                     else if (enddateflag == 1)
                     {
-                        if (IsValidDate(userCommand[nextIndex]))
+                        if ((checkFirstDate = IsValidDate(userCommand[nextIndex])) > 0)
                         {
-                            endDate = DateTime.Parse(userCommand[nextIndex]);
+                            DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
+                            endDate = date.DateParse();
                             startDate = DateTime.Now;
                             startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
-                            deadlineDate = null;
                             archiveFlag = false;
                             tasksFlag = 1;
                         }
@@ -312,24 +312,25 @@ namespace WhiteBoard
                     currentIndex = 0;
                     nextIndex = currentIndex + 1;
 
-                    foreach (string keyword in COMMAND_TASKS_DAY)
+                    foreach (string keyword in COMMAND_VIEW_DAY)
                     {
                         if (String.Equals(keyword, userCommand[nextIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                         {
-                            if (IsValidDate(userCommand[nextIndex + 1]))
+                            if ((checkFirstDate = IsValidDate(userCommand[nextIndex + 1])) > 0)
                             {
-                                deadlineDate = DateTime.Parse(userCommand[nextIndex + 1]);
-                                startDate = endDate = null;
+                                DateHolder date = new DateHolder(userCommand[nextIndex + 1], checkFirstDate);
+                                startDate = date.DateParse();
+                                endDate = null;
                                 archiveFlag = false;
                                 tasksFlag = 1;
                             }
                         }
                     }
                 }
-
+                         
                 if (tasksFlag == 1)
                 {
-                    Task viewtaskdetails = new Task(0, null, startDate, endDate, deadlineDate, archiveFlag);
+                    Task viewtaskdetails = new Task(0, null, startDate, endDate, archiveFlag);
                     ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
                     taskHistory.Push(view);
                     return view;
@@ -380,19 +381,22 @@ namespace WhiteBoard
                     {
                         if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                         {
-                            if (IsValidDate(userCommand[currentIndex + 1]) && date_count <= 2)
+                            checkFirstDate = IsValidDate(userCommand[currentIndex + 1]);
+                            if (checkFirstDate > 0 && date_count <= 2)
                             {
                                 nextIndex = currentIndex + 1;
 
                                 if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase))
                                 {
                                     startDateIndex = currentIndex;
-                                    startDate = DateTime.Parse(userCommand[nextIndex]);
+                                    DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
+                                    startDate = date.DateParse();
                                 }
                                 if (String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
                                 {
                                     endDateIndex = currentIndex;
-                                    endDate = DateTime.Parse(userCommand[nextIndex]);
+                                    DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
+                                    endDate = date.DateParse();
                                 }
                                 date_count++; ;
                             }
@@ -456,7 +460,7 @@ namespace WhiteBoard
                 {
                     taskDescription = null;
                 }
-                Task taskToEdit = new Task(taskId, taskDescription, startDate, endDate, deadlineDate);
+                Task taskToEdit = new Task(taskId, taskDescription, startDate, endDate);
                 EditCommand edit = new EditCommand(fileHandler, taskToEdit, screenState);
                 taskHistory.Push(edit);
                 return edit;
@@ -492,16 +496,15 @@ namespace WhiteBoard
                 {
                     if (IsDateRange(userCommand[nextIndex]) == 2)
                     {
-                        deadlineDate = null;
-                        startEndDate.Sort((a, b) => a.CompareTo(b));
-                        startDate = DateTime.Parse(startEndDate[0]);
-                        endDate = DateTime.Parse(startEndDate[1]);
+                        startDate = startEndDate[0].DateParse();
+                        endDate = startEndDate[1].DateParse();
                         dateFlag = 1;
                     }
-                    else if (IsValidDate(userCommand[nextIndex]))
+                    else if ((checkFirstDate = IsValidDate(userCommand[nextIndex])) > 0)
                     {
-                        deadlineDate = DateTime.Parse(userCommand[nextIndex]);
-                        startDate = endDate = null;
+                        DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
+                        startDate = date.DateParse();
+                        endDate = null;
                         dateFlag = 1;
                     }
                     else
@@ -520,10 +523,10 @@ namespace WhiteBoard
             if (dateFlag == 0)
             {
                 taskDescription = inputCommand;
-                deadlineDate = startDate = endDate = null;
+                startDate = endDate = null;
             }
 
-            taskToAdd = new Task(0, taskDescription, startDate, endDate, deadlineDate);
+            taskToAdd = new Task(0, taskDescription, startDate, endDate);
             AddCommand add = new AddCommand(fileHandler, taskToAdd, screenState);
             taskHistory.Push(add);
             return add;
@@ -548,10 +551,12 @@ namespace WhiteBoard
                     || String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
                     || String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE_ALT))
                 {
-                    if ((IsValidDate(checkdate)) && (IsValidDate(userCommand[enddateindex])))
+                    checkFirstDate = IsValidDate(checkdate);
+                    checkSecondDate = IsValidDate(userCommand[enddateindex]);
+                    if (checkFirstDate > 0 && checkSecondDate > 0)
                     {
-                        startEndDate.Add(checkdate);
-                        startEndDate.Add(userCommand[enddateindex]);
+                        startEndDate.Add(new DateHolder(checkdate, checkFirstDate));
+                        startEndDate.Add(new DateHolder(userCommand[enddateindex], checkSecondDate));
                         isRange = DATE_COUNT;
                     }
                     return isRange;
@@ -561,11 +566,13 @@ namespace WhiteBoard
             else if (startdateindex < userCommand.Count - 1)
             {
                 int enddateindex = startdateindex + 1;
+                checkFirstDate = IsValidDate(userCommand[startdateindex]);
+                checkSecondDate = IsValidDate(userCommand[enddateindex]);
 
-                if (IsValidDate(userCommand[startdateindex]) && IsValidDate(userCommand[enddateindex]))
+                if (checkFirstDate > 0 && checkSecondDate > 0)
                 {
-                    startEndDate.Add(checkdate);
-                    startEndDate.Add(userCommand[enddateindex]);
+                    startEndDate.Add(new DateHolder(checkdate, checkFirstDate));
+                    startEndDate.Add(new DateHolder(userCommand[enddateindex], checkSecondDate));
                     isRange = DATE_COUNT;
                     return isRange;
                 }
@@ -577,9 +584,9 @@ namespace WhiteBoard
 
                 foreach (string str in templist)
                 {
-                    if (IsValidDate(str))
+                    if ((checkFirstDate = IsValidDate(str)) > 0)
                     {
-                        startEndDate.Add(str);
+                        startEndDate.Add(new DateHolder(str, checkFirstDate));
                         isRange++;
                     }
                     else
@@ -622,11 +629,28 @@ namespace WhiteBoard
         }
 
         /// <summary>
+        /// Checks if the string is a valid day of the week and assigns the correct date
+        /// </summary>
+        /// <param name="checkday">String</param>
+        /// <returns>False if not a valid day</returns>
+        private bool IsDay(string checkday)
+        {
+            foreach (string str in DAYS_OF_WEEK)
+            {
+                if (String.Equals(checkday, str, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Checks if the date is a valid date
         /// </summary>
         /// <param name="datestring">A string containing the date information</param>
         /// <returns>Returns true or false depending on whether the date is valid</returns>
-        public bool IsValidDate(string datestring)
+        public bool IsDate(string datestring)
         {
             string[] dateformat = { "dd/mm/yyyy", "dd-mm-yyyy", "dd.mm.yyyy",
                                     "d/m/yyyy","dd/m/yyyy","d/mm/yyyy",
@@ -642,6 +666,29 @@ namespace WhiteBoard
                 }
             }
             return isdate;
+        }
+
+        /// <summary>
+        /// Checks if the string "checkdate" is a valid day or date
+        /// </summary>
+        /// <param name="checkdate">The string to be checked</param>
+        /// <returns>Returns 1 if it is a day, 2 if it is a date or 0 if neither</returns>
+        private int IsValidDate(string checkdate)
+        {
+            if (IsDay(checkdate))
+            {
+                return 1;
+            }
+
+            else if (IsDate(checkdate))
+            {
+                return 2;
+            }
+
+            else
+            {
+                return 0;
+            }
         }
 
         /// <summary>
