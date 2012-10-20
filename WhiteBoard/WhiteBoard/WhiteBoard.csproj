@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="ArchiveCommand.cs" />
     <Compile Include="CommandType.cs" />
+    <Compile Include="DateHolder.cs" />
     <Compile Include="DeleteCommand.cs" />
     <Compile Include="EditCommand.cs" />
     <Compile Include="SearchCommand.cs" />
