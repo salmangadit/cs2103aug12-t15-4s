@@ -28,33 +28,6 @@ namespace WhiteBoard
 
         string filePath;
 
-        private void Notify(UpdateType update, Task task, Task uneditedTask = null)
-        {
-            if (update == UpdateType.Edit && (task == null || uneditedTask == null))
-            {
-                throw new ArgumentNullException("Task not set for Edit");
-            }
-
-            if (task == null)
-            {
-                throw new ArgumentNullException("Task not set");
-            }
-
-            updateEvent(update, task, uneditedTask);
-        }
-
-        public event FileUpdate FileUpdateEvent
-        {
-            add
-            {
-                updateEvent += value;
-            }
-            remove
-            {
-                updateEvent -= value;
-            }
-        }
-
         private FileHandler()
         {
             string fileName = "TasksList.xml";
@@ -84,6 +57,33 @@ namespace WhiteBoard
 
                 return instance;
             }
+        }
+
+        public event FileUpdate FileUpdateEvent
+        {
+            add
+            {
+                updateEvent += value;
+            }
+            remove
+            {
+                updateEvent -= value;
+            }
+        }
+
+        private void Notify(UpdateType update, Task task, Task uneditedTask = null)
+        {
+            if (update == UpdateType.Edit && (task == null || uneditedTask == null))
+            {
+                throw new ArgumentNullException("Task not set for Edit");
+            }
+
+            if (task == null)
+            {
+                throw new ArgumentNullException("Task not set");
+            }
+
+            updateEvent(update, task, uneditedTask);
         }
 
         internal void AddTaskToFile(Task taskToAdd)
