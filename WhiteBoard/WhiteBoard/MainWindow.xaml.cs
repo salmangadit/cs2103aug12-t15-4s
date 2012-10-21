@@ -22,6 +22,7 @@ namespace WhiteBoard
     public partial class MainWindow : Window
     {
         Controller controller;
+        AutoCompletor autoComplete;
         ObservableCollection<Task> tasksOnScreen;
         DispatcherTimer toastTimer;
         DispatcherTimer toastAnimationTimer;
@@ -31,6 +32,7 @@ namespace WhiteBoard
         {
             InitializeComponent();
             controller = new Controller();
+            autoComplete = new AutoCompletor();
             tasksOnScreen = new ObservableCollection<Task>();
 
             Command command = controller.GetAllTasks(tasksOnScreen.ToList());
