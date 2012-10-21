@@ -32,7 +32,7 @@ namespace WhiteBoard
 
             for (int i = 0; i < listOfTasks.Count; i++)
             {
-                if(listOfTasks[i].Description.Contains(searchString))
+                if(listOfTasks[i].Description.Trim().ToLower().Contains(searchString.Trim().ToLower()))
                 {
                     tasksContainingSearchString.Add(listOfTasks[i]);
                 }
