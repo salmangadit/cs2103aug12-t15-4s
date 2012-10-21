@@ -9,11 +9,51 @@ using System.Diagnostics;
 
 namespace WhiteBoard
 {
+    delegate void FileUpdate(UpdateType update, Task task, Task uneditedTask);
+
+    enum UpdateType
+    {
+        Add,
+        Delete,
+        Archive,
+        Edit,
+        Unarchive
+    }
+
     class FileHandler
     {
         private static FileHandler instance;
 
+        private event FileUpdate updateEvent;
+
         string filePath;
+
+        private void Notify(UpdateType update, Task task, Task uneditedTask = null)
+        {
+            if (update == UpdateType.Edit && (task == null || uneditedTask == null))
+            {
+                throw new ArgumentNullException("Task not set for Edit");
+            }
+
+            if (task == null)
+            {
+                throw new ArgumentNullException("Task not set");
+            }
+
+            updateEvent(update, task, uneditedTask);
+        }
+
+        public event FileUpdate FileUpdateEvent
+        {
+            add
+            {
+                updateEvent += value;
+            }
+            remove
+            {
+                updateEvent -= value;
+            }
+        }
 
         private FileHandler()
         {
@@ -82,6 +122,7 @@ namespace WhiteBoard
                 Console.WriteLine("There was an error generating the XML document");
             }
             objStrWrt.Close();
+            Notify(UpdateType.Add, taskToAdd);
         }
 
         internal void AddTaskToFile(Task taskToAdd, int taskId)
@@ -134,6 +175,7 @@ namespace WhiteBoard
             StreamWriter objStrWrt = new StreamWriter(filePath);
             objXmlSer.Serialize(objStrWrt, listOfAllTasks);
             objStrWrt.Close();
+            Notify(UpdateType.Add, taskToAdd);
         }
 
         internal Task GetTaskFromFile(int editedTaskId)
@@ -167,6 +209,8 @@ namespace WhiteBoard
             List<Task> listOfAllTasks = new List<Task>();
             int indexOfEditedTask;
 
+            Task uneditedTask = null;
+
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
@@ -181,6 +225,7 @@ namespace WhiteBoard
                         listOfAllTasks.Remove(t);
                         listOfAllTasks.Insert(indexOfEditedTask, editedTask);
                         edited = true;
+                        uneditedTask = t;
                         break;
                     }
                 }
@@ -188,6 +233,11 @@ namespace WhiteBoard
                 StreamWriter objStrWrt = new StreamWriter(filePath);
                 objXmlSer.Serialize(objStrWrt, listOfAllTasks);
                 objStrWrt.Close();
+            }
+
+            if (edited)
+            {
+                Notify(UpdateType.Edit, editedTask, uneditedTask);
             }
             return edited;
         }
@@ -197,6 +247,8 @@ namespace WhiteBoard
             bool deleted = false;
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+
+            Task deletedTask = null;
 
             StreamReader objStrRead = new StreamReader(filePath);
             if (objStrRead.Peek() >= 0) // If file is not empty
@@ -208,6 +260,7 @@ namespace WhiteBoard
                     {
                         listOfTasks.Remove(t);
                         deleted = true;
+                        deletedTask = t;
                         break;
                     }
                 }
@@ -215,6 +268,11 @@ namespace WhiteBoard
                 StreamWriter objStrWrt = new StreamWriter(filePath);
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
+            }
+
+            if (deleted)
+            {
+                Notify(UpdateType.Delete, deletedTask);
             }
             // If file is already empty it will return false. Is that ok?
             return deleted;
@@ -226,6 +284,8 @@ namespace WhiteBoard
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
+            Task archivedTask = null;
+
             StreamReader objStrRead = new StreamReader(filePath);
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
@@ -236,6 +296,7 @@ namespace WhiteBoard
                     {
                         t.Archive = true;
                         archived = true;
+                        archivedTask = t;
                         break;
                     }
                 }
@@ -243,6 +304,11 @@ namespace WhiteBoard
                 StreamWriter objStrWrt = new StreamWriter(filePath);
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
+            }
+
+            if (archived)
+            {
+                Notify(UpdateType.Archive, archivedTask);
             }
 
             return archived;
@@ -254,6 +320,8 @@ namespace WhiteBoard
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
+            Task unarchivedTask = null;
+
             StreamReader objStrRead = new StreamReader(filePath);
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
@@ -264,6 +332,7 @@ namespace WhiteBoard
                     {
                         t.Archive = false;
                         unarchived = true;
+                        unarchivedTask = t;
                         break;
                     }
                 }
@@ -271,6 +340,11 @@ namespace WhiteBoard
                 StreamWriter objStrWrt = new StreamWriter(filePath);
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
+            }
+
+            if (unarchived)
+            {
+                Notify(UpdateType.Unarchive, unarchivedTask);
             }
 
             return unarchived;
