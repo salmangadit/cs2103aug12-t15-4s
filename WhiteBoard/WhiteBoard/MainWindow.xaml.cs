@@ -25,6 +25,7 @@ namespace WhiteBoard
         ObservableCollection<Task> tasksOnScreen;
         DispatcherTimer toastTimer;
         DispatcherTimer toastAnimationTimer;
+        List<string> keyWords;
 
         public MainWindow()
         {
@@ -44,21 +45,152 @@ namespace WhiteBoard
             lstTasks.ItemsSource = tasksOnScreen;
             txtCommand.Focus();
 
-            //@TODO add method to check file and refresh list with tasks
+            // Set up syntax highlighting
+            keyWords = new List<string>();
+            keyWords.Add("MODIFY");
+            keyWords.Add("CHANGE");
+            keyWords.Add("UPDATE");
+            keyWords.Add("SEARCH:");
+            keyWords.Add("UNDO:");
+            keyWords.Add("DELETE");
+            keyWords.Add("REMOVE");
+            keyWords.Add("MARK");
+            keyWords.Add("VIEW");
+        }
+
+        private void DoSyntaxHighlight()
+         {
+            //@TODO: OOP this by moving the keywords into a static class where the data can be pulled from later
+
+            // Do syntax highlighting
+            TextRange userTypedText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+            string userText = userTypedText.Text;
+
+            string[] words = userText.Split(' ');
+
+            if (words.Count() > 0)
+            {
+                foreach (string keyword in keyWords)
+                {
+                    if (words[0].ToLower() == keyword.ToLower())
+                    {
+                        TextRange syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, words[0]);
+                        syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Blue));
+                        syntaxHighlight.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        userTypedText = new TextRange(syntaxHighlight.End, txtCommand.Document.ContentEnd);
+                        break;
+                    }
+                    else
+                    {
+                        userTypedText.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                        userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
+                    }
+                }
+
+                if (words[0].ToLower() == "view")
+                {
+                    TextRange syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "from");
+                    if (syntaxHighlight != null)
+                    {
+                        syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
+                        syntaxHighlight.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        userTypedText = new TextRange(syntaxHighlight.End, txtCommand.Document.ContentEnd);
+                    }
+                    else
+                    {
+                        userTypedText.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                        userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
+                    }
+
+                    syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "to");
+                    if (syntaxHighlight != null)
+                    {
+                        syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
+                        syntaxHighlight.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        userTypedText = new TextRange(syntaxHighlight.End, txtCommand.Document.ContentEnd);
+                    }
+                    else
+                    {
+                        userTypedText.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                        userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
+                    }
+                }
+
+                if (words[0].ToLower() == "modify" || words[0].ToLower() == "change" || words[0].ToLower() == "update")
+                {
+                    TextRange syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "start");
+                    if (syntaxHighlight != null)
+                    {
+                        syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
+                        syntaxHighlight.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        userTypedText = new TextRange(syntaxHighlight.End, txtCommand.Document.ContentEnd);
+                    }
+                    else
+                    {
+                        userTypedText.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                        userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
+                    }
+
+                    syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "end");
+                    if (syntaxHighlight != null)
+                    {
+                        syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
+                        syntaxHighlight.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
+                        userTypedText = new TextRange(syntaxHighlight.End, txtCommand.Document.ContentEnd);
+                    }
+                    else
+                    {
+                        userTypedText.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                        userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
+                    }
+                }
+
+                userTypedText.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
+            }
+        }
+
+        TextRange FindWordFromPosition(TextPointer position, string word)
+        {
+            while (position != null)
+            {
+                if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                {
+                    string textRun = position.GetTextInRun(LogicalDirection.Forward);
+
+                    // Find the starting index of any substring that matches "word".
+                    int indexInRun = textRun.IndexOf(word);
+                    if (indexInRun >= 0)
+                    {
+                        TextPointer start = position.GetPositionAtOffset(indexInRun);
+                        TextPointer end = start.GetPositionAtOffset(word.Length);
+                        return new TextRange(start, end);
+                    }
+                }
+
+                position = position.GetNextContextPosition(LogicalDirection.Forward);
+            }
+
+            // position will be null if "word" is not found.
+            return null;
         }
 
         private void txtCommand_KeyUp(object sender, KeyEventArgs e)
         {
+            DoSyntaxHighlight();
             // Listen for the press of the enter key
             if (e.Key == Key.Enter || e.Key == Key.Return)
             {
-                string userCommand = txtCommand.Text;
+                TextRange textRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+
+                string userCommand = textRange.Text;
 
                 if (userCommand == string.Empty)
                     return;
 
                 // Clear search box
-                txtCommand.Text = string.Empty;
+                FlowDocument mcFlowDoc = new FlowDocument();
+                txtCommand.Document = mcFlowDoc;
 
                 Command command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
                 if (command == null)

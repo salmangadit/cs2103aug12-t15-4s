@@ -65,7 +65,6 @@
     <Compile Include="Task.cs" />
     <Compile Include="UndoCommand.cs" />
     <Compile Include="ViewCommand.cs" />
-    <Compile Include="WhiteBoardSyntaxProvider.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
