@@ -32,7 +32,7 @@
                         <TextBlock FontSize="20" Text="{Binding Description}" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding StartTime}"/>
-                            <TextBlock FontSize="20" Text=" to "/>
+                            <TextBlock Text=" to "/>
                             <TextBlock Text="{Binding EndTime}"/>        
                         </StackPanel>
                     </StackPanel>
@@ -44,7 +44,10 @@
                 <Thickness Bottom="10"/>
             </Label.Margin>
         </Label>
-        <TextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" >
+        <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp">
+            
+        </RichTextBox>
+        <!--<TextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" >
             <TextBox.Style>
                 <Style TargetType="TextBox">
                     <Style.Triggers>
@@ -81,6 +84,6 @@
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>
-        </TextBox>
+        </TextBox>-->
     </Grid>
 </Window>
