@@ -13,7 +13,7 @@ namespace WhiteBoard
 
         public Controller()
         {
-            fileHandler = new FileHandler();
+            fileHandler = FileHandler.Instance;
             history = new Stack<Command>();
         }
 

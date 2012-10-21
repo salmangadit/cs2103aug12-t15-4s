@@ -11,9 +11,11 @@ namespace WhiteBoard
 {
     class FileHandler
     {
+        private static FileHandler instance;
+
         string filePath;
 
-        public FileHandler()
+        private FileHandler()
         {
             string fileName = "TasksList.xml";
 
@@ -28,6 +30,19 @@ namespace WhiteBoard
                 {
 
                 }
+            }
+        }
+
+        public static FileHandler Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new FileHandler();
+                }
+
+                return instance;
             }
         }
 
@@ -66,7 +81,7 @@ namespace WhiteBoard
             {
                 Console.WriteLine("There was an error generating the XML document");
             }
-            objStrWrt.Close();  
+            objStrWrt.Close();
         }
 
         internal void AddTaskToFile(Task taskToAdd, int taskId)
@@ -118,7 +133,7 @@ namespace WhiteBoard
             }
             StreamWriter objStrWrt = new StreamWriter(filePath);
             objXmlSer.Serialize(objStrWrt, listOfAllTasks);
-            objStrWrt.Close(); 
+            objStrWrt.Close();
         }
 
         internal Task GetTaskFromFile(int editedTaskId)
@@ -133,9 +148,9 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach(Task t in listOfAllTasks)
+                foreach (Task t in listOfAllTasks)
                 {
-                    if(t.Id == editedTaskId)
+                    if (t.Id == editedTaskId)
                     {
                         taskToBeEdited = t;
                         break;
@@ -215,9 +230,9 @@ namespace WhiteBoard
             if (objStrRead.Peek() >= 0) // If file is not empty
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
-                foreach(Task t in listOfTasks)
+                foreach (Task t in listOfTasks)
                 {
-                    if(t.Id == archivedTaskId)
+                    if (t.Id == archivedTaskId)
                     {
                         t.Archive = true;
                         archived = true;
@@ -345,7 +360,7 @@ namespace WhiteBoard
                 {
                     if (!t.Archive)
                     {
-                        if((t.StartTime.HasValue) && (t.StartTime >= startDate) && (t.StartTime <= endDate))
+                        if ((t.StartTime.HasValue) && (t.StartTime >= startDate) && (t.StartTime <= endDate))
                         {
                             listOfTasksWithinRange.Add(t);
                         }
@@ -369,7 +384,7 @@ namespace WhiteBoard
                         //{
                         //    listOfTasksWithinRange.Add(t);
                         //}
-                    }  
+                    }
                 }
             }
             objStrRead.Close();
