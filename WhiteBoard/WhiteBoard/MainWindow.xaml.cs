@@ -47,18 +47,6 @@ namespace WhiteBoard
             //@TODO add method to check file and refresh list with tasks
         }
 
-        /**
-         * Sample use case for AutoCompletor
-         * 
-         * AutoCompletor autoComplete = new AutoCompletor();
-         * 
-         * List<string> result = autoComplete.Query(queryString);
-         * 
-         * Bind that result to some listbox? I dunno, Salman this is your 
-         * territory, XAML and databinding, do you thang! 
-         * 
-         **/
-
         private void txtCommand_KeyUp(object sender, KeyEventArgs e)
         {
             // Listen for the press of the enter key
