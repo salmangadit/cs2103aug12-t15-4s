@@ -16,7 +16,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid>
+    <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="25"/>
@@ -44,7 +44,7 @@
                 <Thickness Bottom="10"/>
             </Label.Margin>
         </Label>
-        <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp">
+        <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="14" FontFamily="Consolas">
             
         </RichTextBox>
         <!--<TextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" >
