@@ -20,6 +20,16 @@ namespace WhiteBoard
 
         public List<string> Query(string query)
         {
+            if (query == null)
+            {
+                throw new ArgumentNullException("Query cannot be null");
+            }
+
+            if (query.Length < 1)
+            {
+                return null;
+            }
+
             HashSet<string> resultSet = new HashSet<string>();
 
             foreach (string word in SortByLength(wordSet))
@@ -65,7 +75,7 @@ namespace WhiteBoard
                 case UpdateType.Unarchive:
                     AddToSets(task.Description);
                     break;
-                
+
                 default:
                     throw new NotSupportedException("No such update type");
             }
