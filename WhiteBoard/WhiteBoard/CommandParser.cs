@@ -60,9 +60,9 @@ namespace WhiteBoard
         private List<Task> screenState;
         private Stack<Command> taskHistory;
 
-        public CommandParser(FileHandler filehandler, List<Task> screenState, Stack<Command> taskHistory)
+        public CommandParser(List<Task> screenState, Stack<Command> taskHistory)
         {
-            fileHandler = filehandler;
+            fileHandler = FileHandler.Instance;
             this.screenState = screenState;
             this.taskHistory = taskHistory;
         }

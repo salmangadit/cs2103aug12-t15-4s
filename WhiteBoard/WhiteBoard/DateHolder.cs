@@ -57,6 +57,7 @@ namespace WhiteBoard
 
             else
             {
+                // refactor to throw exception if bad date and handle in GUI
                 return DateTime.Parse(dateString);
             }
         }

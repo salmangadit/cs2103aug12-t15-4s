@@ -8,24 +8,22 @@ namespace WhiteBoard
 {
     class Controller
     {
-        FileHandler fileHandler;
         Stack<Command> history;
 
         public Controller()
         {
-            fileHandler = FileHandler.Instance;
             history = new Stack<Command>();
         }
 
         public Command GetCommandObject(string userString, List<Task> screenState)
         {
-            CommandParser commandParser = new CommandParser(fileHandler, screenState, history);
+            CommandParser commandParser = new CommandParser(screenState, history);
             return commandParser.ParseCommand(userString);
         }
 
         public Command GetAllTasks(List<Task> screenState)
         {
-            CommandParser commandParser = new CommandParser(fileHandler, screenState, history);
+            CommandParser commandParser = new CommandParser(screenState, history);
             return commandParser.ParseCommand("VIEW ALL");
         }
     }
