@@ -56,6 +56,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArchiveCommand.cs" />
+    <Compile Include="AutoComplete.xaml.cs">
+      <DependentUpon>AutoComplete.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AutoCompletor.cs" />
     <Compile Include="CommandType.cs" />
     <Compile Include="DateHolder.cs" />
@@ -65,6 +68,10 @@
     <Compile Include="Task.cs" />
     <Compile Include="UndoCommand.cs" />
     <Compile Include="ViewCommand.cs" />
+    <Page Include="AutoComplete.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
