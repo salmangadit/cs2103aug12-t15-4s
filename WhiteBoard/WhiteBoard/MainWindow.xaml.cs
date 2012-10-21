@@ -27,12 +27,16 @@ namespace WhiteBoard
         DispatcherTimer toastTimer;
         DispatcherTimer toastAnimationTimer;
         List<string> keyWords;
+        AutoComplete autoCompleteList;
 
         public MainWindow()
         {
             InitializeComponent();
             controller = new Controller();
             autoComplete = new AutoCompletor();
+            autoCompleteList = new AutoComplete();
+            autoCompleteList.AutoCompleteKeyboardEvent += new KeyEventHandler(AutoCompleteKeyBubbleEvent);
+            autoCompleteList.AutoCompleteMouseEvent += new MouseEventHandler(AutoCompleteMouseBubbleEvent);
             tasksOnScreen = new ObservableCollection<Task>();
 
             Command command = controller.GetAllTasks(tasksOnScreen.ToList());
@@ -47,6 +51,11 @@ namespace WhiteBoard
             lstTasks.ItemsSource = tasksOnScreen;
             txtCommand.Focus();
 
+            mainGrid.Children.Add(autoCompleteList);
+            Grid.SetRow(autoCompleteList, 0);
+            autoCompleteList.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
+            autoCompleteList.Visibility = Visibility.Collapsed;
+
             // Set up syntax highlighting
             keyWords = new List<string>();
             keyWords.Add("MODIFY");
@@ -60,8 +69,36 @@ namespace WhiteBoard
             keyWords.Add("VIEW");
         }
 
+        #region AutoComplete Delegates
+        private void AutoCompleteKeyBubbleEvent(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (autoCompleteList.SelectedItem != null)
+                {
+                    txtCommand.AppendText(autoCompleteList.SelectedItem);
+                    autoCompleteList.Visibility = Visibility.Collapsed;
+                    txtCommand.Focus();
+                    txtCommand.CaretPosition = txtCommand.Document.ContentEnd;
+                }
+            }
+        }
+
+        private void AutoCompleteMouseBubbleEvent(object sender, MouseEventArgs e)
+        {
+            if (autoCompleteList.SelectedItem != null)
+            {
+                txtCommand.AppendText(autoCompleteList.SelectedItem);
+                autoCompleteList.Visibility = Visibility.Collapsed;
+                txtCommand.Focus();
+                txtCommand.CaretPosition = txtCommand.Document.ContentEnd;
+            }
+        }
+        #endregion
+
+        #region Syntax Highlighting
         private void DoSyntaxHighlight()
-         {
+        {
             //@TODO: OOP this by moving the keywords into a static class where the data can be pulled from later
 
             // Do syntax highlighting
@@ -176,16 +213,20 @@ namespace WhiteBoard
             // position will be null if "word" is not found.
             return null;
         }
+        #endregion
 
         private void txtCommand_KeyUp(object sender, KeyEventArgs e)
         {
             DoSyntaxHighlight();
+            CheckAutoComplete();
+
             // Listen for the press of the enter key
             if (e.Key == Key.Enter || e.Key == Key.Return)
             {
                 TextRange textRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
 
                 string userCommand = textRange.Text;
+                userCommand = userCommand.Replace("\r\n", "");
 
                 if (userCommand == string.Empty)
                     return;
@@ -272,10 +313,46 @@ namespace WhiteBoard
                     ShowToast("Command type undone: " + ((UndoCommand)command).GetUndoCommandType().ToString());
                 }
 
+                if (autoCompleteList.Visibility == Visibility.Visible)
+                    autoCompleteList.Visibility = Visibility.Collapsed;
+
                 lstTasks.DataContext = tasksOnScreen;
                 lstTasks.ItemsSource = tasksOnScreen;
                 lstTasks.Items.Refresh();
             }
+            else if ((e.Key == Key.Up || e.Key == Key.Down) && (autoCompleteList.Visibility == Visibility.Visible))
+            {
+                autoCompleteList.Focus();
+            }
+
+        }
+
+        private void CheckAutoComplete()
+        {
+            // Auto Complete
+            TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+
+            string command = userTextRange.Text;
+            command = command.Replace("\r\n", "");
+
+            string[] words = command.Split(' ');
+
+            if (words.Count() > 0)
+            {
+                if (words[0].ToLower() == "search:")
+                {
+                    string search = command.Substring(words[0].Length);
+                    autoCompleteList.Show(autoComplete.Query(search));
+                }
+            }
+
+            if (autoCompleteList.Count == 0)
+                autoCompleteList.Visibility = Visibility.Collapsed;
+            else
+            {
+                autoCompleteList.Visibility = Visibility.Visible;
+            }
+
         }
 
         private void ShowToast(string toast)
