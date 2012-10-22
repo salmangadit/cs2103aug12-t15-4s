@@ -76,6 +76,14 @@ namespace WhiteBoard
             {
                 if (autoCompleteList.SelectedItem != null)
                 {
+                    // first replace the text he has already typed
+                    TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+                    string[] words = allText.Text.Split(' ');
+                    TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1].Replace("\r\n", ""));
+                    replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
+                    replaceText.Text = "";
+
+                    // Then append the list box stuff
                     txtCommand.AppendText(autoCompleteList.SelectedItem);
                     autoCompleteList.Visibility = Visibility.Collapsed;
                     txtCommand.Focus();
@@ -88,6 +96,13 @@ namespace WhiteBoard
         {
             if (autoCompleteList.SelectedItem != null)
             {
+                // first replace the text he has already typed
+                TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+                string[] words = allText.Text.Split(' ');
+                TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1].Replace("\r\n", ""));
+                replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
+                replaceText.Text = "";
+
                 txtCommand.AppendText(autoCompleteList.SelectedItem);
                 autoCompleteList.Visibility = Visibility.Collapsed;
                 txtCommand.Focus();
