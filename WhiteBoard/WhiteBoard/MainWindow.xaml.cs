@@ -78,10 +78,14 @@ namespace WhiteBoard
                 {
                     // first replace the text he has already typed
                     TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+                    allText.Text = allText.Text.Replace("\r\n", "");
                     string[] words = allText.Text.Split(' ');
-                    TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1].Replace("\r\n", ""));
-                    replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
-                    replaceText.Text = "";
+                    if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
+                    {
+                        TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
+                        replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
+                        replaceText.Text = "";
+                    }
 
                     // Then append the list box stuff
                     txtCommand.AppendText(autoCompleteList.SelectedItem);
@@ -98,11 +102,16 @@ namespace WhiteBoard
             {
                 // first replace the text he has already typed
                 TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+                allText.Text = allText.Text.Replace("\r\n", "");
                 string[] words = allText.Text.Split(' ');
-                TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1].Replace("\r\n", ""));
-                replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
-                replaceText.Text = "";
+                if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
+                {
+                    TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
+                    replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
+                    replaceText.Text = "";
+                }
 
+                // Then append the list box stuff
                 txtCommand.AppendText(autoCompleteList.SelectedItem);
                 autoCompleteList.Visibility = Visibility.Collapsed;
                 txtCommand.Focus();
@@ -234,12 +243,14 @@ namespace WhiteBoard
         {
             DoSyntaxHighlight();
             CheckAutoComplete();
+            
+            TextRange textRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+            if (string.IsNullOrWhiteSpace(textRange.Text))
+                autoCompleteList.Visibility = System.Windows.Visibility.Collapsed;
 
             // Listen for the press of the enter key
             if (e.Key == Key.Enter || e.Key == Key.Return)
             {
-                TextRange textRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
-
                 string userCommand = textRange.Text;
                 userCommand = userCommand.Replace("\r\n", "");
 
