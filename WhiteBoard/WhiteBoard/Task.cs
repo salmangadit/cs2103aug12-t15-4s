@@ -115,5 +115,15 @@ namespace WhiteBoard
             }
         }
 
+        public bool Floating
+        {
+            get
+            {
+                if (taskEndTime == null)
+                    return false;
+                else
+                    return true;
+            }
+        }
     }
 }
