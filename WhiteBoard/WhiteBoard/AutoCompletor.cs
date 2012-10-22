@@ -34,7 +34,7 @@ namespace WhiteBoard
 
             foreach (string word in SortByLength(wordSet))
             {
-                if (word.ToLower().StartsWith(query.ToLower()))
+                if (word.ToLower().StartsWith(query.TrimStart().ToLower()))
                 {
                     resultSet.Add(word.ToLower());
                 }
