@@ -56,24 +56,24 @@ namespace WhiteBoard
             switch (update)
             {
                 case UpdateType.Add:
-                    AddToSets(task.Description);
+                    AddToSets(task);
                     break;
 
                 case UpdateType.Archive:
-                    RemoveFromSets(task.Description);
+                    RemoveFromSets(task);
                     break;
 
                 case UpdateType.Delete:
-                    RemoveFromSets(task.Description);
+                    RemoveFromSets(task);
                     break;
 
                 case UpdateType.Edit:
-                    RemoveFromSets(uneditedTask.Description);
-                    AddToSets(task.Description);
+                    RemoveFromSets(uneditedTask);
+                    AddToSets(task);
                     break;
 
                 case UpdateType.Unarchive:
-                    AddToSets(task.Description);
+                    AddToSets(task);
                     break;
 
                 default:
@@ -116,12 +116,12 @@ namespace WhiteBoard
             return sorted;
         }
 
-        private void AddToSets(string line)
+        private void AddToSets(Task task)
         {
-            lineSet.Add(line);
+            lineSet.Add(task.Description);
 
             // replace one or more whitespace in description with single whitespace
-            string processedLine = Regex.Replace(line, @"\s+", " ");
+            string processedLine = Regex.Replace(task.Description, @"\s+", " ");
 
             string[] wordsInDescription = processedLine.Split(' ');
 
@@ -131,12 +131,12 @@ namespace WhiteBoard
             }
         }
 
-        private void RemoveFromSets(string line)
+        private void RemoveFromSets(Task task)
         {
-            lineSet.Remove(line);
+            lineSet.Remove(task.Description);
 
             // replace one or more whitespace in description with single whitespace
-            string processedLine = Regex.Replace(line, @"\s+", " ");
+            string processedLine = Regex.Replace(task.Description, @"\s+", " ");
 
             string[] wordsInDescription = processedLine.Split(' ');
 
