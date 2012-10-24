@@ -52,9 +52,15 @@ namespace WhiteBoard
         private int taskIndex = 0;
         private int startDateIndex = 0;
         private int endDateIndex = 0;
+        private int startTimeFlag = 0;
+        private int endTimeFlag = 0;
+        private int firstDayFlag = 0;
+        private int secondDayFlag = 0;
+        private int userError = 0;
 
         private List<string> stringList = new List<string>();
-        private List<DateHolder> startEndDate = new List<DateHolder>();
+        private List<DateHolder> startEndDate = new DateHolder[2].ToList();
+        private List<TimeSpan> startEndTime = new TimeSpan[2].ToList();
         private List<string> userCommand = new List<string>();
 
         private List<Task> screenState;
@@ -285,7 +291,7 @@ namespace WhiteBoard
 
                     if (dateKeywordFlag != 0)
                     {
-                        if (IsDateRange(userCommand[nextIndex]) == 2)
+                        if (ParseForDates(userCommand[nextIndex]) == 2)
                         {
                             startDate = startEndDate[0].DateParse();
                             endDate = startEndDate[1].DateParse();
@@ -479,48 +485,47 @@ namespace WhiteBoard
         {
             currentIndex = 0;
             dateFlag = 0;
+            int calldaterange = 0;
 
             foreach (string str in userCommand)
             {
-                foreach (string keyword in COMMAND_DATE)
+                if (dateFlag == 0)
                 {
-                    if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                    if ((String.Equals(str, "TODAY", StringComparison.CurrentCultureIgnoreCase)) || (String.Equals(str, "TOMORROW", StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        nextIndex = currentIndex + 1;
-                        previousIndex = currentIndex - 1;
-                        dateKeywordFlag = 1;
+                        nextIndex = currentIndex;
+                        calldaterange = 1;
                     }
-                }
 
-                if (dateKeywordFlag != 0)
-                {
-                    if (IsDateRange(userCommand[nextIndex]) == 2)
+                    if (calldaterange == 0)
                     {
-                        startDate = startEndDate[0].DateParse();
-                        endDate = startEndDate[1].DateParse();
-                        dateFlag = 1;
+                        foreach (string keyword in COMMAND_DATE)
+                        {
+                            if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
+                            {
+                                nextIndex = currentIndex + 1;
+                                calldaterange = 1;
+                            }
+                        }
                     }
-                    else if ((checkFirstDate = IsValidDate(userCommand[nextIndex])) > 0)
+                    if (calldaterange == 1 && dateFlag == 0)
                     {
-                        DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
-                        startDate = date.DateParse();
-                        endDate = null;
-                        dateFlag = 1;
+                        if (ParseForDates(userCommand[nextIndex]) > 0)
+                        {
+                            dateFlag = 1;
+                            AssignDates();
+                        }
                     }
-                    else
-                    {
-                        dateFlag = 0;
-                    }
-                    if (dateFlag == 1)
-                    {
-                        taskDescription = ConvertToString(userCommand, stringList, 0, previousIndex);
-                    }
-                    dateKeywordFlag = 0;
+                    calldaterange = 0;
+                    currentIndex++;
                 }
-                currentIndex++;
+            }
+            if (dateFlag == 1 && userError == 0)
+            {
+                taskDescription = ConvertToString(userCommand, stringList, 0, previousIndex);
             }
 
-            if (dateFlag == 0)
+            else
             {
                 taskDescription = inputCommand;
                 startDate = endDate = null;
@@ -532,71 +537,177 @@ namespace WhiteBoard
             return add;
         }
 
+        /// <summary>
+        /// Method to check the various date and times parsed and assign them accordingly
+        /// to the start and end dates.
+        /// </summary>
+        private void AssignDates()
+        {
+            if (startEndDate[0] != null)
+            {
+                startDate = startEndDate[0].DateParse();
+                startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
+                if (startTimeFlag == 1)
+                {
+                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[0].Hours, startEndTime[0].Minutes, 0);
+                }
+                if (startEndDate[1] == null)
+                {
+                    if (endTimeFlag == 1)
+                    {
+                        endDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                    }
+                }
+                else if (startEndDate[1] != null)
+                {
+                    endDate = startEndDate[1].DateParse();
+                    endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 0, 0, 0);
+                    if (endTimeFlag == 1)
+                    {
+                        endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                    }
+                }
+            }
+            else if (startEndDate[0] == null)
+            {
+                if (startTimeFlag == 1)
+                {
+                    startDate = DateTime.Now;
+                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[0].Hours, startEndTime[0].Minutes, 0);
+                    if (endTimeFlag == 1)
+                    {
+                        if (startEndDate[1] != null)
+                        {
+                            endDate = startEndDate[1].DateParse();
+                            endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                        }
+                        else
+                        {
+                            endDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    userError = 1;
+                }
+            }
+
+        }
+
         /// Checks if a date range is given and extracts the start and end date
         /// </summary>
         /// <param name="checkdate">The string to be parsed and checked</param>
         /// <returns>Returns 2 if valid start and end dates are found</returns>
-        private int IsDateRange(string checkdate)
+        private int ParseForDates(string checkdate)
         {
-            string[] templist;
-            string[] separators = { "-", ",", COMMAND_RANGE };
-            int isRange = 0;
+            List<string> firstsublist = new List<string>();
+            List<string> secondsublist = new List<string>();
+            int toindex = -1;
+            int i = 0;
             int startdateindex = nextIndex;
 
-            if (startdateindex < (userCommand.Count - 2))
+            List<string> sublist = userCommand.GetRange(startdateindex, userCommand.Count - (startdateindex));
+            firstsublist = sublist;
+            foreach (string str in sublist)
             {
-                int enddateindex = startdateindex + 2;
-
-                if (String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
-                    || String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
-                    || String.Equals(userCommand[startdateindex + 1], COMMAND_RANGE_ALT))
+                if (toindex < 0)
                 {
-                    checkFirstDate = IsValidDate(checkdate);
-                    checkSecondDate = IsValidDate(userCommand[enddateindex]);
-                    if (checkFirstDate > 0 && checkSecondDate > 0)
+                    if (String.Equals(str, COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
+                        || String.Equals(str, COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
+                        || String.Equals(str, COMMAND_RANGE_ALT))
                     {
-                        startEndDate.Add(new DateHolder(checkdate, checkFirstDate));
-                        startEndDate.Add(new DateHolder(userCommand[enddateindex], checkSecondDate));
-                        isRange = DATE_COUNT;
+                        toindex = i;
                     }
-                    return isRange;
                 }
+                i++;
             }
 
-            else if (startdateindex < userCommand.Count - 1)
+            if (toindex > 0)
             {
-                int enddateindex = startdateindex + 1;
-                checkFirstDate = IsValidDate(userCommand[startdateindex]);
-                checkSecondDate = IsValidDate(userCommand[enddateindex]);
+                secondsublist = sublist.GetRange(toindex, sublist.Count - (toindex));
+                firstsublist = sublist.GetRange(0, (sublist.Count - secondsublist.Count));
+            }
 
-                if (checkFirstDate > 0 && checkSecondDate > 0)
+            foreach (string word in firstsublist)
+            {
+                if (startTimeFlag == 0 && (String.Equals(word, "PM", StringComparison.CurrentCultureIgnoreCase) || (String.Equals(word, "AM", StringComparison.CurrentCultureIgnoreCase))))
                 {
-                    startEndDate.Add(new DateHolder(checkdate, checkFirstDate));
-                    startEndDate.Add(new DateHolder(userCommand[enddateindex], checkSecondDate));
-                    isRange = DATE_COUNT;
-                    return isRange;
+                    string temp = word;
+                    if (IsTime((temp = String.Format("{0} {1}", firstsublist[firstsublist.IndexOf(word) - 1], word))))
+                    {
+                        startEndTime[0] = ParseTime(temp);
+                        if (firstDayFlag == 0)
+                        {
+                            previousIndex = (userCommand.IndexOf(word) - 2);
+                        }
+                        startTimeFlag = 1;
+                    }
                 }
             }
 
+            foreach (string word in firstsublist)
+            {
+                if (firstDayFlag == 0 && (checkFirstDate = IsValidDate(word)) > 0)
+                {
+                    DateHolder date = new DateHolder(word, checkFirstDate);
+                    startEndDate[0] = date;
+                    endDate = null;
+                    firstDayFlag = 1;
+                    if (startTimeFlag == 0)
+                    {
+                        previousIndex = (userCommand.IndexOf(word) - 1);
+                    }
+                }
+
+                if (startTimeFlag == 0 && IsTime(word))
+                {
+                    startEndTime[0] = ParseTime(word);
+                    startTimeFlag = 1;
+                    if (firstDayFlag == 0)
+                    {
+                        previousIndex = (userCommand.IndexOf(word) - 1);
+                    }
+                }
+            }
+
+            if (toindex > 0 && (startTimeFlag > 0 || firstDayFlag > 0))
+            {
+                foreach (string word in secondsublist)
+                {
+                    if (endTimeFlag == 0 && (String.Equals(word, "PM", StringComparison.CurrentCultureIgnoreCase) || (String.Equals(word, "AM", StringComparison.CurrentCultureIgnoreCase))))
+                    {
+                        string temp = word;
+                        if (IsTime((temp = String.Format("{0} {1}", secondsublist[secondsublist.IndexOf(word) - 1], word))))
+                        {
+                            startEndTime[1] = ParseTime(temp);
+                            endTimeFlag = 1;
+                        }
+                    }
+                }
+
+                foreach (string word in secondsublist)
+                {
+                    if (secondDayFlag == 0 && (checkFirstDate = IsValidDate(word)) > 0)
+                    {
+                        DateHolder date = new DateHolder(word, checkFirstDate);
+                        startEndDate[1] = date;
+                        secondDayFlag = 1;
+                    }
+
+                    if (endTimeFlag == 0 && IsTime(word))
+                    {
+                        startEndTime[1] = ParseTime(word);
+                        endTimeFlag = 1;
+                    }
+                }
+            }
+            if (startEndDate[0] == null && startEndDate[1] == null && startTimeFlag == 0 && endTimeFlag == 0)
+            {
+                return 0;
+            }
             else
-            {
-                templist = checkdate.ToUpper().Split(separators, StringSplitOptions.None);
-
-                foreach (string str in templist)
-                {
-                    if ((checkFirstDate = IsValidDate(str)) > 0)
-                    {
-                        startEndDate.Add(new DateHolder(str, checkFirstDate));
-                        isRange++;
-                    }
-                    else
-                    {
-                        isRange--;
-                    }
-                }
-                return isRange;
-            }
-            return isRange;
+                return 1;
         }
 
 
@@ -626,6 +737,59 @@ namespace WhiteBoard
                 taskid = Convert.ToInt32(str);
                 return taskid;
             }
+        }
+
+        /// <summary>
+        /// Checks whether the string is a valid time
+        /// </summary>
+        /// <param name="time">The string to be checked</param>
+        /// <returns>Returns true if time is valid</returns>
+        private bool IsTime(string time)
+        {
+            string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
+                                    "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
+                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt",
+                                    "HH:mm"};
+            bool istime = false;
+            DateTime temp;
+            foreach (string format in timeformat)
+            {
+                if (!istime)
+                {
+                    istime = DateTime.TryParseExact(time, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
+                }
+            }
+            return istime;
+        }
+
+        /// <summary>
+        /// Returns a valid TimeSpan object
+        /// </summary>
+        /// <param name="time">The string to be converted to time</param>
+        /// <returns>The timespan object</returns>
+        private TimeSpan ParseTime(string time)
+        {
+            string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
+                                    "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
+                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt",
+                                    "HH:mm"};
+
+            string correctformat = String.Empty;
+            bool istime = false;
+            DateTime temp = new DateTime();
+            foreach (string format in timeformat)
+            {
+                if (!istime)
+                {
+                    istime = DateTime.TryParseExact(time, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
+                    correctformat = format;
+                }
+            }
+            if (istime)
+            {
+                temp = DateTime.ParseExact(time, correctformat, CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+            return temp.TimeOfDay;
         }
 
         /// <summary>
@@ -694,6 +858,7 @@ namespace WhiteBoard
         /// <summary>
         /// Takes the strings upto the specified index from the list and concatenates them
         /// into a single string
+        /// This method also removes the keyword from the end of the task description
         /// </summary>
         /// <param name="list">The original list</param>
         /// <param name="templist">The list containing the strings upto the index</param>
@@ -706,6 +871,14 @@ namespace WhiteBoard
             for (int i = startindex; i <= endindex; ++i)
             {
                 templist.Add(list[i]);
+            }
+
+            foreach (string keyword in COMMAND_DATE)
+            {
+                if (String.Equals(keyword, templist.Last(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    templist.RemoveAt(templist.Count - 1);
+                }
             }
             tempstring = String.Join(" ", templist.ToArray());
             return tempstring;
