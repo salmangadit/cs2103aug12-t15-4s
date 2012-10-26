@@ -54,6 +54,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhiteBoardTest.cs" />
   </ItemGroup>
@@ -62,6 +63,9 @@
       <Project>{3DCDE3FC-D268-47E8-9184-54E04DEF5DEE}</Project>
       <Name>WhiteBoard</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Shadow Include="Test References\WhiteBoard.accessor" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
