@@ -131,5 +131,20 @@ namespace WhiteboardTest
             Assert.AreEqual(expected, actual);
            // Assert.Inconclusive("Verify the correctness of this test method.");
         }
+
+        /// <summary>
+        ///A test for IsDate
+        ///</summary>
+        [TestMethod()]
+        public void IsDateTest()
+        {
+            CommandParser target = new CommandParser(); // TODO: Initialize to an appropriate value
+            string datestring = "20.11.2012"; // TODO: Initialize to an appropriate value
+            bool expected = true; // TODO: Initialize to an appropriate value
+            bool actual;
+            actual = target.IsDate(datestring);
+            Assert.AreEqual(expected, actual);
+            //Assert.Inconclusive("Verify the correctness of this test method.");
+        }
     }
 }
