@@ -83,5 +83,21 @@ namespace WhiteboardTest
             List<string> userCommandList = target.ReturnUserCommandListForTesting();
             CollectionAssert.AreEqual(expected, userCommandList);
         }
+
+        /// <summary>
+        ///A test for IsValidTaskId
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("WhiteBoard.exe")]
+        public void IsValidTaskIdTest()
+        {
+            CommandParser_Accessor target = new CommandParser_Accessor(); // TODO: Initialize to an appropriate value
+            string str = "T00024"; // TODO: Initialize to an appropriate value
+            int expected = 24; // TODO: Initialize to an appropriate value
+            int actual;
+            actual = target.IsValidTaskId(str);
+            Assert.AreEqual(expected, actual);
+            //Assert.Inconclusive("Verify the correctness of this test method.");
+        }
     }
 }
