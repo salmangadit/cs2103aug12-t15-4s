@@ -8,7 +8,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Border Name="Border" BorderBrush="Black" BorderThickness="2" CornerRadius="8,8,8,8">
+                        <Border Name="Border" Background="{Binding Background}" BorderBrush="Black" BorderThickness="2" CornerRadius="8,8,8,8">
                             <ContentPresenter />
                         </Border>
                     </ControlTemplate>
