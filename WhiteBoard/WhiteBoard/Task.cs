@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace WhiteBoard
 {
@@ -123,6 +124,31 @@ namespace WhiteBoard
                     return false;
                 else
                     return true;
+            }
+        }
+
+        public Brush Background
+        {
+            get
+            {
+                if (taskEndTime == null && taskStartTime == null)
+                    return Brushes.White;
+                else if (taskEndTime != null)
+                {
+                    if (DateTime.Now > taskEndTime)
+                        return Brushes.DarkSalmon;
+                    else
+                        return Brushes.White;
+                }
+                else if (taskEndTime == null && taskStartTime != null)
+                {
+                    if (DateTime.Now > taskStartTime)
+                        return Brushes.DarkSalmon;
+                    else
+                        return Brushes.White;
+                }
+
+                return Brushes.White;
             }
         }
     }

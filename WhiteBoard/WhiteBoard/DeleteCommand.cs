@@ -39,7 +39,7 @@ namespace WhiteBoard
 
         public override List<Task> Undo()
         {
-            fileHandler.AddTaskToFile(taskToDelete);
+            fileHandler.AddTaskToFile(taskToDelete, taskIdToDelete);
             return screenState;
         }
 

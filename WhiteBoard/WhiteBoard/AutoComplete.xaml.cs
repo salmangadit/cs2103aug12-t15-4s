@@ -70,7 +70,7 @@ namespace WhiteBoard
                 if (autoCompleteList.Count > 10)
                     this.Height = 150;
                 else
-                    this.Height = autoCompleteList.Count * 15;
+                    this.Height = autoCompleteList.Count * 18;
             }
         }
 
