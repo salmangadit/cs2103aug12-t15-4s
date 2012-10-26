@@ -66,6 +66,10 @@ namespace WhiteBoard
         private List<Task> screenState;
         private Stack<Command> taskHistory;
 
+        public CommandParser()
+        {
+        }
+
         public CommandParser(List<Task> screenState, Stack<Command> taskHistory)
         {
             fileHandler = FileHandler.Instance;
@@ -87,6 +91,11 @@ namespace WhiteBoard
                 str.Trim();
                 userCommand.Add(str);
             }
+        }
+
+        public List<string> ReturnUserCommandListForTesting()
+        {
+            return userCommand;
         }
         /// <summary>
         /// Parses the user command and determines the action to be done i.e Add, Modify, Delete etc.
