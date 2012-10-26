@@ -99,5 +99,21 @@ namespace WhiteboardTest
             Assert.AreEqual(expected, actual);
             //Assert.Inconclusive("Verify the correctness of this test method.");
         }
+
+        /// <summary>
+        ///A test for IsTime
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("WhiteBoard.exe")]
+        public void IsTimeTest()
+        {
+            CommandParser_Accessor target = new CommandParser_Accessor(); // TODO: Initialize to an appropriate value
+            string time = "8pm"; // TODO: Initialize to an appropriate value
+            bool expected = true; // TODO: Initialize to an appropriate value
+            bool actual;
+            actual = target.IsTime(time);
+            Assert.AreEqual(expected, actual);
+           // Assert.Inconclusive("Verify the correctness of this test method.");
+        }
     }
 }
