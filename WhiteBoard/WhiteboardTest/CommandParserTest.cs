@@ -115,5 +115,21 @@ namespace WhiteboardTest
             Assert.AreEqual(expected, actual);
            // Assert.Inconclusive("Verify the correctness of this test method.");
         }
+
+        /// <summary>
+        ///A test for ParseTime
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("WhiteBoard.exe")]
+        public void ParseTimeTest()
+        {
+            CommandParser_Accessor target = new CommandParser_Accessor(); // TODO: Initialize to an appropriate value
+            string time = "10:30pm"; // TODO: Initialize to an appropriate value
+            TimeSpan expected = new TimeSpan(22,30,0); // TODO: Initialize to an appropriate value
+            TimeSpan actual;
+            actual = target.ParseTime(time);
+            Assert.AreEqual(expected, actual);
+           // Assert.Inconclusive("Verify the correctness of this test method.");
+        }
     }
 }
