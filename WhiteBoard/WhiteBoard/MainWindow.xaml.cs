@@ -305,7 +305,7 @@ namespace WhiteBoard
                 else if (command.CommandType == CommandType.Archive)
                 {
                     List<int> archiveTaskIds = ((ArchiveCommand)command).GetArchivedTaskIds();
-                    // List<Task> archived = command.Execute();
+                    command.Execute();
                     int traversalIndex = 0;
                     List<Task> tasks = tasksOnScreen.ToList<Task>();
                     foreach (Task task in tasks)
