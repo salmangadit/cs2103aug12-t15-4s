@@ -8,13 +8,24 @@ namespace WhiteBoard
 {
     class EditCommand : Command
     {
-        Task editTaskDetails;
-        Task uneditedTask;
+        List<Task> editTasksDetails;
+        List<Task> uneditedTasks;
 
         public EditCommand(FileHandler fileHandler, Task editTaskDetails, List<Task> screenState)
             : base(fileHandler, screenState)
         {
-            this.editTaskDetails = editTaskDetails;
+            editTasksDetails = new List<Task>();
+            uneditedTasks = new List<Task>();
+            this.editTasksDetails.Add(editTaskDetails);
+            this.commandType = CommandType.Edit;
+        }
+
+        public EditCommand(FileHandler fileHandler, List<Task> editTasksDetails, List<Task> screenState)
+            : base(fileHandler, screenState)
+        {
+            editTasksDetails = new List<Task>();
+            uneditedTasks = new List<Task>();
+            this.editTasksDetails = editTasksDetails;
             this.commandType = CommandType.Edit;
         }
 
@@ -28,26 +39,34 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            int editedTaskId = editTaskDetails.Id;
-            uneditedTask = fileHandler.GetTaskFromFile(editedTaskId);
-
-            string editedTaskDescription = (editTaskDetails.Description == null) ? uneditedTask.Description : editTaskDetails.Description;
-            DateTime? editedTaskStartTime = (editTaskDetails.StartTime == null) ? uneditedTask.StartTime : editTaskDetails.StartTime;
-            DateTime? editedTaskEndTime = (editTaskDetails.EndTime == null) ? uneditedTask.EndTime : editTaskDetails.EndTime;
-
-            Task editedTask = new Task(editedTaskId, editedTaskDescription, editedTaskStartTime, editedTaskEndTime);
-
-            fileHandler.WriteEditedTaskToFile(editedTask);
-
             List<Task> editedTasks = new List<Task>();
-            editedTasks.Add(editedTask);
+
+            foreach (Task editTaskDetails in editTasksDetails)
+            {
+                int editedTaskId = editTaskDetails.Id;
+                Task uneditedTask = fileHandler.GetTaskFromFile(editedTaskId);
+
+                uneditedTasks.Add(uneditedTask);
+
+                string editedTaskDescription = (editTaskDetails.Description == null) ? uneditedTask.Description : editTaskDetails.Description;
+                DateTime? editedTaskStartTime = (editTaskDetails.StartTime == null) ? uneditedTask.StartTime : editTaskDetails.StartTime;
+                DateTime? editedTaskEndTime = (editTaskDetails.EndTime == null) ? uneditedTask.EndTime : editTaskDetails.EndTime;
+
+                Task editedTask = new Task(editedTaskId, editedTaskDescription, editedTaskStartTime, editedTaskEndTime);
+
+                fileHandler.WriteEditedTaskToFile(editedTask);
+                editedTasks.Add(editedTask);
+            }
 
             return editedTasks;
         }
 
         public override List<Task> Undo()
         {
-            fileHandler.WriteEditedTaskToFile(uneditedTask);
+            foreach (Task uneditedTask in uneditedTasks)
+            {
+                fileHandler.WriteEditedTaskToFile(uneditedTask);
+            }
             return screenState;
         }
     }
