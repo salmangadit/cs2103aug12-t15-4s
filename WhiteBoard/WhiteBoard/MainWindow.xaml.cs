@@ -304,18 +304,25 @@ namespace WhiteBoard
                 }
                 else if (command.CommandType == CommandType.Archive)
                 {
-                    int archiveTaskId = ((ArchiveCommand)command).GetArchivedTaskId();
-                    List<Task> archived = command.Execute();
+                    List<int> archiveTaskIds = ((ArchiveCommand)command).GetArchivedTaskIds();
+                    // List<Task> archived = command.Execute();
                     int traversalIndex = 0;
                     List<Task> tasks = tasksOnScreen.ToList<Task>();
                     foreach (Task task in tasks)
                     {
-                        if (task.Id == archiveTaskId)
+                        if (archiveTaskIds.Contains(task.Id))
                             tasksOnScreen.RemoveAt(traversalIndex);
                         traversalIndex++;
                     }
 
-                    ShowToast("Archived task with Id: " + archiveTaskId);
+                    StringBuilder tasksArchivedToast = new StringBuilder();
+
+                    foreach (int taskId in archiveTaskIds)
+                    {
+                        tasksArchivedToast.Append(taskId.ToString() + ", ");
+                    }
+
+                    ShowToast("Archived task(s) with Id: " + tasksArchivedToast);
                 }
                 else if (command.CommandType == CommandType.Search)
                 {

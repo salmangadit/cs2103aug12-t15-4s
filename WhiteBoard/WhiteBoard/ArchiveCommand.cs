@@ -8,12 +8,21 @@ namespace WhiteBoard
 {
     class ArchiveCommand : Command
     {
-        int taskIdToArchive;
+        List<int> taskIdsToArchive;
 
         public ArchiveCommand(FileHandler fileHandler, int taskIdToArchive, List<Task> screenState)
             : base(fileHandler, screenState)
         {
-            this.taskIdToArchive = taskIdToArchive;
+            taskIdsToArchive = new List<int>();
+            this.taskIdsToArchive.Add(taskIdToArchive);
+            this.commandType = CommandType.Archive;
+        }
+
+        public ArchiveCommand(FileHandler fileHandler, List<int> taskIdToArchive, List<Task> screenState)
+            : base(fileHandler, screenState)
+        {
+            taskIdsToArchive = new List<int>();
+            this.taskIdsToArchive = taskIdToArchive;
             this.commandType = CommandType.Archive;
         }
 
@@ -27,23 +36,31 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            bool isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
+            bool isTaskArchived = false;
+
+            foreach (int taskIdToArchive in taskIdsToArchive)
+            {
+                isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
+            }
 
             if (!isTaskArchived)
-                throw new ApplicationException("Unable To Archive Task");
+                throw new ApplicationException("Unable To Archive All Tasks");
 
             return null;
         }
 
         public override List<Task> Undo()
         {
-            fileHandler.UnarchiveTaskInFile(taskIdToArchive);
+            foreach (int taskIdToArchive in taskIdsToArchive)
+            {
+                fileHandler.UnarchiveTaskInFile(taskIdToArchive);
+            }
             return screenState;
         }
 
-        public int GetArchivedTaskId()
+        public List<int> GetArchivedTaskIds()
         {
-            return taskIdToArchive;
+            return taskIdsToArchive;
         }
     }
 }
