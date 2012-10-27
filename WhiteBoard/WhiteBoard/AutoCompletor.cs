@@ -42,7 +42,7 @@ namespace WhiteBoard
 
             foreach (string line in SortByLength(lineSet))
             {
-                if (line.Trim().ToLower().StartsWith(query.Trim().ToLower()))
+                if (line.Trim().ToLower().Contains(query.Trim().ToLower()))
                 {
                     resultSet.Add(line);
                 }
