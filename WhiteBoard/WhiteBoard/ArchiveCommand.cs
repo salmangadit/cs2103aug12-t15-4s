@@ -46,7 +46,7 @@ namespace WhiteBoard
             if (!isTaskArchived)
                 throw new ApplicationException("Unable To Archive All Tasks");
 
-            return null;
+            return new List<Task>();
         }
 
         public override List<Task> Undo()
