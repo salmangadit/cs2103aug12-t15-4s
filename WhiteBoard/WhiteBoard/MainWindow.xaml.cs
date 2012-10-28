@@ -26,8 +26,9 @@ namespace WhiteBoard
         ObservableCollection<Task> tasksOnScreen;
         DispatcherTimer toastTimer;
         DispatcherTimer toastAnimationTimer;
-        List<string> keyWords;
+        List<string> keywords;
         AutoComplete autoCompleteList;
+        Toast toast;
 
         public MainWindow()
         {
@@ -37,9 +38,10 @@ namespace WhiteBoard
             autoCompleteList = new AutoComplete();
             autoCompleteList.AutoCompleteKeyboardEvent += new KeyEventHandler(AutoCompleteKeyBubbleEvent);
             autoCompleteList.AutoCompleteMouseEvent += new MouseEventHandler(AutoCompleteMouseBubbleEvent);
-            tasksOnScreen = new ObservableCollection<Task>();
 
+            tasksOnScreen = new ObservableCollection<Task>();
             Command command = controller.GetAllTasks(tasksOnScreen.ToList());
+
             List<Task> tasksToView = command.Execute();
             tasksOnScreen.Clear();
             foreach (Task task in tasksToView)
@@ -47,26 +49,23 @@ namespace WhiteBoard
                 tasksOnScreen.Add(task);
             }
 
+            // Data-bind list
             lstTasks.DataContext = tasksOnScreen;
             lstTasks.ItemsSource = tasksOnScreen;
             txtCommand.Focus();
 
+            // Prepare auto complete window
             mainGrid.Children.Add(autoCompleteList);
             Grid.SetRow(autoCompleteList, 0);
             autoCompleteList.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
             autoCompleteList.Visibility = Visibility.Collapsed;
 
             // Set up syntax highlighting
-            keyWords = new List<string>();
-            keyWords.Add("MODIFY");
-            keyWords.Add("CHANGE");
-            keyWords.Add("UPDATE");
-            keyWords.Add("SEARCH:");
-            keyWords.Add("UNDO:");
-            keyWords.Add("DELETE");
-            keyWords.Add("REMOVE");
-            keyWords.Add("MARK");
-            keyWords.Add("VIEW");
+            SyntaxProvider whiteboardSyntax = new SyntaxProvider();
+            keywords = whiteboardSyntax.Keywords;
+
+            // Set up toast notification
+            Toast toast = new Toast(lblToast);
         }
 
         #region AutoComplete Delegates
@@ -120,11 +119,39 @@ namespace WhiteBoard
         }
         #endregion
 
+        #region AutoComplete
+        private void CheckAutoComplete()
+        {
+            // Auto Complete
+            TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+
+            string command = userTextRange.Text;
+            command = command.Replace("\r\n", "");
+
+            string[] words = command.Split(' ');
+
+            if (words.Count() > 0)
+            {
+                if (words[0].ToLower() == "search:")
+                {
+                    string search = command.Substring(words[0].Length);
+                    autoCompleteList.Show(autoComplete.Query(search));
+                }
+            }
+
+            if (autoCompleteList.Count == 0)
+                autoCompleteList.Visibility = Visibility.Collapsed;
+            else
+            {
+                autoCompleteList.Visibility = Visibility.Visible;
+            }
+
+        }
+        #endregion
+
         #region Syntax Highlighting
         private void DoSyntaxHighlight()
         {
-            //@TODO: OOP this by moving the keywords into a static class where the data can be pulled from later
-
             // Do syntax highlighting
             TextRange userTypedText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
             string userText = userTypedText.Text;
@@ -133,7 +160,7 @@ namespace WhiteBoard
 
             if (words.Count() > 0)
             {
-                foreach (string keyword in keyWords)
+                foreach (string keyword in keywords)
                 {
                     if (words[0].ToLower() == keyword.ToLower())
                     {
@@ -152,7 +179,7 @@ namespace WhiteBoard
 
                 if (words[0].ToLower() == "view")
                 {
-                    TextRange syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "from");
+                    TextRange syntaxHighlight = FindLastWordFromPosition(txtCommand.Document.ContentStart, "from");
                     if (syntaxHighlight != null)
                     {
                         syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
@@ -165,7 +192,7 @@ namespace WhiteBoard
                         userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
                     }
 
-                    syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "to");
+                    syntaxHighlight = FindLastWordFromPosition(txtCommand.Document.ContentStart, "to");
                     if (syntaxHighlight != null)
                     {
                         syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
@@ -181,7 +208,7 @@ namespace WhiteBoard
 
                 if (words[0].ToLower() == "modify" || words[0].ToLower() == "change" || words[0].ToLower() == "update")
                 {
-                    TextRange syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "start");
+                    TextRange syntaxHighlight = FindLastWordFromPosition(txtCommand.Document.ContentStart, "start");
                     if (syntaxHighlight != null)
                     {
                         syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
@@ -194,7 +221,7 @@ namespace WhiteBoard
                         userTypedText.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
                     }
 
-                    syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, "end");
+                    syntaxHighlight = FindLastWordFromPosition(txtCommand.Document.ContentStart, "end");
                     if (syntaxHighlight != null)
                     {
                         syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
@@ -237,13 +264,41 @@ namespace WhiteBoard
             // position will be null if "word" is not found.
             return null;
         }
+
+        TextRange FindLastWordFromPosition(TextPointer position, string word)
+        {
+            TextRange foundRange = null;
+            while (position != null)
+            {
+                if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                {
+                    string textRun = position.GetTextInRun(LogicalDirection.Forward);
+
+                    // Find the starting index of any substring that matches "word".
+                    int indexInRun = textRun.LastIndexOf(word);
+                    if (indexInRun >= 0)
+                    {
+                        TextPointer start = position.GetPositionAtOffset(indexInRun);
+                        if (textRun.Contains(word) && start.GetTextInRun(LogicalDirection.Forward).Trim().Split(' ')[0] == word)
+                        {
+                            TextPointer end = start.GetPositionAtOffset(word.Length);
+                            foundRange = new TextRange(start, end);
+                        }
+                    }
+                }
+
+                position = position.GetNextContextPosition(LogicalDirection.Forward);
+            }
+
+            // position will be null if "word" is not found.
+            return foundRange;
+        }
         #endregion
 
         private void txtCommand_KeyUp(object sender, KeyEventArgs e)
         {
-            DoSyntaxHighlight();
             CheckAutoComplete();
-            
+
             TextRange textRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
             if (string.IsNullOrWhiteSpace(textRange.Text))
                 autoCompleteList.Visibility = System.Windows.Visibility.Collapsed;
@@ -261,93 +316,42 @@ namespace WhiteBoard
                 FlowDocument mcFlowDoc = new FlowDocument();
                 txtCommand.Document = mcFlowDoc;
 
+                if (autoCompleteList.Visibility == Visibility.Visible)
+                    autoCompleteList.Visibility = Visibility.Collapsed;
+
                 Command command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
                 if (command == null)
                 {
+                    return;
                 }
                 else if (command.CommandType == CommandType.Add)
                 {
-                    Task taskToAdd = (command.Execute())[0];
-                    tasksOnScreen.Add(taskToAdd);
-                    ShowToast("Task Added!");
+                    ExecuteAdd(command);
                 }
                 else if (command.CommandType == CommandType.Edit)
                 {
-                    Task editedTask = (command.Execute())[0];
-                    tasksOnScreen.Clear();
-                    tasksOnScreen.Add(editedTask);
-                    ShowToast("Task with Id " + editedTask.Id + " edited!");
+                    ExecuteEdit(command);
                 }
                 else if (command.CommandType == CommandType.View)
                 {
-                    List<Task> tasksToView = command.Execute();
-                    tasksOnScreen.Clear();
-                    foreach (Task task in tasksToView)
-                    {
-                        tasksOnScreen.Add(task);
-                    }
+                    ExecuteView(command);
                 }
                 else if (command.CommandType == CommandType.Delete)
                 {
-                    int deletedTaskId = ((DeleteCommand)command).GetDeletedTaskId();
-                    List<Task> deleted = command.Execute();
-                    int traversalIndex = 0;
-                    List<Task> tasks = tasksOnScreen.ToList<Task>();
-                    foreach (Task task in tasks)
-                    {
-                        if (task.Id == deletedTaskId)
-                            tasksOnScreen.RemoveAt(traversalIndex);
-                        traversalIndex++;
-                    }
-
-                    ShowToast("Deleted task with Id: " + deletedTaskId);
+                    ExecuteDelete(command);
                 }
                 else if (command.CommandType == CommandType.Archive)
                 {
-                    List<int> archiveTaskIds = ((ArchiveCommand)command).GetArchivedTaskIds();
-                    command.Execute();
-                    int traversalIndex = 0;
-                    List<Task> tasks = tasksOnScreen.ToList<Task>();
-                    foreach (Task task in tasks)
-                    {
-                        if (archiveTaskIds.Contains(task.Id))
-                            tasksOnScreen.RemoveAt(traversalIndex);
-                        traversalIndex++;
-                    }
-
-                    StringBuilder tasksArchivedToast = new StringBuilder();
-
-                    foreach (int taskId in archiveTaskIds)
-                    {
-                        tasksArchivedToast.Append(taskId.ToString() + ", ");
-                    }
-
-                    ShowToast("Archived task(s) with Id: " + tasksArchivedToast);
+                    ExecuteArchive(command);
                 }
                 else if (command.CommandType == CommandType.Search)
                 {
-                    List<Task> searchResult = command.Execute();
-                    string searchString = ((SearchCommand)command).GetSearchString();
-                    tasksOnScreen.Clear();
-                    foreach (Task task in searchResult)
-                    {
-                        tasksOnScreen.Add(task);
-                    }
-                    ShowToast("Search results for: " + searchString);
+                    ExecuteSearch(command);
                 }
                 else if (command.CommandType == CommandType.Undo)
                 {
-                    List<Task> previousScreenState = command.Execute();
-                    tasksOnScreen.Clear();
-                    foreach (Task task in previousScreenState)
-                    {
-                        tasksOnScreen.Add(task);
-                    }
-                    ShowToast("Command type undone: " + ((UndoCommand)command).GetUndoCommandType().ToString());
+                    ExecuteUndo(command);
                 }
-
-                if (autoCompleteList.Visibility == Visibility.Visible)
-                    autoCompleteList.Visibility = Visibility.Collapsed;
 
                 lstTasks.DataContext = tasksOnScreen;
                 lstTasks.ItemsSource = tasksOnScreen;
@@ -358,80 +362,94 @@ namespace WhiteBoard
                 autoCompleteList.Focus();
             }
 
+            DoSyntaxHighlight();
         }
 
-        private void CheckAutoComplete()
+        private void ExecuteUndo(Command command)
         {
-            // Auto Complete
-            TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
-
-            string command = userTextRange.Text;
-            command = command.Replace("\r\n", "");
-
-            string[] words = command.Split(' ');
-
-            if (words.Count() > 0)
+            List<Task> previousScreenState = command.Execute();
+            tasksOnScreen.Clear();
+            foreach (Task task in previousScreenState)
             {
-                if (words[0].ToLower() == "search:")
-                {
-                    string search = command.Substring(words[0].Length);
-                    autoCompleteList.Show(autoComplete.Query(search));
-                }
+                tasksOnScreen.Add(task);
             }
-
-            if (autoCompleteList.Count == 0)
-                autoCompleteList.Visibility = Visibility.Collapsed;
-            else
-            {
-                autoCompleteList.Visibility = Visibility.Visible;
-            }
-
+            toast.ShowToast("Command type undone: " + ((UndoCommand)command).GetUndoCommandType().ToString());
         }
 
-        private void ShowToast(string toast)
+        private void ExecuteSearch(Command command)
         {
-            toastTimer = new System.Windows.Threading.DispatcherTimer();
-            toastTimer.Tick += new EventHandler(toastTimer_Tick);
-            toastTimer.Interval = new TimeSpan(0, 0, 3);
-            toastTimer.Start();
-
-            toastAnimationTimer = new DispatcherTimer();
-            toastAnimationTimer.Tick += new EventHandler(toastAnimationTimer_Tick);
-            toastAnimationTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            toastAnimationTimer.Start();
-            enter = true;
-            toastTime = 0;
-
-            lblToast.Content = toast;
-            lblToast.Width = toast.Length * 10;
-            lblToast.Visibility = Visibility.Visible;
-            lblToast.Opacity = 0;
-        }
-        bool enter;
-        int toastTime;
-        private void toastTimer_Tick(object sender, EventArgs e)
-        {
-            lblToast.Visibility = Visibility.Collapsed;
-            toastTimer.Stop();
+            List<Task> searchResult = command.Execute();
+            string searchString = ((SearchCommand)command).GetSearchString();
+            tasksOnScreen.Clear();
+            foreach (Task task in searchResult)
+            {
+                tasksOnScreen.Add(task);
+            }
+            toast.ShowToast("Search results for: " + searchString);
         }
 
-        private void toastAnimationTimer_Tick(object sender, EventArgs e)
+        private void ExecuteArchive(Command command)
         {
-            toastTime++;
-            if (lblToast.Opacity < 1 && enter)
+            List<int> archiveTaskIds = ((ArchiveCommand)command).GetArchivedTaskIds();
+            command.Execute();
+            int traversalIndex = 0;
+            List<Task> tasks = tasksOnScreen.ToList<Task>();
+            foreach (Task task in tasks)
             {
-                if (lblToast.Opacity >= 0.8)
-                {
-                    enter = false;
-                }
-                lblToast.Opacity += 0.2;
+                if (archiveTaskIds.Contains(task.Id))
+                    tasksOnScreen.RemoveAt(traversalIndex);
+                traversalIndex++;
             }
-            else if (toastTime >= 15)
+
+            StringBuilder tasksArchivedToast = new StringBuilder();
+
+            foreach (int taskId in archiveTaskIds)
             {
-                if (lblToast.Opacity <= 0.2)
-                    toastAnimationTimer.Stop();
-                lblToast.Opacity -= 0.2;
+                tasksArchivedToast.Append(taskId.ToString() + ", ");
             }
+
+            toast.ShowToast("Archived task(s) with Id: " + tasksArchivedToast);
+        }
+
+        private void ExecuteDelete(Command command)
+        {
+            int deletedTaskId = ((DeleteCommand)command).GetDeletedTaskId();
+            List<Task> deleted = command.Execute();
+            int traversalIndex = 0;
+            List<Task> tasks = tasksOnScreen.ToList<Task>();
+            foreach (Task task in tasks)
+            {
+                if (task.Id == deletedTaskId)
+                    tasksOnScreen.RemoveAt(traversalIndex);
+                traversalIndex++;
+            }
+
+            toast.ShowToast("Deleted task with Id: " + deletedTaskId);
+        }
+
+        private void ExecuteView(Command command)
+        {
+            List<Task> tasksToView = command.Execute();
+            tasksOnScreen.Clear();
+            foreach (Task task in tasksToView)
+            {
+                tasksOnScreen.Add(task);
+            }
+        }
+
+        private void ExecuteEdit(Command command)
+        {
+            Task editedTask = (command.Execute())[0];
+            tasksOnScreen.Clear();
+            tasksOnScreen.Add(editedTask);
+            toast.ShowToast("Task with Id " + editedTask.Id + " edited!");
+        }
+
+        private void ExecuteAdd(Command command)
+        {
+            Task taskToAdd = (command.Execute())[0];
+            tasksOnScreen.Add(taskToAdd);
+            toast.ShowToast("Task Added!");
         }
     }
 }

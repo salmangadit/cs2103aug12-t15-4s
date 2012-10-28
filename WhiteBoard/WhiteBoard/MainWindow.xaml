@@ -48,43 +48,5 @@
         <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="14" FontFamily="Consolas">
             
         </RichTextBox>
-        <!--<TextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" >
-            <TextBox.Style>
-                <Style TargetType="TextBox">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <VisualBrush Stretch="None">
-                                        <VisualBrush.Visual>
-                                            <TextBlock Text="Enter Command" Foreground="Gray"/>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="{x:Null}">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <VisualBrush Stretch="None">
-                                        <VisualBrush.Visual>
-                                            <TextBlock Text="Enter Command" Foreground="Gray"/>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="True">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <VisualBrush Stretch="None">
-                                    </VisualBrush>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBox.Style>
-        </TextBox>-->
     </Grid>
 </Window>

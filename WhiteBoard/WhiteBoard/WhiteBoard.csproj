@@ -65,7 +65,9 @@
     <Compile Include="DeleteCommand.cs" />
     <Compile Include="EditCommand.cs" />
     <Compile Include="SearchCommand.cs" />
+    <Compile Include="SyntaxProvider.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="Toast.cs" />
     <Compile Include="UndoCommand.cs" />
     <Compile Include="ViewCommand.cs" />
     <Page Include="AutoComplete.xaml">
