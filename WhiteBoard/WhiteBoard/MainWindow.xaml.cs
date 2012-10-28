@@ -65,7 +65,7 @@ namespace WhiteBoard
             keywords = whiteboardSyntax.Keywords;
 
             // Set up toast notification
-            Toast toast = new Toast(lblToast);
+            toast = new Toast(lblToast);
         }
 
         #region AutoComplete Delegates
