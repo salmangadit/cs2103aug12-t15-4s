@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows;
+using log4net;
 
 namespace WhiteBoard
 {
@@ -14,6 +15,7 @@ namespace WhiteBoard
         bool enter;
         int toastTime;
         DispatcherTimer toastTimer, toastAnimationTimer;
+        protected static readonly ILog log = LogManager.GetLogger(typeof(Toast));
 
         public Toast(Label lblToast)
         {
@@ -22,6 +24,7 @@ namespace WhiteBoard
 
         public void ShowToast(string toast)
         {
+            log.Debug("Showing toast...");
             toastTimer = new System.Windows.Threading.DispatcherTimer();
             toastTimer.Tick += new EventHandler(toastTimer_Tick);
             toastTimer.Interval = new TimeSpan(0, 0, 3);
@@ -60,7 +63,10 @@ namespace WhiteBoard
             else if (toastTime >= 15)
             {
                 if (lblToast.Opacity <= 0.2)
+                {
+                    log.Debug("Hiding toast...");
                     toastAnimationTimer.Stop();
+                }
                 lblToast.Opacity -= 0.2;
             }
         }
