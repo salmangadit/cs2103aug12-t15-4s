@@ -8,13 +8,24 @@ namespace WhiteBoard
 {
     class DeleteCommand : Command
     {
-        int taskIdToDelete;
-        Task taskToDelete;
+        List<int> taskIdsToDelete;
+        List<Task> tasksToDelete;
 
         public DeleteCommand(FileHandler fileHandler, int taskIdToDelete, List<Task> screenState)
             : base(fileHandler, screenState)
         {
-            this.taskIdToDelete = taskIdToDelete;
+            taskIdsToDelete = new List<int>();
+            tasksToDelete = new List<Task>();
+            this.taskIdsToDelete.Add(taskIdToDelete);
+            this.commandType = CommandType.Delete;
+        }
+
+        public DeleteCommand(FileHandler fileHandler, List<int> taskIdsToDelete, List<Task> screenState)
+            : base(fileHandler, screenState)
+        {
+            taskIdsToDelete = new List<int>();
+            tasksToDelete = new List<Task>();
+            this.taskIdsToDelete = taskIdsToDelete;
             this.commandType = CommandType.Delete;
         }
 
@@ -28,24 +39,30 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            taskToDelete = fileHandler.GetTaskFromFile(taskIdToDelete);
-            bool isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
+            foreach (int taskIdToDelete in taskIdsToDelete)
+            {
+                tasksToDelete.Add(fileHandler.GetTaskFromFile(taskIdToDelete));
+                bool isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
 
-            if (!isTaskDeleted)
-                throw new ApplicationException("Unable To Delete Task");
+                if (!isTaskDeleted)
+                    throw new ApplicationException("Unable To Delete Task with ID" + taskIdToDelete);
+            }
 
-            return null;
+            return tasksToDelete;
         }
 
         public override List<Task> Undo()
         {
-            fileHandler.AddTaskToFile(taskToDelete, taskIdToDelete);
+            foreach (Task task in tasksToDelete)
+            {
+                fileHandler.AddTaskToFile(task, task.Id);
+            }
             return screenState;
         }
 
-        public int GetDeletedTaskId()
+        public List<int> GetDeletedTaskId()
         {
-            return taskIdToDelete;
+            return taskIdsToDelete;
         }
     }
 }
