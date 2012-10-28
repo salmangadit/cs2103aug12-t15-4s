@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace WhiteBoard
 {
@@ -27,6 +28,7 @@ namespace WhiteBoard
         {
             get
             {
+                Debug.Assert(keyWords.Count() > 0, "No key words!");
                 return keyWords;
             }
         }

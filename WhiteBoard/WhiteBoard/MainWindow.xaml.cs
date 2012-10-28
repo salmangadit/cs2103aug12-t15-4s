@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace WhiteBoard
 {
@@ -24,8 +25,6 @@ namespace WhiteBoard
         Controller controller;
         AutoCompletor autoComplete;
         ObservableCollection<Task> tasksOnScreen;
-        DispatcherTimer toastTimer;
-        DispatcherTimer toastAnimationTimer;
         List<string> keywords;
         AutoComplete autoCompleteList;
         Toast toast;
@@ -40,6 +39,7 @@ namespace WhiteBoard
             autoCompleteList.AutoCompleteMouseEvent += new MouseEventHandler(AutoCompleteMouseBubbleEvent);
 
             tasksOnScreen = new ObservableCollection<Task>();
+
             Command command = controller.GetAllTasks(tasksOnScreen.ToList());
 
             List<Task> tasksToView = command.Execute();
@@ -79,6 +79,9 @@ namespace WhiteBoard
                     TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
                     allText.Text = allText.Text.Replace("\r\n", "");
                     string[] words = allText.Text.Split(' ');
+                    
+                    Debug.Assert(words.Count() > 0, "No words!");
+
                     if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                     {
                         TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
@@ -102,7 +105,10 @@ namespace WhiteBoard
                 // first replace the text he has already typed
                 TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
                 allText.Text = allText.Text.Replace("\r\n", "");
+
                 string[] words = allText.Text.Split(' ');
+                Debug.Assert(words.Count() > 0, "No words!");
+
                 if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                 {
                     TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
@@ -242,6 +248,7 @@ namespace WhiteBoard
 
         TextRange FindWordFromPosition(TextPointer position, string word)
         {
+            Debug.Assert(word != string.Empty, "Looking for empty an string");
             while (position != null)
             {
                 if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
@@ -267,6 +274,8 @@ namespace WhiteBoard
 
         TextRange FindLastWordFromPosition(TextPointer position, string word)
         {
+            Debug.Assert(word != string.Empty, "Looking for empty an string");
+
             TextRange foundRange = null;
             while (position != null)
             {
@@ -300,6 +309,7 @@ namespace WhiteBoard
             CheckAutoComplete();
 
             TextRange textRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
+            
             if (string.IsNullOrWhiteSpace(textRange.Text))
                 autoCompleteList.Visibility = System.Windows.Visibility.Collapsed;
 
@@ -309,6 +319,7 @@ namespace WhiteBoard
                 string userCommand = textRange.Text;
                 userCommand = userCommand.Replace("\r\n", "");
 
+                // Return on empty
                 if (userCommand == string.Empty)
                     return;
 
@@ -322,6 +333,7 @@ namespace WhiteBoard
                 Command command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
                 if (command == null)
                 {
+                    // Defense against null
                     return;
                 }
                 else if (command.CommandType == CommandType.Add)
