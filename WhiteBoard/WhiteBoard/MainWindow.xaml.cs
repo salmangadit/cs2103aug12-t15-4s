@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Diagnostics;
+using log4net;
 
 namespace WhiteBoard
 {
@@ -28,6 +29,7 @@ namespace WhiteBoard
         List<string> keywords;
         AutoComplete autoCompleteList;
         Toast toast;
+        protected static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
 
         public MainWindow()
         {
@@ -37,6 +39,8 @@ namespace WhiteBoard
             autoCompleteList = new AutoComplete();
             autoCompleteList.AutoCompleteKeyboardEvent += new KeyEventHandler(AutoCompleteKeyBubbleEvent);
             autoCompleteList.AutoCompleteMouseEvent += new MouseEventHandler(AutoCompleteMouseBubbleEvent);
+
+            log4net.Config.XmlConfigurator.Configure();
 
             tasksOnScreen = new ObservableCollection<Task>();
 
@@ -66,6 +70,9 @@ namespace WhiteBoard
 
             // Set up toast notification
             toast = new Toast(lblToast);
+
+            
+            log.Debug("Constructor cleared");
         }
 
         #region AutoComplete Delegates
@@ -75,6 +82,7 @@ namespace WhiteBoard
             {
                 if (autoCompleteList.SelectedItem != null)
                 {
+                    log.Debug("Auto Complete 'Enter' pressed");
                     // first replace the text he has already typed
                     TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
                     allText.Text = allText.Text.Replace("\r\n", "");
@@ -84,6 +92,7 @@ namespace WhiteBoard
 
                     if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                     {
+                        log.Debug("Replaced text in command rich text box");
                         TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
                         replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
                         replaceText.Text = "";
@@ -102,6 +111,8 @@ namespace WhiteBoard
         {
             if (autoCompleteList.SelectedItem != null)
             {
+                log.Debug("Auto Complete item selected");
+
                 // first replace the text he has already typed
                 TextRange allText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
                 allText.Text = allText.Text.Replace("\r\n", "");
@@ -111,6 +122,7 @@ namespace WhiteBoard
 
                 if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                 {
+                    log.Debug("Replaced text in command rich text box");
                     TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
                     replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
                     replaceText.Text = "";
@@ -128,6 +140,7 @@ namespace WhiteBoard
         #region AutoComplete
         private void CheckAutoComplete()
         {
+            log.Debug("Checking AutoComplete requirement");
             // Auto Complete
             TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
 
@@ -141,12 +154,24 @@ namespace WhiteBoard
                 if (words[0].ToLower() == "search:")
                 {
                     string search = command.Substring(words[0].Length);
-                    autoCompleteList.Show(autoComplete.Query(search));
+
+                    try
+                    {
+                        log.Debug("Generating autocomplete list");
+                        autoCompleteList.Show(autoComplete.Query(search));
+                    }
+                    catch (NullReferenceException)
+                    {
+                        log.Debug("Search string was null");
+                        return;
+                    }
                 }
             }
 
             if (autoCompleteList.Count == 0)
+            {
                 autoCompleteList.Visibility = Visibility.Collapsed;
+            }
             else
             {
                 autoCompleteList.Visibility = Visibility.Visible;
@@ -158,6 +183,7 @@ namespace WhiteBoard
         #region Syntax Highlighting
         private void DoSyntaxHighlight()
         {
+            log.Debug("Checking syntax highlighting");
             // Do syntax highlighting
             TextRange userTypedText = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
             string userText = userTypedText.Text;
@@ -170,6 +196,7 @@ namespace WhiteBoard
                 {
                     if (words[0].ToLower() == keyword.ToLower())
                     {
+                        log.Debug("Applying syntax highlighting to key word");
                         TextRange syntaxHighlight = FindWordFromPosition(txtCommand.Document.ContentStart, words[0]);
                         syntaxHighlight.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Blue));
                         syntaxHighlight.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
@@ -299,7 +326,7 @@ namespace WhiteBoard
                 position = position.GetNextContextPosition(LogicalDirection.Forward);
             }
 
-            // position will be null if "word" is not found.
+            // foundRange will be null if "word" is not found.
             return foundRange;
         }
         #endregion
@@ -316,6 +343,8 @@ namespace WhiteBoard
             // Listen for the press of the enter key
             if (e.Key == Key.Enter || e.Key == Key.Return)
             {
+                log.Debug("User clicked enter");
+
                 string userCommand = textRange.Text;
                 userCommand = userCommand.Replace("\r\n", "");
 
@@ -331,38 +360,48 @@ namespace WhiteBoard
                     autoCompleteList.Visibility = Visibility.Collapsed;
 
                 Command command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
-                if (command == null)
+               
+                try
                 {
-                    // Defense against null
+                    if (command.CommandType == CommandType.Add)
+                    {
+                        log.Debug("Adding task");
+                        ExecuteAdd(command);
+                    }
+                    else if (command.CommandType == CommandType.Edit)
+                    {
+                        log.Debug("Editing task");
+                        ExecuteEdit(command);
+                    }
+                    else if (command.CommandType == CommandType.View)
+                    {
+                        log.Debug("Viewing task");
+                        ExecuteView(command);
+                    }
+                    else if (command.CommandType == CommandType.Delete)
+                    {
+                        log.Debug("Deleting task");
+                        ExecuteDelete(command);
+                    }
+                    else if (command.CommandType == CommandType.Archive)
+                    {
+                        log.Debug("Archiving task");
+                        ExecuteArchive(command);
+                    }
+                    else if (command.CommandType == CommandType.Search)
+                    {
+                        log.Debug("Searching task");
+                        ExecuteSearch(command);
+                    }
+                    else if (command.CommandType == CommandType.Undo)
+                    {
+                        log.Debug("Undoing task");
+                        ExecuteUndo(command);
+                    }
+                }
+                catch (NullReferenceException)
+                {
                     return;
-                }
-                else if (command.CommandType == CommandType.Add)
-                {
-                    ExecuteAdd(command);
-                }
-                else if (command.CommandType == CommandType.Edit)
-                {
-                    ExecuteEdit(command);
-                }
-                else if (command.CommandType == CommandType.View)
-                {
-                    ExecuteView(command);
-                }
-                else if (command.CommandType == CommandType.Delete)
-                {
-                    ExecuteDelete(command);
-                }
-                else if (command.CommandType == CommandType.Archive)
-                {
-                    ExecuteArchive(command);
-                }
-                else if (command.CommandType == CommandType.Search)
-                {
-                    ExecuteSearch(command);
-                }
-                else if (command.CommandType == CommandType.Undo)
-                {
-                    ExecuteUndo(command);
                 }
 
                 lstTasks.DataContext = tasksOnScreen;
@@ -467,6 +506,7 @@ namespace WhiteBoard
         private void ExecuteAdd(Command command)
         {
             Task taskToAdd = (command.Execute())[0];
+            tasksOnScreen.Clear();
             tasksOnScreen.Add(taskToAdd);
             toast.ShowToast("Task Added!");
         }

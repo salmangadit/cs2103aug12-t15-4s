@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using log4net;
 
 namespace WhiteBoard
 {
@@ -24,6 +25,8 @@ namespace WhiteBoard
         public event MouseEventHandler AutoCompleteMouseEvent = delegate { };
 
         private string selectedItem = null;
+
+        protected static readonly ILog log = LogManager.GetLogger(typeof(AutoComplete));
 
         public int Count
         {
@@ -57,6 +60,10 @@ namespace WhiteBoard
 
         public void Show(List<string> searchResults)
         {
+            log.Debug("Showing Auto Complete List");
+            if (searchResults == null)
+                throw new NullReferenceException();
+
             autoCompleteList = searchResults;
             lstAutoComplete.DataContext = autoCompleteList;
             lstAutoComplete.ItemsSource = autoCompleteList;
@@ -82,6 +89,7 @@ namespace WhiteBoard
         {
             if (lstAutoComplete.Items.Count > 0)
             {
+                log.Debug("Focusing on Auto Complete List");
                 ListBoxItem item = (ListBoxItem)lstAutoComplete.ItemContainerGenerator.ContainerFromIndex(0);
                 FocusManager.SetFocusedElement(lstAutoComplete, item);
             }
@@ -94,6 +102,7 @@ namespace WhiteBoard
                 if (lstAutoComplete.SelectedItem == null)
                     return;
 
+                log.Debug("Selecting item from AutoComplete");
                 this.selectedItem = lstAutoComplete.SelectedItem.ToString();
                 AutoCompleteKeyboardEvent(this, e);
             }
@@ -103,7 +112,7 @@ namespace WhiteBoard
         {
             if (lstAutoComplete.SelectedItem == null)
                 return;
-
+            log.Debug("Selecting item from AutoComplete");
             this.selectedItem = lstAutoComplete.SelectedItem.ToString();
             AutoCompleteMouseEvent(this, e);
         }
