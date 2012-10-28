@@ -52,7 +52,7 @@
                             <TextBlock FontFamily="BankGothic Md BT" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding EndTime, StringFormat='f'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>        
                         </StackPanel>
                     </StackPanel>
-                        <Image Grid.Column="1" Source="warningIcon.png" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}" Width="25" Height="25"></Image>
+                        <Image Grid.Column="1" ToolTip="Task Overdue!" Source="warningIcon.png" Visibility="{Binding Overdue, Converter={StaticResource BoolToVis}}" Width="25" Height="25"></Image>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
