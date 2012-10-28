@@ -425,18 +425,25 @@ namespace WhiteBoard
 
         private void ExecuteDelete(Command command)
         {
-            int deletedTaskId = ((DeleteCommand)command).GetDeletedTaskId();
+            List<int> deletedTaskIds = ((DeleteCommand)command).GetDeletedTaskId();
             List<Task> deleted = command.Execute();
             int traversalIndex = 0;
             List<Task> tasks = tasksOnScreen.ToList<Task>();
             foreach (Task task in tasks)
             {
-                if (task.Id == deletedTaskId)
+                if (deletedTaskIds.Contains(task.Id))
                     tasksOnScreen.RemoveAt(traversalIndex);
                 traversalIndex++;
             }
 
-            toast.ShowToast("Deleted task with Id: " + deletedTaskId);
+            StringBuilder tasksDeletedToast = new StringBuilder();
+
+            foreach (int taskId in deletedTaskIds)
+            {
+                tasksDeletedToast.Append(taskId.ToString() + ", ");
+            }
+
+            toast.ShowToast("Deleted task with Id: " + tasksDeletedToast);
         }
 
         private void ExecuteView(Command command)
