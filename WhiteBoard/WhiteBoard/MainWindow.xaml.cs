@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Diagnostics;
 using log4net;
+using System.Threading;
 
 namespace WhiteBoard
 {
@@ -33,6 +34,7 @@ namespace WhiteBoard
 
         public MainWindow()
         {
+            Thread.Sleep(1000);
             InitializeComponent();
             controller = new Controller();
             autoComplete = new AutoCompletor();
@@ -70,7 +72,6 @@ namespace WhiteBoard
 
             // Set up toast notification
             toast = new Toast(lblToast);
-
             
             log.Debug("Constructor cleared");
         }

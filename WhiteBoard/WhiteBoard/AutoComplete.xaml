@@ -9,7 +9,7 @@
         <ListBox Name="lstAutoComplete" Focusable="True" FontFamily="Consolas" KeyUp="lstAutoComplete_KeyUp" MouseUp="lstAutoComplete_MouseUp">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}"/>
+                    <TextBlock Text="{Binding}" FontWeight="Bold"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

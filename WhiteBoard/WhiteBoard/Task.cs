@@ -151,5 +151,30 @@ namespace WhiteBoard
                 return Brushes.White;
             }
         }
+
+        public bool Overdue
+        {
+            get
+            {
+                if (taskEndTime == null && taskStartTime == null)
+                    return false;
+                else if (taskEndTime != null)
+                {
+                    if (DateTime.Now > taskEndTime)
+                        return true;
+                    else
+                        return false;
+                }
+                else if (taskEndTime == null && taskStartTime != null)
+                {
+                    if (DateTime.Now > taskStartTime)
+                        return true;
+                    else
+                        return false;
+                }
+
+                return false;
+            }
+        }
     }
 }
