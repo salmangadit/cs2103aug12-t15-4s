@@ -32,9 +32,9 @@
                         </StackPanel>
                         <TextBlock FontSize="20" Text="{Binding Description}" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding StartTime}"/>
+                            <TextBlock Text="{Binding StartTime, StringFormat='{}{0:MMMM d, yyyy}'}"/>
                             <TextBlock Text=" to " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
-                            <TextBlock Text="{Binding EndTime}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>        
+                            <TextBlock Text="{Binding EndTime, StringFormat='{}{0:MMMM d, yyyy}'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>        
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
