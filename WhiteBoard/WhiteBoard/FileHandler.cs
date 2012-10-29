@@ -129,18 +129,20 @@ namespace WhiteBoard
         {
             List<Task> listOfAllTasks = new List<Task>();
             //int indexOfTaskToAdd;
+            Debug.Assert(taskId > 0, "Task Id should be a positive number!");
             taskToAdd.Id = taskId;
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
-            StreamReader objStrRead = new StreamReader(filePath);
             try
             {
+                StreamReader objStrRead = new StreamReader(filePath);
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
+                objStrRead.Close();
             }
-            catch
+            catch (FileNotFoundException e)
             {
-                // put exception message here
-            }
-            objStrRead.Close();
+                Console.WriteLine(e.Message);
+                Environment.Exit(0);
+            }   
 
             if (listOfAllTasks.Count == 0) // If no tasks in file
             {
@@ -182,7 +184,7 @@ namespace WhiteBoard
         {
             Task taskToBeEdited = new Task();
             List<Task> listOfAllTasks = new List<Task>();
-            Debug.Assert(editedTaskId > 0, "Task Id needs to be greater than 0");
+            Debug.Assert(editedTaskId > 0, "Task Id should be a positive number!");
 
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
@@ -247,6 +249,7 @@ namespace WhiteBoard
             bool deleted = false;
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+            Debug.Assert(deletedTaskId > 0, "Deleted Task Id should be a positive number!");
 
             Task deletedTask = null;
 
@@ -283,6 +286,7 @@ namespace WhiteBoard
             bool archived = false;
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+            Debug.Assert(archivedTaskId > 0, "Archived Task Id should be a positive number");
 
             Task archivedTask = null;
 
@@ -319,6 +323,7 @@ namespace WhiteBoard
             bool unarchived = false;
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
+            Debug.Assert(unarchivedTaskId > 0, "Unarchived Task Id should be a positive number!");
 
             Task unarchivedTask = null;
 
