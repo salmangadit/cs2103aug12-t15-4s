@@ -18,6 +18,7 @@ namespace WhiteBoard
         private string[] COMMAND_VIEW_DAY = { "ON", "AT" };
         private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
         private string[] COMMAND_VIEW_ENDING = { "BY", "BEFORE", "ENDING" };
+        private string[] COMMAND_KEYWORD_REMOVE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN","START","END" };
         private const string COMMAND_MARK = "DONE";
         private const string COMMAND_MARK_AS = "AS DONE";
         private const string COMMAND_ALL = "ALL";
@@ -39,12 +40,11 @@ namespace WhiteBoard
         private int taskId = 0;
         private int checkId = 0;
         private int checkFirstDate = 0;
-        private int checkSecondDate = 0;
 
         private bool archiveFlag = false;
         private int dateKeywordFlag = 0;
         private int modifyFlag = 0;
-        private int tasksFlag = 0;
+        private int viewFlag = 0;
         private int dateFlag = 0;
         private int currentIndex = 0;
         private int nextIndex = 0;
@@ -177,7 +177,7 @@ namespace WhiteBoard
         {
             currentIndex = 0;
             nextIndex = currentIndex + 1;
-            if (userCommand.Count>1)
+            if (userCommand.Count > 1)
             {
                 checkId = IsValidTaskId(userCommand[nextIndex]);
                 if (checkId > 0)
@@ -229,7 +229,7 @@ namespace WhiteBoard
         /// </summary>
         private Command ParseView()
         {
-            tasksFlag = 0;
+            viewFlag = 0;
             currentIndex = 0;
             nextIndex = currentIndex + 1;
 
@@ -239,14 +239,14 @@ namespace WhiteBoard
                 {
                     startDate = endDate = null;
                     archiveFlag = false;
-                    tasksFlag = 1;
+                    viewFlag = 1;
                 }
 
                 else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
                 {
                     startDate = endDate = null;
                     archiveFlag = true;
-                    tasksFlag = 1;
+                    viewFlag = 1;
                 }
 
                 else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
@@ -256,101 +256,30 @@ namespace WhiteBoard
                     DateTime temp_start = DateTime.Now.AddDays(-days);
                     DateTime temp_end = temp_start.AddDays(6);
                     startDate = temp_start;
+                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
                     endDate = temp_end;
                     archiveFlag = false;
-                    tasksFlag = 1;
-                    //Need to make time 12:00 AM?
+                    viewFlag = 1;
                 }
 
-                if ((tasksFlag == 0) && (currentIndex < userCommand.Count - 1) && ((checkFirstDate = IsValidDate(userCommand[nextIndex])) > 0))
+                else
                 {
-                    DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
-                    startDate = date.DateParse();
+                    startDate = null;
                     endDate = null;
-                    archiveFlag = false;
-                    tasksFlag = 1;
-                }
-
-
-                if (tasksFlag == 0)
-                {
-                    dateKeywordFlag = 0;
-                    currentIndex = 1;
-                    int enddateflag = 0;
-
-                    foreach (string keyword in COMMAND_VIEW_RANGE)
+                    if (ParseForDates(userCommand, nextIndex, false) > 0)
                     {
-                        if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
-                        {
-                            nextIndex = currentIndex + 1;
-                            dateKeywordFlag = 1;
-                        }
-                    }
-                    if (dateKeywordFlag == 0)
-                    {
-                        foreach (string keyword in COMMAND_VIEW_ENDING)
-                        {
-                            if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
-                            {
-                                nextIndex = currentIndex + 1;
-                                enddateflag = 1;
-                            }
-                        }
-                    }
-
-                    if (dateKeywordFlag != 0)
-                    {
-                        if (ParseForDates(userCommand[nextIndex]) == 2)
-                        {
-                            startDate = startEndDate[0].DateParse();
-                            endDate = startEndDate[1].DateParse();
-                            archiveFlag = false;
-                            tasksFlag = 1;
-                        }
-                    }
-                    else if (enddateflag == 1)
-                    {
-                        if ((checkFirstDate = IsValidDate(userCommand[nextIndex])) > 0)
-                        {
-                            DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
-                            endDate = date.DateParse();
-                            startDate = DateTime.Now;
-                            startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
-                            archiveFlag = false;
-                            tasksFlag = 1;
-                        }
+                        viewFlag = 1;
+                        AssignDates();
                     }
                 }
 
-                if (tasksFlag == 0)
-                {
-                    currentIndex = 0;
-                    nextIndex = currentIndex + 1;
-
-                    foreach (string keyword in COMMAND_VIEW_DAY)
-                    {
-                        if (String.Equals(keyword, userCommand[nextIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
-                        {
-                            if ((checkFirstDate = IsValidDate(userCommand[nextIndex + 1])) > 0)
-                            {
-                                DateHolder date = new DateHolder(userCommand[nextIndex + 1], checkFirstDate);
-                                startDate = date.DateParse();
-                                endDate = null;
-                                archiveFlag = false;
-                                tasksFlag = 1;
-                            }
-                        }
-                    }
-                }
-                         
-                if (tasksFlag == 1)
+                if (viewFlag == 1)
                 {
                     Task viewtaskdetails = new Task(0, null, startDate, endDate, archiveFlag);
                     ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
                     taskHistory.Push(view);
                     return view;
                 }
-
 
                 else
                 {
@@ -359,7 +288,7 @@ namespace WhiteBoard
             }
             else
             {
-                return ParseNewTask();
+               return ParseNewTask();
             }
         }
 
@@ -388,7 +317,8 @@ namespace WhiteBoard
             if (modifyFlag != 0)
             {
                 currentIndex = 0;
-                int date_count = 0;
+                int invertdates = 0;
+                int descindex = 2;
 
                 foreach (string str in userCommand)
                 {
@@ -396,33 +326,30 @@ namespace WhiteBoard
                     {
                         if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                         {
-                            checkFirstDate = IsValidDate(userCommand[currentIndex + 1]);
-                            if (checkFirstDate > 0 && date_count <= 2)
+                            if (dateFlag == 0)
                             {
-                                nextIndex = currentIndex + 1;
-
                                 if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase))
                                 {
-                                    startDateIndex = currentIndex;
-                                    DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
-                                    startDate = date.DateParse();
+                                    startDateIndex = currentIndex + 1;
+                                    if (ParseForDates(userCommand, startDateIndex, true) > 0)
+                                    {
+                                        dateFlag = 1;
+                                    }
                                 }
+
                                 if (String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
                                 {
-                                    endDateIndex = currentIndex;
-                                    DateHolder date = new DateHolder(userCommand[nextIndex], checkFirstDate);
-                                    endDate = date.DateParse();
+                                    endDateIndex = currentIndex + 1;
+                                    if (ParseForDates(userCommand, endDateIndex, true) > 0)
+                                    {
+                                        dateFlag = 1;
+                                        invertdates = 1;
+                                    }
                                 }
-                                date_count++; ;
                             }
                         }
                     }
                     currentIndex++;
-                }
-
-                if (date_count > 0)
-                {
-                    dateFlag = 1;
                 }
 
                 if (dateFlag == 0 && nextIndex < userCommand.Count - 1)
@@ -439,32 +366,14 @@ namespace WhiteBoard
 
                 else if (dateFlag == 1)
                 {
-                    taskIndex = 2;
-                    if (String.Equals(userCommand[taskIndex], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase))
+                    AssignDates();
+                    if (invertdates == 1)
                     {
-                        taskIndex += 1;
+                        DateTime? temp = startDate;
+                        startDate = endDate;
+                        endDate = temp;
                     }
-
-                    if (startDateIndex > 0 && endDateIndex > 0)
-                    {
-                        if (startDateIndex < endDateIndex)
-                        {
-                            taskDescription = ConvertToString(userCommand, stringList, taskIndex, startDateIndex - 1);
-                        }
-                        else
-                        {
-                            taskDescription = ConvertToString(userCommand, stringList, taskIndex, endDateIndex - 1);
-                        }
-                    }
-                    else if (startDateIndex > 0)
-                    {
-                        taskDescription = ConvertToString(userCommand, stringList, taskIndex, startDateIndex - 1);
-                    }
-                    else
-                    {
-                        taskDescription = ConvertToString(userCommand, stringList, taskIndex, endDateIndex - 1);
-                    }
-
+                    taskDescription = ConvertToString(userCommand, stringList, descindex, previousIndex);
                     if (taskDescription == String.Empty)
                     {
                         taskDescription = null;
@@ -519,7 +428,7 @@ namespace WhiteBoard
                     }
                     if (calldaterange == 1 && dateFlag == 0)
                     {
-                        if (ParseForDates(userCommand[nextIndex]) > 0)
+                        if (ParseForDates(userCommand, nextIndex, false) > 0)
                         {
                             dateFlag = 1;
                             AssignDates();
@@ -607,34 +516,45 @@ namespace WhiteBoard
         /// Checks if a date range is given and extracts the start and end date
         /// </summary>
         /// <param name="checkdate">The string to be parsed and checked</param>
-        /// <returns>Returns 2 if valid start and end dates are found</returns>
-        private int ParseForDates(string checkdate)
+        /// <returns>Returns >0 if valid start and/or end dates are found</returns>
+        private int ParseForDates(List<string> commandlist, int index, bool modify)
         {
             List<string> firstsublist = new List<string>();
             List<string> secondsublist = new List<string>();
-            int toindex = -1;
+            int splitindex = -1;
             int i = 0;
-            int startdateindex = nextIndex;
+            int startdateindex = index;
 
-            List<string> sublist = userCommand.GetRange(startdateindex, userCommand.Count - (startdateindex));
+            List<string> sublist = commandlist.GetRange(startdateindex, userCommand.Count - (startdateindex));
             firstsublist = sublist;
             foreach (string str in sublist)
             {
-                if (toindex < 0)
+                if (splitindex < 0)
                 {
-                    if (String.Equals(str, COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
-                        || String.Equals(str, COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
-                        || String.Equals(str, COMMAND_RANGE_ALT))
+                    if (!modify)
                     {
-                        toindex = i;
+                        if (String.Equals(str, COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, COMMAND_RANGE_ALT))
+                        {
+                            splitindex = i;
+                        }
+                    }
+                    else
+                    {
+                        if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase)
+                        || String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            splitindex = i;
+                        }
                     }
                 }
                 i++;
             }
 
-            if (toindex > 0)
+            if (splitindex > 0)
             {
-                secondsublist = sublist.GetRange(toindex, sublist.Count - (toindex));
+                secondsublist = sublist.GetRange(splitindex, sublist.Count - (splitindex));
                 firstsublist = sublist.GetRange(0, (sublist.Count - secondsublist.Count));
             }
 
@@ -680,7 +600,7 @@ namespace WhiteBoard
                 }
             }
 
-            if (toindex > 0 && (startTimeFlag > 0 || firstDayFlag > 0))
+            if (splitindex > 0 && (startTimeFlag > 0 || firstDayFlag > 0))
             {
                 foreach (string word in secondsublist)
                 {
@@ -882,11 +802,14 @@ namespace WhiteBoard
                 templist.Add(list[i]);
             }
 
-            foreach (string keyword in COMMAND_DATE)
+            foreach (string keyword in COMMAND_KEYWORD_REMOVE)
             {
-                if (String.Equals(keyword, templist.Last(), StringComparison.CurrentCultureIgnoreCase))
+                if (templist.Count > 0)
                 {
-                    templist.RemoveAt(templist.Count - 1);
+                    if (String.Equals(keyword, templist.Last(), StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        templist.RemoveAt(templist.Count - 1);
+                    }
                 }
             }
             tempstring = String.Join(" ", templist.ToArray());
