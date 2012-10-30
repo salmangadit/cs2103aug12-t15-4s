@@ -6,6 +6,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using log4net;
 
 namespace WhiteBoard
 {
@@ -22,6 +23,7 @@ namespace WhiteBoard
 
     class FileHandler
     {
+        protected static readonly ILog log = LogManager.GetLogger(typeof(FileHandler));
         private static FileHandler instance;
 
         private event FileUpdate updateEvent;
@@ -31,6 +33,7 @@ namespace WhiteBoard
         private FileHandler()
         {
             string fileName = "TasksList.xml";
+            //log.Debug("Hello there");
 
             // set file path, we use the current Directory for the user and specified file name
             filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + fileName;
@@ -88,6 +91,7 @@ namespace WhiteBoard
 
         internal void AddTaskToFile(Task taskToAdd)
         {
+            log.Debug("Task going to be added");
             List<Task> listOfAllTasks = new List<Task>();
             int lastTaskIndex;
             int newTaskId = 1;
@@ -123,6 +127,7 @@ namespace WhiteBoard
             }
             objStrWrt.Close();
             Notify(UpdateType.Add, taskToAdd);
+            log.Debug("Task added");
         }
 
         internal void AddTaskToFile(Task taskToAdd, int taskId)
@@ -182,6 +187,7 @@ namespace WhiteBoard
 
         internal Task GetTaskFromFile(int editedTaskId)
         {
+            log.Debug("Going to get task from file for editing");
             Task taskToBeEdited = new Task();
             List<Task> listOfAllTasks = new List<Task>();
             Debug.Assert(editedTaskId > 0, "Task Id should be a positive number!");
@@ -246,6 +252,7 @@ namespace WhiteBoard
 
         internal bool DeleteTaskFromFile(int deletedTaskId)
         {
+            log.Debug("Task going to be deleted");
             bool deleted = false;
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
@@ -276,6 +283,7 @@ namespace WhiteBoard
             if (deleted)
             {
                 Notify(UpdateType.Delete, deletedTask);
+                log.Debug("Task deleted");
             }
             // If file is already empty it will return false. Is that ok?
             return deleted;
@@ -283,6 +291,7 @@ namespace WhiteBoard
 
         internal bool ArchiveTaskInFile(int archivedTaskId)
         {
+            log.Debug("Task going to be archived");
             bool archived = false;
             List<Task> listOfTasks = new List<Task>();
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
@@ -313,6 +322,7 @@ namespace WhiteBoard
             if (archived)
             {
                 Notify(UpdateType.Archive, archivedTask);
+                log.Debug("Task archived");
             }
 
             return archived;
