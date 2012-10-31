@@ -21,7 +21,7 @@ namespace WhiteBoard
             this.commandType = CommandType.Delete;
         }
 
-        public DeleteCommand(FileHandler fileHandler, List<int> taskIdsToDelete, bool deleteAll=false, List<Task> screenState)
+        public DeleteCommand(FileHandler fileHandler, List<int> taskIdsToDelete, List<Task> screenState,  bool deleteAll=false)
             : base(fileHandler, screenState)
         {
             taskIdsToDelete = new List<int>();
