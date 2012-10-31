@@ -360,8 +360,15 @@ namespace WhiteBoard
                 if (autoCompleteList.Visibility == Visibility.Visible)
                     autoCompleteList.Visibility = Visibility.Collapsed;
 
-                Command command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
-               
+                Command command = null;
+                try
+                {
+                    command = controller.GetCommandObject(userCommand, tasksOnScreen.ToList());
+                }
+                catch (FormatException)
+                {
+                    toast.ShowToast("Invalid date entered. Please re-enter command");
+                }
                 try
                 {
                     if (command.CommandType == CommandType.Add)
@@ -403,6 +410,10 @@ namespace WhiteBoard
                 catch (NullReferenceException)
                 {
                     return;
+                }
+                catch (ApplicationException ex)
+                {
+                    toast.ShowToast(ex.Message);
                 }
 
                 lstTasks.DataContext = tasksOnScreen;

@@ -17,11 +17,10 @@
         </Style>
 
         <Style x:Key="ArchivedItem" TargetType="TextBlock">
-            <Setter Property="TextElement.FontFamily" Value="Resources/#FromWhereYouAre" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=Archive}" Value="True">
                     <Setter Property="FontStyle" Value="Italic"/>
-                    <Setter Property="Foreground" Value="LightGray"/>
+                    <Setter Property="Foreground" Value="Gray"/>
                     <Setter Property="TextDecorations" Value="Strikethrough"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -43,14 +42,14 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Vertical" Margin="5" Grid.Column="0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="25" Text="T"/>
-                                <TextBlock FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="25" Text="{Binding Id}" />
+                                <TextBlock FontFamily="./Resources/#From Where You Are" Style="{StaticResource ArchivedItem}" FontSize="25" Text="T"/>
+                                <TextBlock FontFamily="./Resources/#From Where You Are" Style="{StaticResource ArchivedItem}" FontSize="25" Text="{Binding Id}" />
                             </StackPanel>
-                            <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="25" Style="{StaticResource ArchivedItem}" Text="{Binding Description}"/>
+                            <TextBlock FontFamily="./Resources/#From Where You Are" FontSize="25" Style="{StaticResource ArchivedItem}" Text="{Binding Description}"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding StartTime, StringFormat='f'}"/>
-                                <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="14" Style="{StaticResource ArchivedItem}" Text=" to " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
-                                <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding EndTime, StringFormat='f'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                                <TextBlock FontFamily="./Resources/#From Where You Are" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding StartTime, StringFormat='f'}"/>
+                                <TextBlock FontFamily="./Resources/#From Where You Are" FontSize="14" Style="{StaticResource ArchivedItem}" Text=" to " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                                <TextBlock FontFamily="./Resources/#From Where You Are" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding EndTime, StringFormat='f'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
                             </StackPanel>
                         </StackPanel>
                         <Image Grid.Column="1" ToolTip="Task Overdue!" Source="warningIcon.png" Visibility="{Binding Overdue, Converter={StaticResource BoolToVis}}" Width="25" Height="25"></Image>
