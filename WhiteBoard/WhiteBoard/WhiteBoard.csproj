@@ -122,6 +122,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\AintNothingFancy.ttf" />
+    <Resource Include="Resources\PermanentMarker.ttf" />
+    <Resource Include="Resources\FromWhereYouAre.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="warningIcon.png" />
@@ -129,6 +132,7 @@
   <ItemGroup>
     <SplashScreen Include="splash.jpg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

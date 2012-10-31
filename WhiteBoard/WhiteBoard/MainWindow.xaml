@@ -15,8 +15,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="ArchivedItem" TargetType="TextBlock">
+            <Setter Property="TextElement.FontFamily" Value="Resources/#FromWhereYouAre" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=Archive}" Value="True">
                     <Setter Property="FontStyle" Value="Italic"/>
@@ -40,18 +41,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical" Margin="5" Grid.Column="0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="BankGothic Md BT" Style="{StaticResource ArchivedItem}" FontSize="25" Text="T"/>
-                            <TextBlock FontFamily="BankGothic Md BT" Style="{StaticResource ArchivedItem}" FontSize="25" Text="{Binding Id}" />
+                        <StackPanel Orientation="Vertical" Margin="5" Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="25" Text="T"/>
+                                <TextBlock FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="25" Text="{Binding Id}" />
+                            </StackPanel>
+                            <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="25" Style="{StaticResource ArchivedItem}" Text="{Binding Description}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding StartTime, StringFormat='f'}"/>
+                                <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="14" Style="{StaticResource ArchivedItem}" Text=" to " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                                <TextBlock FontFamily="./Resources/#Permanent Marker" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding EndTime, StringFormat='f'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                            </StackPanel>
                         </StackPanel>
-                        <TextBlock FontFamily="BankGothic Md BT" FontSize="25" Style="{StaticResource ArchivedItem}" Text="{Binding Description}"/>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="BankGothic Md BT" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding StartTime, StringFormat='f'}"/>
-                            <TextBlock FontFamily="BankGothic Md BT" FontSize="14" Style="{StaticResource ArchivedItem}" Text=" to " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
-                            <TextBlock FontFamily="BankGothic Md BT" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding EndTime, StringFormat='f'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>        
-                        </StackPanel>
-                    </StackPanel>
                         <Image Grid.Column="1" ToolTip="Task Overdue!" Source="warningIcon.png" Visibility="{Binding Overdue, Converter={StaticResource BoolToVis}}" Width="25" Height="25"></Image>
                     </Grid>
                 </DataTemplate>
@@ -63,7 +64,7 @@
             </Label.Margin>
         </Label>
         <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="14" FontFamily="Consolas">
-            
+
         </RichTextBox>
     </Grid>
 </Window>
