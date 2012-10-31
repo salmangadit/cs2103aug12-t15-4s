@@ -42,6 +42,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -58,6 +59,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoCompletorTest.cs" />
     <Compile Include="CommandParserTest.cs" />
     <Compile Include="ControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
