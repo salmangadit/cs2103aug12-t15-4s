@@ -215,9 +215,15 @@ namespace WhiteBoard
                     taskHistory.Push(delete);
                     return delete;
                 }
+                //else if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCulture))
+                //{
+                //    Log.Debug("Delete all command");
+
+                //    DeleteCommand delete = new DeleteCommand(fileHandler, screenState, true);
+                //}
                 else
                 {
-                    Log.Debug("Task ID not valid. Calling ParseNewTask()");
+                    Log.Debug("Task ID not valid and Delete All not called. Calling ParseNewTask()");
                     return ParseNewTask();
                 }
             }
