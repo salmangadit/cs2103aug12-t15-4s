@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using log4net;
 
 
@@ -74,6 +75,10 @@ namespace WhiteBoard
         public CommandParser(List<Task> screenState, Stack<Command> taskHistory)
         {
             fileHandler = FileHandler.Instance;
+
+            Debug.Assert(screenState != null, "Screen State was null");
+            Debug.Assert(taskHistory != null, "Task History was null");
+
             this.screenState = screenState;
             this.taskHistory = taskHistory;
         }
@@ -84,7 +89,13 @@ namespace WhiteBoard
         /// <param name="usercommand">The string input by user5</param>
         private void SplitString(string usercommand)
         {
-            //Assert userCommand not null?
+            Debug.Assert(usercommand != null, "User command was null");
+
+            if (usercommand == null)
+            {
+                return;
+            }
+
             inputCommand = usercommand;
             inputCommand = Regex.Replace(inputCommand, @"\s+", " ");
 
@@ -101,7 +112,7 @@ namespace WhiteBoard
 
         public List<string> ReturnUserCommandListForTesting()
         {
-            //Assert userCommand not null?
+            Debug.Assert(userCommand != null, "User command was null");
             return userCommand;
         }
         /// <summary>
@@ -110,7 +121,6 @@ namespace WhiteBoard
         /// <returns>Returns a command object with details of the ToDo item</returns>
         public Command ParseCommand(string usercommand)
         {
-            //Assert userCommand not null?
             SplitString(usercommand);
             switch (userCommand[0].ToString().ToUpper())
             {
@@ -155,8 +165,9 @@ namespace WhiteBoard
         private Command ParseSearch()
         {
             searchString = ConvertToString(userCommand, stringList, 1, userCommand.Count - 1);
+
             Log.Debug(String.Format("Search keyword entered. The search term is : {0}", searchString));
-            //Assert userCommand not null?
+
             SearchCommand search = new SearchCommand(fileHandler, searchString, screenState);
             taskHistory.Push(search);
             return search;
@@ -583,6 +594,13 @@ namespace WhiteBoard
         /// <returns>Returns >0 if valid start and/or end dates are found</returns>
         private int ParseForDates(List<string> commandlist, int index, bool modify)
         {
+            Debug.Assert(index >= 0, "Index was negative");
+
+            if (index < 0)
+            {
+                return 0;
+            }
+
             List<string> firstsublist = new List<string>();
             List<string> secondsublist = new List<string>();
             int splitindex = -1;
@@ -793,6 +811,8 @@ namespace WhiteBoard
             {
                 temp = DateTime.ParseExact(time, correctformat, CultureInfo.InvariantCulture, DateTimeStyles.None);
             }
+
+            Debug.Assert(temp != null, "Time returned was null");
             return temp.TimeOfDay;
         }
 
