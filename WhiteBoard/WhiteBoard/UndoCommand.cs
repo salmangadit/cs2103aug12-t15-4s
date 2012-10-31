@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace WhiteBoard
 {
@@ -27,6 +28,8 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
+            Debug.Assert(commandToUndo != null, "Command to undo not set!");
+            Log.Debug("Executing Undo Command");
             return commandToUndo.Undo();
         }
 
