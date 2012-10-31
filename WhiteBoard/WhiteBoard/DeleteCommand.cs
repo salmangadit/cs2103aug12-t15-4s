@@ -21,12 +21,24 @@ namespace WhiteBoard
             this.commandType = CommandType.Delete;
         }
 
-        public DeleteCommand(FileHandler fileHandler, List<int> taskIdsToDelete, List<Task> screenState)
+        public DeleteCommand(FileHandler fileHandler, List<int> taskIdsToDelete, bool deleteAll=false, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             taskIdsToDelete = new List<int>();
             tasksToDelete = new List<Task>();
-            this.taskIdsToDelete = taskIdsToDelete;
+
+            if (deleteAll)
+            {
+                foreach (Task task in screenState)
+                {
+                    this.taskIdsToDelete.Add(task.Id);
+                }
+            }
+            else
+            {
+                this.taskIdsToDelete = taskIdsToDelete;
+            }
+
             this.commandType = CommandType.Delete;
         }
 
