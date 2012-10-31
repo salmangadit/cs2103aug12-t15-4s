@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace WhiteBoard
 {
@@ -41,11 +42,20 @@ namespace WhiteBoard
         {
             foreach (int taskIdToDelete in taskIdsToDelete)
             {
+                Debug.Assert(taskIdToDelete > 0, "Invalid task ID");
+
                 tasksToDelete.Add(fileHandler.GetTaskFromFile(taskIdToDelete));
                 bool isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
 
-                if (!isTaskDeleted)
-                    throw new ApplicationException("Unable To Delete Task with ID" + taskIdToDelete);
+                if (isTaskDeleted)
+                {
+                    Log.Debug("Delete Command was executed for" + taskIdToDelete);
+                }
+                else
+                {
+                    Log.Debug("Delete Command failed for" + taskIdToDelete);
+                    throw new SystemException("Unable To Delete Task" + taskIdToDelete);
+                }
             }
 
             return tasksToDelete;
@@ -55,7 +65,9 @@ namespace WhiteBoard
         {
             foreach (Task task in tasksToDelete)
             {
+                Debug.Assert(task.Id > 0, "Invalid task ID");
                 fileHandler.AddTaskToFile(task, task.Id);
+                Log.Debug("Delete Command was undone for" + task.Id);
             }
             return screenState;
         }

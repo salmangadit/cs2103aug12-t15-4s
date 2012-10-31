@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace WhiteBoard
 {
@@ -18,11 +19,11 @@ namespace WhiteBoard
             this.commandType = CommandType.Archive;
         }
 
-        public ArchiveCommand(FileHandler fileHandler, List<int> taskIdToArchive, List<Task> screenState)
+        public ArchiveCommand(FileHandler fileHandler, List<int> taskIdsToArchive, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             taskIdsToArchive = new List<int>();
-            this.taskIdsToArchive = taskIdToArchive;
+            this.taskIdsToArchive = taskIdsToArchive;
             this.commandType = CommandType.Archive;
         }
 
@@ -36,15 +37,22 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            bool isTaskArchived = false;
-
             foreach (int taskIdToArchive in taskIdsToArchive)
             {
-                isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
-            }
+                Debug.Assert(taskIdToArchive > 0, "Invalid task ID");
 
-            if (!isTaskArchived)
-                throw new ApplicationException("Unable To Archive All Tasks");
+                bool isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
+
+                if (isTaskArchived)
+                {
+                    Log.Debug("Archive Command was executed for" + taskIdToArchive);
+                }
+                else
+                {
+                    Log.Debug("Archive Command failed for" + taskIdToArchive);
+                    throw new SystemException("Unable To Archive Task" + taskIdToArchive);
+                }
+            }
 
             return new List<Task>();
         }
@@ -53,7 +61,19 @@ namespace WhiteBoard
         {
             foreach (int taskIdToArchive in taskIdsToArchive)
             {
-                fileHandler.UnarchiveTaskInFile(taskIdToArchive);
+                Debug.Assert(taskIdToArchive > 0, "Invalid task ID");
+                bool isTaskUnarchived = fileHandler.UnarchiveTaskInFile(taskIdToArchive);
+
+                if (isTaskUnarchived)
+                {
+                    Log.Debug("Archive Command was undone for" + taskIdToArchive);
+                }
+                else
+                {
+                    Log.Debug("Archive Command Undo failed for" + taskIdToArchive);
+                    throw new SystemException("Unable To Undo Archive Task" + taskIdToArchive);
+                }
+
             }
             return screenState;
         }
