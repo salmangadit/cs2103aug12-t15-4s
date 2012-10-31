@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using log4net;
 
 namespace WhiteBoard
 {
@@ -10,6 +12,7 @@ namespace WhiteBoard
     {
         private List<string> lineSet = new List<string>();
         private List<string> wordSet = new List<string>();
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(AutoCompletor));
 
         public AutoCompletor()
         {
@@ -20,14 +23,11 @@ namespace WhiteBoard
 
         public List<string> Query(string query)
         {
-            if (query == null)
-            {
-                throw new ArgumentNullException("Query cannot be null");
-            }
+            Debug.Assert(query != null, "Query string is null");
 
             if (query.Length < 1)
             {
-                return null;
+                return new List<string>();
             }
 
             HashSet<string> resultSet = new HashSet<string>();
@@ -53,6 +53,12 @@ namespace WhiteBoard
 
         private void Update(UpdateType update, Task task, Task uneditedTask)
         {
+            Debug.Assert(task != null, "Task to update was null");
+
+            Debug.Assert(!(update == UpdateType.Edit && uneditedTask == null), "Unedited Task was null");
+
+            Log.Debug(String.Format("FileHandler triggered Update event {0} for task {1}", update, task.Id));
+
             switch (update)
             {
                 case UpdateType.Add:
@@ -77,12 +83,13 @@ namespace WhiteBoard
                     break;
 
                 default:
-                    throw new NotSupportedException("No such update type");
+                    throw new NotImplementedException("No such update type");
             }
         }
 
         private void GenerateLineSet(List<Task> tasks)
         {
+            Log.Debug("Generating line set");
             foreach (Task task in tasks)
             {
                 lineSet.Add(task.Description);
@@ -91,6 +98,7 @@ namespace WhiteBoard
 
         private void GenerateWordSet()
         {
+            Log.Debug("Generating word set");
             foreach (string line in lineSet)
             {
                 // replace one or more whitespace in description with single whitespace
@@ -108,6 +116,8 @@ namespace WhiteBoard
         // sorting for better visual appeal and branch prediction
         private static IEnumerable<string> SortByLength(IEnumerable<string> e)
         {
+            Log.Debug("Sorting set");
+
             // sorts the array and returns a copy
             var sorted = from s in e
                          orderby s.Length ascending
@@ -118,6 +128,8 @@ namespace WhiteBoard
 
         private void AddToSets(Task task)
         {
+            Log.Debug(String.Format("Adding Task with description {0} to sets", task.Description));
+
             lineSet.Add(task.Description);
 
             // replace one or more whitespace in description with single whitespace
@@ -133,6 +145,8 @@ namespace WhiteBoard
 
         private void RemoveFromSets(Task task)
         {
+            Log.Debug(String.Format("Removing Task with description {0} from sets", task.Description));
+
             lineSet.Remove(task.Description);
 
             // replace one or more whitespace in description with single whitespace
