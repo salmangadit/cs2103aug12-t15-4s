@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using log4net;
 
 
 namespace WhiteBoard
@@ -18,7 +19,7 @@ namespace WhiteBoard
         private string[] COMMAND_VIEW_DAY = { "ON", "AT" };
         private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
         private string[] COMMAND_VIEW_ENDING = { "BY", "BEFORE", "ENDING" };
-        private string[] COMMAND_KEYWORD_REMOVE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN","START","END" };
+        private string[] COMMAND_KEYWORD_REMOVE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN", "START", "END" };
         private const string COMMAND_MARK = "DONE";
         private const string COMMAND_MARK_AS = "AS DONE";
         private const string COMMAND_ALL = "ALL";
@@ -42,14 +43,12 @@ namespace WhiteBoard
         private int checkFirstDate = 0;
 
         private bool archiveFlag = false;
-        private int dateKeywordFlag = 0;
         private int modifyFlag = 0;
         private int viewFlag = 0;
         private int dateFlag = 0;
         private int currentIndex = 0;
         private int nextIndex = 0;
         private int previousIndex = 0;
-        private int taskIndex = 0;
         private int startDateIndex = 0;
         private int endDateIndex = 0;
         private int startTimeFlag = 0;
@@ -65,6 +64,8 @@ namespace WhiteBoard
 
         private List<Task> screenState;
         private Stack<Command> taskHistory;
+
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(CommandParser));
 
         public CommandParser()
         {
@@ -83,9 +84,14 @@ namespace WhiteBoard
         /// <param name="usercommand">The string input by user5</param>
         private void SplitString(string usercommand)
         {
+            //Assert userCommand not null?
             inputCommand = usercommand;
             inputCommand = Regex.Replace(inputCommand, @"\s+", " ");
+
+            Log.Debug("Extra white spaces removed. Input command : " + inputCommand);
+
             userCommandArray = inputCommand.Split(' ');
+
             foreach (string str in userCommandArray)
             {
                 str.Trim();
@@ -95,6 +101,7 @@ namespace WhiteBoard
 
         public List<string> ReturnUserCommandListForTesting()
         {
+            //Assert userCommand not null?
             return userCommand;
         }
         /// <summary>
@@ -103,6 +110,7 @@ namespace WhiteBoard
         /// <returns>Returns a command object with details of the ToDo item</returns>
         public Command ParseCommand(string usercommand)
         {
+            //Assert userCommand not null?
             SplitString(usercommand);
             switch (userCommand[0].ToString().ToUpper())
             {
@@ -147,6 +155,8 @@ namespace WhiteBoard
         private Command ParseSearch()
         {
             searchString = ConvertToString(userCommand, stringList, 1, userCommand.Count - 1);
+            Log.Debug(String.Format("Search keyword entered. The search term is : {0}", searchString));
+            //Assert userCommand not null?
             SearchCommand search = new SearchCommand(fileHandler, searchString, screenState);
             taskHistory.Push(search);
             return search;
@@ -159,6 +169,8 @@ namespace WhiteBoard
         /// <returns>UndoCommand Object</returns>
         private Command ParseUndo()
         {
+            Log.Debug("Undo keyword entered.");
+
             Command lastcommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
             if (lastcommand != null)
             {
@@ -175,6 +187,8 @@ namespace WhiteBoard
         /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
         private Command ParseDelete()
         {
+            Log.Debug("Delete keyword entered. Checking task ID");
+
             currentIndex = 0;
             nextIndex = currentIndex + 1;
             if (userCommand.Count > 1)
@@ -182,6 +196,8 @@ namespace WhiteBoard
                 checkId = IsValidTaskId(userCommand[nextIndex]);
                 if (checkId > 0)
                 {
+                    Log.Debug("Valid task ID entered. The ID is: " + checkId);
+
                     taskId = checkId;
                     archiveFlag = false;
                     DeleteCommand delete = new DeleteCommand(fileHandler, taskId, screenState);
@@ -190,11 +206,13 @@ namespace WhiteBoard
                 }
                 else
                 {
+                    Log.Debug("Task ID not valid. Calling ParseNewTask()");
                     return ParseNewTask();
                 }
             }
             else
             {
+                Log.Debug("Task ID not valid. Calling ParseNewTask()");
                 return ParseNewTask();
             }
         }
@@ -205,11 +223,14 @@ namespace WhiteBoard
         /// /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
         private Command ParseDone()
         {
+            Log.Debug("Archive keyword entered. Checking task ID");
             currentIndex = 0;
             nextIndex = currentIndex + 1;
             checkId = IsValidTaskId(userCommand[nextIndex]);
             if (checkId > 0)
             {
+                Log.Debug("Valid task ID entered. The ID is: " + checkId);
+
                 string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);
                 temp = temp.Trim();
                 if (String.Equals(temp, COMMAND_MARK, StringComparison.CurrentCultureIgnoreCase)
@@ -222,6 +243,8 @@ namespace WhiteBoard
                     return markdone;
                 }
             }
+            Log.Debug("Task ID not valid. Calling ParseNewTask()");
+
             return ParseNewTask();
         }
         /// <summary>
@@ -232,6 +255,8 @@ namespace WhiteBoard
             viewFlag = 0;
             currentIndex = 0;
             nextIndex = currentIndex + 1;
+
+            Log.Debug("View keyword entered. Checking parameters");
 
             if (userCommand.Count > 1)
             {
@@ -275,6 +300,10 @@ namespace WhiteBoard
 
                 if (viewFlag == 1)
                 {
+                    Log.Debug(String.Format("Valid parameters. Request to view tasks with startdate: {0} and/or enddate: {1}",
+                        startDate.ToString(),
+                        endDate.ToString()));
+
                     Task viewtaskdetails = new Task(0, null, startDate, endDate, archiveFlag);
                     ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
                     taskHistory.Push(view);
@@ -283,12 +312,16 @@ namespace WhiteBoard
 
                 else
                 {
+                    Log.Debug("Invalid view parameters. Calling ParseNewTask()");
+
                     return ParseNewTask();
                 }
             }
             else
             {
-               return ParseNewTask();
+                Log.Debug("Invalid view parameters. Calling ParseNewTask()");
+
+                return ParseNewTask();
             }
         }
 
@@ -301,6 +334,8 @@ namespace WhiteBoard
             currentIndex = 0;
             nextIndex = currentIndex + 1;
 
+            Log.Debug("Modify keyword entered. Checking task ID");
+
             foreach (string keyword in COMMAND_MODIFY)
             {
                 if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
@@ -308,6 +343,8 @@ namespace WhiteBoard
                     checkId = IsValidTaskId(userCommand[nextIndex]);
                     if (checkId > 0)
                     {
+                        Log.Debug("Valid task ID entered. The ID is: " + checkId);
+
                         taskId = checkId;
                         modifyFlag = 1;
                     }
@@ -330,18 +367,26 @@ namespace WhiteBoard
                             {
                                 if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase))
                                 {
+                                    Log.Debug("Keyword for new start date found. Parsing for dates");
+
                                     startDateIndex = currentIndex + 1;
                                     if (ParseForDates(userCommand, startDateIndex, true) > 0)
                                     {
+                                        Log.Debug("New dates found");
+
                                         dateFlag = 1;
                                     }
                                 }
 
                                 if (String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
                                 {
+                                    Log.Debug("Keyword for new end date found. Parsing for dates");
+
                                     endDateIndex = currentIndex + 1;
                                     if (ParseForDates(userCommand, endDateIndex, true) > 0)
                                     {
+                                        Log.Debug("New dates found");
+
                                         dateFlag = 1;
                                         invertdates = 1;
                                     }
@@ -362,6 +407,8 @@ namespace WhiteBoard
                     {
                         taskDescription = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);
                     }
+
+                    Log.Debug(String.Format("No new dates found. New task description is : {0}", taskDescription));
                 }
 
                 else if (dateFlag == 1)
@@ -378,6 +425,11 @@ namespace WhiteBoard
                     {
                         taskDescription = null;
                     }
+
+                    Log.Debug(String.Format("New start and/or end dates. startdate: {0} and enddate: {1}",
+                        startDate.ToString(),
+                        endDate.ToString()));
+                    Log.Debug(String.Format("New task description : {0}", taskDescription));
                 }
 
                 else
@@ -391,6 +443,8 @@ namespace WhiteBoard
             }
             else
             {
+                Log.Debug("Task ID not valid. Calling ParseNewTask()");
+
                 return ParseNewTask();
             }
 
@@ -404,6 +458,8 @@ namespace WhiteBoard
             currentIndex = 0;
             dateFlag = 0;
             int calldaterange = 0;
+
+            Log.Debug("Parsing for adding a new task");
 
             foreach (string str in userCommand)
             {
@@ -440,6 +496,10 @@ namespace WhiteBoard
             }
             if (dateFlag == 1 && userError == 0)
             {
+                Log.Debug(String.Format("Valid date parameters. Add new task with startdate: {0} and/or enddate: {1}",
+                        startDate.ToString(),
+                        endDate.ToString()));
+
                 taskDescription = ConvertToString(userCommand, stringList, 0, previousIndex);
             }
 
@@ -447,7 +507,11 @@ namespace WhiteBoard
             {
                 taskDescription = inputCommand;
                 startDate = endDate = null;
+
+                Log.Debug("No valid date parameters found.");
             }
+
+            Log.Debug(String.Format("The description of the task : {0}", taskDescription));
 
             taskToAdd = new Task(0, taskDescription, startDate, endDate);
             AddCommand add = new AddCommand(fileHandler, taskToAdd, screenState);
@@ -527,6 +591,9 @@ namespace WhiteBoard
 
             List<string> sublist = commandlist.GetRange(startdateindex, userCommand.Count - (startdateindex));
             firstsublist = sublist;
+
+            Log.Debug(String.Format("User command split at keyword : ", firstsublist.ToString()));
+
             foreach (string str in sublist)
             {
                 if (splitindex < 0)
@@ -556,6 +623,10 @@ namespace WhiteBoard
             {
                 secondsublist = sublist.GetRange(splitindex, sublist.Count - (splitindex));
                 firstsublist = sublist.GetRange(0, (sublist.Count - secondsublist.Count));
+
+                Log.Debug(String.Format("Date range keyword found. Command split into two. \"{0}\" and \"{1}\"",
+                    firstsublist.ToString(),
+                    secondsublist.ToString()));
             }
 
             foreach (string word in firstsublist)
@@ -602,6 +673,8 @@ namespace WhiteBoard
 
             if (splitindex > 0 && (startTimeFlag > 0 || firstDayFlag > 0))
             {
+                Log.Debug("Date found in first part. Parsing second part");
+
                 foreach (string word in secondsublist)
                 {
                     if (endTimeFlag == 0 && (String.Equals(word, "PM", StringComparison.CurrentCultureIgnoreCase) || (String.Equals(word, "AM", StringComparison.CurrentCultureIgnoreCase))))
@@ -633,6 +706,8 @@ namespace WhiteBoard
             }
             if (startEndDate[0] == null && startEndDate[1] == null && startTimeFlag == 0 && endTimeFlag == 0)
             {
+                Log.Debug("No dates found.");
+
                 return 0;
             }
             else
@@ -648,7 +723,7 @@ namespace WhiteBoard
         private int IsValidTaskId(string str)
         {
             int taskid = -1;
-            if (str[0] != 'T')
+            if (char.ToUpperInvariant(str[0])!='T')
             {
                 return -1;
             }
