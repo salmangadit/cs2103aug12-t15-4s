@@ -16,9 +16,14 @@ namespace WhiteBoard
 
         public AutoCompletor()
         {
-            GenerateLineSet(FileHandler.Instance.ViewAll());
-            GenerateWordSet();
+            GenerateQuerySet(FileHandler.Instance.ViewAll());
             FileHandler.Instance.FileUpdateEvent += new FileUpdate(Update);
+        }
+
+        // for testing purposes only
+        public AutoCompletor(List<Task> tasks)
+        {
+            GenerateQuerySet(tasks);
         }
 
         public List<string> Query(string query)
@@ -87,17 +92,14 @@ namespace WhiteBoard
             }
         }
 
-        private void GenerateLineSet(List<Task> tasks)
+        private void GenerateQuerySet(List<Task> tasks)
         {
             Log.Debug("Generating line set");
             foreach (Task task in tasks)
             {
                 lineSet.Add(task.Description);
             }
-        }
 
-        private void GenerateWordSet()
-        {
             Log.Debug("Generating word set");
             foreach (string line in lineSet)
             {
