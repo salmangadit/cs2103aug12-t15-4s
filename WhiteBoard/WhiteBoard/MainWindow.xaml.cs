@@ -30,6 +30,7 @@ namespace WhiteBoard
         List<string> keywords;
         AutoComplete autoCompleteList;
         Toast toast;
+        CommandHistory commandHistory;
         protected static readonly ILog log = LogManager.GetLogger(typeof(MainWindow));
 
         public MainWindow()
@@ -72,6 +73,9 @@ namespace WhiteBoard
 
             // Set up toast notification
             toast = new Toast(lblToast);
+
+            // Set up command history
+            commandHistory = new CommandHistory();
             
             log.Debug("Constructor cleared");
         }
@@ -360,6 +364,9 @@ namespace WhiteBoard
                 if (autoCompleteList.Visibility == Visibility.Visible)
                     autoCompleteList.Visibility = Visibility.Collapsed;
 
+                // Add to command history
+                commandHistory.AddToHistory(userCommand);
+
                 Command command = null;
                 try
                 {
@@ -369,6 +376,10 @@ namespace WhiteBoard
                 {
                     toast.ShowToast("Invalid date entered. Please re-enter command");
                 }
+
+                if (command == null)
+                    return;
+
                 try
                 {
                     if (command.CommandType == CommandType.Add)
@@ -407,10 +418,6 @@ namespace WhiteBoard
                         ExecuteUndo(command);
                     }
                 }
-                catch (NullReferenceException)
-                {
-                    return;
-                }
                 catch (ApplicationException ex)
                 {
                     toast.ShowToast(ex.Message);
@@ -423,6 +430,22 @@ namespace WhiteBoard
             else if ((e.Key == Key.Up || e.Key == Key.Down) && (autoCompleteList.Visibility == Visibility.Visible))
             {
                 autoCompleteList.Focus();
+            }
+            else if (e.Key == Key.Up)
+            {
+                // Clear search box
+                FlowDocument mcFlowDoc = new FlowDocument();
+                txtCommand.Document = mcFlowDoc;
+
+                txtCommand.AppendText(commandHistory.UpClick());
+            }
+            else if (e.Key == Key.Down)
+            {
+                // Clear search box
+                FlowDocument mcFlowDoc = new FlowDocument();
+                txtCommand.Document = mcFlowDoc;
+
+                txtCommand.AppendText(commandHistory.DownClick());
             }
 
             DoSyntaxHighlight();

@@ -147,7 +147,7 @@ namespace WhiteBoard
             {
                 Console.WriteLine(e.Message);
                 Environment.Exit(0);
-            }   
+            }
 
             if (listOfAllTasks.Count == 0) // If no tasks in file
             {

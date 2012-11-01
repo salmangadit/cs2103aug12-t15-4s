@@ -65,6 +65,7 @@
       <DependentUpon>AutoComplete.xaml</DependentUpon>
     </Compile>
     <Compile Include="AutoCompletor.cs" />
+    <Compile Include="CommandHistory.cs" />
     <Compile Include="CommandType.cs" />
     <Compile Include="DateHolder.cs" />
     <Compile Include="DeleteCommand.cs" />
