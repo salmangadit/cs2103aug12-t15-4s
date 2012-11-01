@@ -17,8 +17,11 @@ namespace WhiteboardTest
     {
 
         static List<Task> tasks;
-        static AutoCompletor autoComplete;
+        static AutoCompletor_Accessor autoComplete;
         private TestContext testContextInstance;
+        static Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
+        static Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
+        static Task task3 = new Task(1, "Testing is fun", DateTime.Now, DateTime.Now);
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -72,21 +75,24 @@ namespace WhiteboardTest
         {
             tasks = new List<Task>();
 
-            Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
-            Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
-            Task task3 = new Task(1, "Testing is fun", DateTime.Now, DateTime.Now);
-
             tasks.Add(task);
             tasks.Add(task2);
             tasks.Add(task3);
 
-            autoComplete = new AutoCompletor(tasks);
+            autoComplete = new AutoCompletor_Accessor(tasks);
         }
 
         //Use TestCleanup to run code after each test has run
         [TestCleanup()]
         public void MyTestCleanup()
         {
+            tasks.Clear();
+
+            tasks.Add(task);
+            tasks.Add(task2);
+            tasks.Add(task3);
+
+            autoComplete = new AutoCompletor_Accessor(tasks);
         }
 
         /// <summary>
@@ -130,9 +136,9 @@ namespace WhiteboardTest
         ///A test for Query when search string is empty
         ///</summary>
         [TestMethod()]
-        public void QueryTestEmptySearch()
+        public void EmptyQuerySearchTest()
         {
-            string query = String.Empty; 
+            string query = String.Empty;
             List<string> expected = new List<string>();
 
             TestQuery(query, expected);
@@ -146,6 +152,44 @@ namespace WhiteboardTest
             List<string> actual = autoComplete.Query(queryString);
             CollectionAssert.AreEqual(expected, actual);
         }
+
+        /// <summary>
+        ///Test the update event on add
+        ///</summary>
+        [TestMethod()]
+        public void AddUpdateTest()
+        {
+            Task newTask = new Task(4, "Update Add", DateTime.Now, DateTime.Now);
+            autoComplete.Update(UpdateType_Accessor.Add, newTask, null);
+
+            List<string> expectedSet = new List<string>();
+
+            expectedSet.Add("add");
+            expectedSet.Add("Update Add");
+
+            TestQuery("add", expectedSet);
+        }
+
+        /// <summary>
+        ///Test the update event on archive
+        ///</summary>
+        [TestMethod()]
+        public void ArchiveUpdateTest()
+        {
+            autoComplete.Update(UpdateType_Accessor.Archive, tasks[0], null);
+
+            List<string> expectedSet = new List<string>();
+            
+            expectedSet.Add("hello");
+            expectedSet.Add("Tester is there everywhere hello again!");
+
+            TestQuery("he", expectedSet);
+            TestQuery("hel", expectedSet);
+            TestQuery("hello", expectedSet);
+
+        }
+
+
 
     }
 }
