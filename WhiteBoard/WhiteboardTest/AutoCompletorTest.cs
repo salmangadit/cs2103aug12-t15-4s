@@ -19,9 +19,7 @@ namespace WhiteboardTest
         static List<Task> tasks;
         static AutoCompletor_Accessor autoComplete;
         private TestContext testContextInstance;
-        static Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
-        static Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
-        static Task task3 = new Task(1, "Testing is fun", DateTime.Now, DateTime.Now);
+
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -74,11 +72,7 @@ namespace WhiteboardTest
         public static void MyClassInitialize(TestContext testContext)
         {
             tasks = new List<Task>();
-
-            tasks.Add(task);
-            tasks.Add(task2);
-            tasks.Add(task3);
-
+            generateTasks();
             autoComplete = new AutoCompletor_Accessor(tasks);
         }
 
@@ -87,12 +81,19 @@ namespace WhiteboardTest
         public void MyTestCleanup()
         {
             tasks.Clear();
+            generateTasks();
+            autoComplete = new AutoCompletor_Accessor(tasks);
+        }
 
-            tasks.Add(task);
+        private static void generateTasks()
+        {
+            Task task1 = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
+            Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
+            Task task3 = new Task(1, "Testing is fun", DateTime.Now, DateTime.Now);
+
+            tasks.Add(task1);
             tasks.Add(task2);
             tasks.Add(task3);
-
-            autoComplete = new AutoCompletor_Accessor(tasks);
         }
 
         /// <summary>
@@ -179,7 +180,7 @@ namespace WhiteboardTest
             autoComplete.Update(UpdateType_Accessor.Archive, tasks[0], null);
 
             List<string> expectedSet = new List<string>();
-            
+
             expectedSet.Add("hello");
             expectedSet.Add("Tester is there everywhere hello again!");
 
@@ -188,8 +189,5 @@ namespace WhiteboardTest
             TestQuery("hello", expectedSet);
 
         }
-
-
-
     }
 }
