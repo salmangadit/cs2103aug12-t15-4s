@@ -44,7 +44,7 @@ namespace WhiteBoard
             {
                 //change time of start to 2359
                 DateTime startTime = (DateTime)viewTaskDetails.StartTime;
-                viewTaskDetails.StartTime = startTime.Date.AddHours(11).AddMinutes(59).AddSeconds(59);
+                viewTaskDetails.StartTime = startTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
                 Log.Debug("View tasks ending on" + viewTaskDetails.StartTime);
                 return fileHandler.ViewTasks(viewTaskDetails.StartTime);
@@ -53,7 +53,7 @@ namespace WhiteBoard
             {
                 //change time of end to 2359
                 DateTime endTime = (DateTime)viewTaskDetails.EndTime;
-                viewTaskDetails.EndTime = endTime.Date.AddHours(11).AddMinutes(59).AddSeconds(59);
+                viewTaskDetails.EndTime = endTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
                 Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime)); 
                 return fileHandler.ViewTasks(viewTaskDetails.StartTime, viewTaskDetails.EndTime);
