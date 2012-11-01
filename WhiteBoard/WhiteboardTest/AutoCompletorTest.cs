@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace WhiteboardTest
 {
@@ -15,7 +16,8 @@ namespace WhiteboardTest
     public class AutoCompletorTest
     {
 
-
+        static List<Task> tasks;
+        static AutoCompletor autoComplete;
         private TestContext testContextInstance;
 
         /// <summary>
@@ -63,88 +65,12 @@ namespace WhiteboardTest
         //}
         //
         #endregion
-        
+
         //Use ClassInitialize to run code before running the first test in the class
         [ClassInitialize()]
         public static void MyClassInitialize(TestContext testContext)
         {
-        }
-
-        //Use TestCleanup to run code after each test has run
-        [TestCleanup()]
-        public void MyTestCleanup()
-        {
-        }
-
-        /// <summary>
-        ///A test for AddToSets
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("WhiteBoard.exe")]
-        public void AddToSetsTest()
-        {
-            AutoCompletor_Accessor target = new AutoCompletor_Accessor(); // TODO: Initialize to an appropriate value
-
-            Task task = new Task(1, "Hello    there Tester", DateTime.Now, DateTime.Now);
-
-            List<string> expectedWordSet = new List<string>();
-            expectedWordSet.Add("Hello");
-            expectedWordSet.Add("there");
-            expectedWordSet.Add("Tester");
-
-            List<string> expectedLineSet = new List<string>();
-
-            expectedLineSet.Add("Hello    there Tester");
-
-            target.AddToSets(task);
-
-            CollectionAssert.Equals(target.wordSet, expectedWordSet);
-            CollectionAssert.Equals(target.lineSet, expectedLineSet);
-        }
-
-        /// <summary>
-        ///A test for GenerateLineSet and GenerateWordSet
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("WhiteBoard.exe")]
-        public void GenerateQuerySetTest()
-        {
-            AutoCompletor_Accessor target = new AutoCompletor_Accessor(); // TODO: Initialize to an appropriate value
-            List<Task> tasks = new List<Task>(); // TODO: Initialize to an appropriate value
-
-            Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
-            Task task2 = new Task(1, "How are you?", DateTime.Now, DateTime.Now);
-
-            tasks.Add(task);
-            tasks.Add(task2);
-
-            List<string> expectedLineSet = new List<string>();
-            List<string> expectedWordSet = new List<string>();
-
-            expectedWordSet.Add("Hello");
-            expectedWordSet.Add("there");
-            expectedWordSet.Add("Tester");
-            expectedWordSet.Add("How");
-            expectedWordSet.Add("are");
-            expectedWordSet.Add("you");
-            expectedWordSet.Add("?");
-
-            expectedLineSet.Add("Hello there Tester");
-            expectedLineSet.Add("How are you?");
-
-            target.GenerateQuerySet(tasks);
-
-            CollectionAssert.Equals(target.lineSet, expectedLineSet);
-            CollectionAssert.Equals(target.wordSet, expectedWordSet);
-        }
-
-        /// <summary>
-        ///A test for Query
-        ///</summary>
-        [TestMethod()]
-        public void QueryTest()
-        {
-            List<Task> tasks = new List<Task>(); // TODO: Initialize to an appropriate value
+            tasks = new List<Task>();
 
             Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
             Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
@@ -154,55 +80,50 @@ namespace WhiteboardTest
             tasks.Add(task2);
             tasks.Add(task3);
 
-            AutoCompletor target = new AutoCompletor(tasks); // TODO: Initialize to an appropriate value
+            autoComplete = new AutoCompletor(tasks);
+        }
 
-            // test 1
-            string[] queryCollectionSet1 = new string[] { "hel", "hello", "he" }; // TODO: Initialize to an appropriate value
+        //Use TestCleanup to run code after each test has run
+        [TestCleanup()]
+        public void MyTestCleanup()
+        {
+        }
 
-            List<string> expectedSet1 = new List<string>(); // TODO: Initialize to an appropriate value
+        /// <summary>
+        ///A test for Query
+        ///</summary>
+        [TestMethod()]
+        public void QueryTest()
+        {
+            List<string> expectedSet = new List<string>(); // TODO: Initialize to an appropriate value
 
-            expectedSet1.Add("hello");
-            expectedSet1.Add("Hello there Tester");
-            expectedSet1.Add("Tester is there everywhere hello again!");
+            expectedSet.Add("hello");
+            expectedSet.Add("Hello there Tester");
+            expectedSet.Add("Tester is there everywhere hello again!");
 
-            List<string> actual;
+            TestQuery("he", expectedSet);
+            TestQuery("hel", expectedSet);
+            TestQuery("hello", expectedSet);
 
-            foreach (string query in queryCollectionSet1)
-            {
-                actual = target.Query(query);
-                CollectionAssert.AreEqual(expectedSet1, actual);
-            }
+            expectedSet.Clear();
 
-            //test 2
-            
-            string[] queryCollectionSet2 = new string[] { "te", "test", "test" }; // TODO: Initialize to an appropriate value
+            expectedSet.Add("tester");
+            expectedSet.Add("testing");
+            expectedSet.Add("Testing is fun");
+            expectedSet.Add("Hello there Tester");
+            expectedSet.Add("Tester is there everywhere hello again!");
 
-            List<string> expectedSet2 = new List<string>(); // TODO: Initialize to an appropriate value
+            TestQuery("te", expectedSet);
+            TestQuery("tes", expectedSet);
+            TestQuery("test", expectedSet);
 
-            expectedSet2.Add("tester");
-            expectedSet2.Add("testing");
-            expectedSet2.Add("Testing is fun");
-            expectedSet2.Add("Hello there Tester");
-            expectedSet2.Add("Tester is there everywhere hello again!");
+            expectedSet.Clear();
 
-            foreach (string query in queryCollectionSet2)
-            {
-                actual = target.Query(query);
-                CollectionAssert.AreEqual(expectedSet2, actual);
-            }
+            expectedSet.Add("testing");
+            expectedSet.Add("Testing is fun");
 
-            //test 3
-
-            string newQuery = "testi";
-
-            List<string> expectedSet3 = new List<string>();
-
-            expectedSet3.Add("testing");
-            expectedSet3.Add("Testing is fun");
-
-            actual = target.Query(newQuery);
-            CollectionAssert.AreEqual(expectedSet3, actual);
-
+            TestQuery("testi", expectedSet);
+            TestQuery("testing", expectedSet);
         }
 
         /// <summary>
@@ -211,91 +132,20 @@ namespace WhiteboardTest
         [TestMethod()]
         public void QueryTestEmptySearch()
         {
-            List<Task> tasks = new List<Task>(); // TODO: Initialize to an appropriate value
+            string query = String.Empty; 
+            List<string> expected = new List<string>();
 
-            Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
-            Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
+            TestQuery(query, expected);
+        }
 
-            tasks.Add(task);
-            tasks.Add(task2);
-
-            AutoCompletor target = new AutoCompletor(tasks); // TODO: Initialize to an appropriate value
-
-            string query = ""; // TODO: Initialize to an appropriate value
-            List<string> expected = new List<string>(); // TODO: Initialize to an appropriate value
-
-            List<string> actual;
-            actual = target.Query(query);
+        /// <summary>
+        /// Queries and asserts 
+        ///</summary>
+        private void TestQuery(string queryString, List<string> expected)
+        {
+            List<string> actual = autoComplete.Query(queryString);
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for RemoveFromSets
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("WhiteBoard.exe")]
-        public void RemoveFromSetsTest()
-        {
-            AutoCompletor_Accessor target = new AutoCompletor_Accessor(); // TODO: Initialize to an appropriate value
-            Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now); // TODO: Initialize to an appropriate value
-            Task task2 = new Task(1, "Tester is prime", DateTime.Now, DateTime.Now);
-
-            target.AddToSets(task);
-            target.AddToSets(task2);
-
-            target.RemoveFromSets(task2);
-
-            List<string> expectedLineSet = new List<string>();
-            List<string> expectedWordSet = new List<string>();
-
-            expectedLineSet.Add("Hello there Tester");
-
-            expectedWordSet.Add("Hello");
-            expectedWordSet.Add("there");
-            expectedWordSet.Add("Tester");
-
-            CollectionAssert.Equals(target.lineSet, expectedLineSet);
-            CollectionAssert.Equals(target.wordSet, expectedWordSet);
-        }
-
-        /// <summary>
-        ///A test for SortByLength
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("WhiteBoard.exe")]
-        public void SortByLengthTest()
-        {
-            IEnumerable<string> e = new string[] { "number", "word", "texting" }; // TODO: Initialize to an appropriate value
-            IEnumerable<string> expected = new string[] { "word", "number", "texting" }; // TODO: Initialize to an appropriate value
-            IEnumerable<string> actual;
-            actual = AutoCompletor_Accessor.SortByLength(e);
-
-            CollectionAssert.AreEqual(new List<string>(expected), new List<string>(actual));
-        }
-
-        /// <summary>
-        ///A test for Update
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("WhiteBoard.exe")]
-        public void UpdateTest()
-        {
-            Task task = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
-            AutoCompletor_Accessor target = new AutoCompletor_Accessor();
-
-            target.Update(UpdateType_Accessor.Add, task, null);
-
-            List<string> expectedWordSet = new List<string>();
-            expectedWordSet.Add("Hello");
-            expectedWordSet.Add("there");
-            expectedWordSet.Add("Tester");
-
-            List<string> expectedLineSet = new List<string>();
-
-            expectedLineSet.Add("Hello there Tester");
-
-            CollectionAssert.Equals(target.wordSet, expectedWordSet);
-            CollectionAssert.Equals(target.lineSet, expectedLineSet);
-        }
     }
 }
