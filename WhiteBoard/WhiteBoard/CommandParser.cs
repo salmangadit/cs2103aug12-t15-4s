@@ -215,12 +215,14 @@ namespace WhiteBoard
                     taskHistory.Push(delete);
                     return delete;
                 }
-                //else if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCulture))
-                //{
-                //    Log.Debug("Delete all command");
+                else if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCulture))
+                {
+                    Log.Debug("Delete all command");
 
-                //    DeleteCommand delete = new DeleteCommand(fileHandler, screenState, true);
-                //}
+                    DeleteCommand delete = new DeleteCommand(fileHandler, screenState);
+                    taskHistory.Push(delete);
+                    return delete;
+                }
                 else
                 {
                     Log.Debug("Task ID not valid and Delete All not called. Calling ParseNewTask()");
@@ -747,7 +749,7 @@ namespace WhiteBoard
         private int IsValidTaskId(string str)
         {
             int taskid = -1;
-            if (char.ToUpperInvariant(str[0])!='T')
+            if (char.ToUpperInvariant(str[0]) != 'T')
             {
                 return -1;
             }
