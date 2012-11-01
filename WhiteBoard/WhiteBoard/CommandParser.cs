@@ -215,7 +215,7 @@ namespace WhiteBoard
                     taskHistory.Push(delete);
                     return delete;
                 }
-                else if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCulture))
+                else if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase))
                 {
                     Log.Debug("Delete all command");
 
