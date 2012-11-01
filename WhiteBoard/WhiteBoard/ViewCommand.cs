@@ -42,16 +42,13 @@ namespace WhiteBoard
             }
             else if (viewTaskDetails.Archive == false && viewTaskDetails.EndTime == null)
             {
-                //change time of start to 2359
-                DateTime startTime = (DateTime)viewTaskDetails.StartTime;
-                viewTaskDetails.StartTime = startTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
-
                 Log.Debug("View tasks ending on" + viewTaskDetails.StartTime);
                 return fileHandler.ViewTasks(viewTaskDetails.StartTime);
             }
             else if (viewTaskDetails.Archive == false)
             {
-                //change time of end to 2359
+                // change time of end to 2359
+                // this should be done in parser, looks messy to do it here
                 DateTime endTime = (DateTime)viewTaskDetails.EndTime;
                 viewTaskDetails.EndTime = endTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
