@@ -88,8 +88,8 @@ namespace WhiteboardTest
         private static void generateTasks()
         {
             Task task1 = new Task(1, "Hello there Tester", DateTime.Now, DateTime.Now);
-            Task task2 = new Task(1, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
-            Task task3 = new Task(1, "Testing is fun", DateTime.Now, DateTime.Now);
+            Task task2 = new Task(2, "Tester is there everywhere hello again!", DateTime.Now, DateTime.Now);
+            Task task3 = new Task(3, "Testing is fun", DateTime.Now, DateTime.Now);
 
             tasks.Add(task1);
             tasks.Add(task2);
@@ -188,6 +188,59 @@ namespace WhiteboardTest
             TestQuery("hel", expectedSet);
             TestQuery("hello", expectedSet);
 
+        }
+
+        /// <summary>
+        ///Test the update event on archive
+        ///</summary>
+        [TestMethod()]
+        public void DeleteUpdateTest()
+        {
+            autoComplete.Update(UpdateType_Accessor.Delete, tasks[1], null);
+
+            List<string> expectedSet = new List<string>();
+
+            expectedSet.Add("hello");
+            expectedSet.Add("Hello there Tester");
+
+            TestQuery("he", expectedSet);
+            TestQuery("hel", expectedSet);
+            TestQuery("hello", expectedSet);
+
+        }
+
+        /// <summary>
+        ///Test the update event on add
+        ///</summary>
+        [TestMethod()]
+        public void UnArchiveUpdateTest()
+        {
+            Task newTask = new Task(4, "Update Archive", DateTime.Now, DateTime.Now);
+            autoComplete.Update(UpdateType_Accessor.Unarchive, newTask, null);
+
+            List<string> expectedSet = new List<string>();
+
+            expectedSet.Add("archive");
+            expectedSet.Add("Update Archive");
+
+            TestQuery("archive", expectedSet);
+        }
+
+        /// <summary>
+        ///Test the update event on add
+        ///</summary>
+        [TestMethod()]
+        public void EditUpdateTest()
+        {
+            Task editedTask = new Task(1, "Hello there Tester of WhiteBoard", DateTime.Now, DateTime.Now);
+            autoComplete.Update(UpdateType_Accessor.Edit, editedTask, tasks[0]);
+
+            List<string> expectedSet = new List<string>();
+
+            expectedSet.Add("whiteboard");
+            expectedSet.Add("Hello there Tester of WhiteBoard");
+
+            TestQuery("white", expectedSet);
         }
     }
 }
