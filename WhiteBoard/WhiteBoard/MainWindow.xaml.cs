@@ -478,13 +478,15 @@ namespace WhiteBoard
         {
             List<int> deletedTaskIds = ((DeleteCommand)command).GetDeletedTaskId();
             List<Task> deleted = command.Execute();
-            int traversalIndex = 0;
             List<Task> tasks = tasksOnScreen.ToList<Task>();
-            foreach (Task task in tasks)
+
+            tasksOnScreen.Clear();
+
+            List<Task> tasksToAdd = tasks.Where(item => !deletedTaskIds.Contains(item.Id)).ToList(); ;
+
+            foreach (Task task in tasksToAdd)
             {
-                if (deletedTaskIds.Contains(task.Id))
-                    tasksOnScreen.RemoveAt(traversalIndex);
-                traversalIndex++;
+                tasksOnScreen.Add(task);
             }
 
             StringBuilder tasksDeletedToast = new StringBuilder();
