@@ -455,13 +455,15 @@ namespace WhiteBoard
         {
             List<int> archiveTaskIds = ((ArchiveCommand)command).GetArchivedTaskIds();
             command.Execute();
-            int traversalIndex = 0;
             List<Task> tasks = tasksOnScreen.ToList<Task>();
-            foreach (Task task in tasks)
+            
+            tasksOnScreen.Clear();
+
+            List<Task> tasksToAdd = tasks.Where(item => !archiveTaskIds.Contains(item.Id)).ToList(); ;
+
+            foreach (Task task in tasksToAdd)
             {
-                if (archiveTaskIds.Contains(task.Id))
-                    tasksOnScreen.RemoveAt(traversalIndex);
-                traversalIndex++;
+                tasksOnScreen.Add(task);
             }
 
             StringBuilder tasksArchivedToast = new StringBuilder();
@@ -470,6 +472,9 @@ namespace WhiteBoard
             {
                 tasksArchivedToast.Append(taskId.ToString() + ", ");
             }
+
+            // remove trailing ,
+            tasksArchivedToast.Remove(tasksArchivedToast.Length - 2, 1);
 
             toast.ShowToast("Archived task(s) with Id: " + tasksArchivedToast);
         }
@@ -495,6 +500,9 @@ namespace WhiteBoard
             {
                 tasksDeletedToast.Append(taskId.ToString() + ", ");
             }
+
+            // remove trailing ,
+            tasksDeletedToast.Remove(tasksDeletedToast.Length - 2, 1);
 
             toast.ShowToast("Deleted task with Id: " + tasksDeletedToast);
         }
