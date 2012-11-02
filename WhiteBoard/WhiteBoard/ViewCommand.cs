@@ -42,12 +42,20 @@ namespace WhiteBoard
             }
             else if (viewTaskDetails.Archive == false && viewTaskDetails.EndTime == null)
             {
-                Log.Debug("View tasks starting from" + viewTaskDetails.StartTime);
-                return fileHandler.ViewTasks(viewTaskDetails.StartTime); //change time to 2359
+                //change time of start to 2359
+                DateTime startTime = (DateTime)viewTaskDetails.StartTime;
+                viewTaskDetails.StartTime = startTime.Date.AddHours(11).AddMinutes(59).AddSeconds(59);
+
+                Log.Debug("View tasks ending on" + viewTaskDetails.StartTime);
+                return fileHandler.ViewTasks(viewTaskDetails.StartTime);
             }
             else if (viewTaskDetails.Archive == false)
             {
-                Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime)); //change time of end to 2359
+                //change time of end to 2359
+                DateTime endTime = (DateTime)viewTaskDetails.EndTime;
+                viewTaskDetails.EndTime = endTime.Date.AddHours(11).AddMinutes(59).AddSeconds(59);
+
+                Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime)); 
                 return fileHandler.ViewTasks(viewTaskDetails.StartTime, viewTaskDetails.EndTime);
             }
             else
