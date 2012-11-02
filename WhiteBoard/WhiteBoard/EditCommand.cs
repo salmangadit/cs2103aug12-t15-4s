@@ -57,7 +57,15 @@ namespace WhiteBoard
 
                 Task editedTask = new Task(editedTaskId, editedTaskDescription, editedTaskStartTime, editedTaskEndTime);
 
-                if (!isFloatingTask(editedTask) && (((DateTime)editedTask.StartTime).DayOfYear < DateTime.Now.DayOfYear))
+                if (editedTask.StartTime == null)
+                {
+                    if (editedTask.EndTime != null)
+                    {
+                        throw new ApplicationException("Task can't have an end time without start time");
+                    }
+                }
+
+                if (!isFloatingTask(editedTask) && (editedTaskStartTime != uneditedTask.StartTime && (((DateTime)editedTask.StartTime).DayOfYear < DateTime.Now.DayOfYear))) //needs changing breaks when modifying a task that is already there in past
                 {
                     throw new ApplicationException("Task cannot start in the past");
                 }
@@ -92,7 +100,7 @@ namespace WhiteBoard
 
         private bool isFloatingTask(Task taskToAdd)
         {
-            if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime != null && taskToAdd.EndTime == null))
+            if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
             {
                 return true;
             }

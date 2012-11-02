@@ -32,6 +32,14 @@ namespace WhiteBoard
         {
             Debug.Assert(taskToAdd != null, "Task to add is null");
 
+            if (taskToAdd.StartTime == null)
+            {
+                if (taskToAdd.EndTime != null)
+                {
+                    throw new ApplicationException("Task can't have an end time without start time");
+                }
+            }
+
             if (!isFloatingTask(taskToAdd) && (((DateTime)taskToAdd.StartTime).DayOfYear < DateTime.Now.DayOfYear))
             {
                 throw new ApplicationException("Task cannot start in the past");
