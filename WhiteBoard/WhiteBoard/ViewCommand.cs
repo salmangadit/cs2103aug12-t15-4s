@@ -43,11 +43,11 @@ namespace WhiteBoard
             else if (viewTaskDetails.Archive == false && viewTaskDetails.EndTime == null)
             {
                 Log.Debug("View tasks starting from" + viewTaskDetails.StartTime);
-                return fileHandler.ViewTasks(viewTaskDetails.StartTime);
+                return fileHandler.ViewTasks(viewTaskDetails.StartTime); //change time to 2359
             }
             else if (viewTaskDetails.Archive == false)
             {
-                Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime));
+                Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime)); //change time of end to 2359
                 return fileHandler.ViewTasks(viewTaskDetails.StartTime, viewTaskDetails.EndTime);
             }
             else
