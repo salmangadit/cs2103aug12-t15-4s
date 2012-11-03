@@ -69,9 +69,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBlock Name="lblToast" TextWrapping="Wrap" FontSize="14" FontFamily="./Resources/#From Where You Are"  Visibility="Collapsed" Background="Yellow" Grid.Row="0" HorizontalAlignment="Center" Width="400" VerticalAlignment="Center">
-
-        </TextBlock>
+        <TextBlock Name="lblToast" TextWrapping="Wrap" FontSize="14" FontFamily="./Resources/#From Where You Are"  Visibility="Collapsed" Background="Yellow" Grid.Row="0" HorizontalAlignment="Center" Width="400" VerticalAlignment="Center"/>
+        
         <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are">
 
         </RichTextBox>

@@ -103,7 +103,7 @@ namespace WhiteBoard
                     if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                     {
                         log.Debug("Replaced text in command rich text box");
-                        TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
+                        TextRange replaceText = FindLastWordFromPosition(txtCommand.Document.ContentStart, words[1]);
                         replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
                         replaceText.Text = "";
                     }
@@ -398,6 +398,8 @@ namespace WhiteBoard
 
                 if (autoCompleteList.Visibility == Visibility.Visible)
                     autoCompleteList.Visibility = Visibility.Collapsed;
+
+                autoCompleteList.Clear();
 
                 // Add to command history
                 commandHistory.AddToHistory(userCommand);
