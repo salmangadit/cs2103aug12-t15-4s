@@ -346,7 +346,7 @@ namespace WhiteBoard
                     Log.Debug(String.Format("Valid parameters. Request to view tasks with startdate: {0} and/or enddate: {1}",
                         startDate.ToString(),
                         endDate.ToString()));
-                    if (endDate != null)
+                    if (endDate != null && (endDate.Value.Hour==0&&endDate.Value.Minute==0))
                     {
                         endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 23, 59, 59);
                     }
