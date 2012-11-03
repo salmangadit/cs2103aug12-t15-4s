@@ -451,7 +451,15 @@ namespace WhiteBoard
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
                 {
-                    if ((!t.Archive) && (t.StartTime != null))
+                    if ((!t.Archive) && (t.StartTime != null) && (t.EndTime != null))
+                    {
+                        if ((t.StartTime.Value.Date <= date.Value.Date) && (t.EndTime.Value.Date >= date.Value.Date))
+                        {
+                            listOfTasksForTheDay.Add(t);
+                        }
+                    }
+
+                    else if ((!t.Archive) && (t.StartTime != null))
                     {
                         if (t.StartTime.Value.Date == date.Value.Date)
                         {
