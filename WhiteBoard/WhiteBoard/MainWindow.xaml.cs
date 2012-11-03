@@ -72,7 +72,7 @@ namespace WhiteBoard
             keywords = whiteboardSyntax.Keywords;
 
             // Set up toast notification
-            toast = new Toast(lblToast);
+            toast = new Toast(lblToast, lblToastText);
 
             // Set up command history
             commandHistory = new CommandHistory();
@@ -148,7 +148,7 @@ namespace WhiteBoard
             log.Debug("Checking AutoComplete requirement");
             // Auto Complete
             TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
-
+            InstantSearch instantSearch = new InstantSearch();
             string command = userTextRange.Text;
             command = command.Replace("\r\n", "");
 
@@ -244,7 +244,7 @@ namespace WhiteBoard
                     }
                 }
 
-                if (words[0].ToLower() == "modify" || words[0].ToLower() == "change" || words[0].ToLower() == "update")
+                if (words[0].ToLower() == "modify" || words[0].ToLower() == "update")
                 {
                     TextRange syntaxHighlight = FindLastWordFromPosition(txtCommand.Document.ContentStart, "start");
                     if (syntaxHighlight != null)

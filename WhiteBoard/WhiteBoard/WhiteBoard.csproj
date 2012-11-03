@@ -70,6 +70,7 @@
     <Compile Include="DateHolder.cs" />
     <Compile Include="DeleteCommand.cs" />
     <Compile Include="EditCommand.cs" />
+    <Compile Include="InstantSearch.cs" />
     <Compile Include="SearchCommand.cs" />
     <Compile Include="SyntaxProvider.cs" />
     <Compile Include="Task.cs" />
