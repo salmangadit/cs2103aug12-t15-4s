@@ -797,7 +797,7 @@ namespace WhiteBoard
         {
             string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
                                     "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt",
+                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
                                     "HH:mm"};
             bool istime = false;
             DateTime temp;
@@ -820,7 +820,7 @@ namespace WhiteBoard
         {
             string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
                                     "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt",
+                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt","h tt","hh tt",
                                     "HH:mm"};
 
             string correctformat = String.Empty;
@@ -867,17 +867,22 @@ namespace WhiteBoard
         /// <returns>Returns true or false depending on whether the date is valid</returns>
         public bool IsDate(string datestring)
         {
+            System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-gb");
             string[] dateformat = { "dd/mm/yyyy", "dd-mm-yyyy", "dd.mm.yyyy",
+                                    "dd/mm/yy","dd-mm-yy","dd.mm.yy",
                                     "d/m/yyyy","dd/m/yyyy","d/mm/yyyy",
+                                    "d/m/yy","dd/m/yy","d/mm/yy",
                                     "d.m.yyyy","dd.m.yyyy","d.mm.yyyy",
-                                    "d-m-yyyy","dd-m-yyyy","d-mm-yyyy" };
+                                    "d.m.yy","dd.m.yy","d.mm.yy",
+                                    "d-m-yyyy","dd-m-yyyy","d-mm-yyyy",
+                                    "d-m-yy","dd-m-yy","d-mm-yy"};
             bool isdate = false;
             DateTime temp;
             foreach (string format in dateformat)
             {
                 if (!isdate)
                 {
-                    isdate = DateTime.TryParseExact(datestring, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
+                    isdate = DateTime.TryParseExact(datestring, format, cultureinfo, DateTimeStyles.None, out temp);
                 }
             }
             return isdate;
