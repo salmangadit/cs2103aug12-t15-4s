@@ -48,14 +48,19 @@ namespace WhiteBoard
             tasksOnScreen = new ObservableCollection<Task>();
 
             Command command = controller.GetAllTasks(tasksOnScreen.ToList());
-
-            List<Task> tasksToView = command.Execute();
-            tasksOnScreen.Clear();
-            foreach (Task task in tasksToView)
+            try
             {
-                tasksOnScreen.Add(task);
+                List<Task> tasksToView = command.Execute();
+                tasksOnScreen.Clear();
+                foreach (Task task in tasksToView)
+                {
+                    tasksOnScreen.Add(task);
+                }
             }
-
+            catch (ApplicationException ex)
+            {
+                toast.ShowToast(ex.Message);
+            }
             // Data-bind list
             lstTasks.DataContext = tasksOnScreen;
             lstTasks.ItemsSource = tasksOnScreen;
