@@ -89,7 +89,7 @@ namespace WhiteBoard
                 else
                 {
                     Log.Debug("Edit Command failed for" + editedTaskId);
-                    throw new SystemException("Unable To Edit Task" + editedTaskId);
+                    throw new ApplicationException("Unable To Edit Task with ID T" + editedTaskId);
                 }
 
                 editedTasks.Add(editedTask);

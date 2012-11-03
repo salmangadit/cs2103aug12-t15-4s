@@ -30,20 +30,22 @@ namespace WhiteBoard
         {
             Debug.Assert(viewTaskDetails != null, "Task Details not set");
 
+            List<Task> tasksToView = new List<Task>();
+
             if (viewTaskDetails.Archive == true)
             {
                 Log.Debug("View archived tasks");
-                return fileHandler.ViewArchive();
+                tasksToView = fileHandler.ViewArchive();
             }
             else if (viewTaskDetails.Archive == false && viewTaskDetails.StartTime == null && viewTaskDetails.EndTime == null)
             {
                 Log.Debug("View all tasks");
-                return fileHandler.ViewAll();
+                tasksToView = fileHandler.ViewAll();
             }
             else if (viewTaskDetails.Archive == false && viewTaskDetails.EndTime == null)
             {
                 Log.Debug("View tasks ending on" + viewTaskDetails.StartTime);
-                return fileHandler.ViewTasks(viewTaskDetails.StartTime);
+                tasksToView = fileHandler.ViewTasks(viewTaskDetails.StartTime);
             }
             else if (viewTaskDetails.Archive == false)
             {
@@ -52,14 +54,21 @@ namespace WhiteBoard
                 DateTime endTime = (DateTime)viewTaskDetails.EndTime;
                 viewTaskDetails.EndTime = endTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
-                Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime)); 
-                return fileHandler.ViewTasks(viewTaskDetails.StartTime, viewTaskDetails.EndTime);
+                Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime));
+                tasksToView = fileHandler.ViewTasks(viewTaskDetails.StartTime, viewTaskDetails.EndTime);
             }
             else
             {
                 Log.Debug("Invalid condition for Viewing Tasks");
                 throw new NotImplementedException("There is no such criteria for file viewing!");
             }
+
+            if (tasksToView.Count == 0)
+            {
+                throw new ApplicationException("There are no tasks to view");
+            }
+
+            return tasksToView;
         }
 
         public override List<Task> Undo()

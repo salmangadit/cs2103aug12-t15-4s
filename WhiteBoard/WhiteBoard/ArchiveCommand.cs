@@ -96,7 +96,7 @@ namespace WhiteBoard
                 else
                 {
                     Log.Debug("Archive Command Undo failed for" + taskIdToArchive);
-                    throw new SystemException("Unable To Undo Archive Task" + taskIdToArchive);
+                    throw new ApplicationException("Unable To Undo Archive Task with ID T" + taskIdToArchive);
                 }
 
             }
