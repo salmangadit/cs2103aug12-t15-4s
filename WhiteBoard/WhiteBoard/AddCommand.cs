@@ -55,7 +55,7 @@ namespace WhiteBoard
                     }
                 }
 
-                if (!isFloatingTask(taskToAdd) && (((DateTime)taskToAdd.StartTime).DayOfYear < DateTime.Now.DayOfYear))
+                if (!isFloatingTask(taskToAdd) && (((DateTime)taskToAdd.StartTime).Date < DateTime.Now.Date))
                 {
                     throw new ApplicationException("Task cannot start in the past");
                 }
