@@ -345,7 +345,10 @@ namespace WhiteBoard
                     Log.Debug(String.Format("Valid parameters. Request to view tasks with startdate: {0} and/or enddate: {1}",
                         startDate.ToString(),
                         endDate.ToString()));
-
+                    if (endDate != null)
+                    {
+                        endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 23, 59, 59);
+                    }
                     Task viewtaskdetails = new Task(0, null, startDate, endDate, archiveFlag);
                     ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
                     taskHistory.Push(view);
