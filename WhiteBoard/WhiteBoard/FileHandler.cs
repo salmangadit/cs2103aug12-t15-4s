@@ -365,6 +365,10 @@ namespace WhiteBoard
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
             }
+            else
+            {
+                throw new SystemException("File is Empty");
+            }
 
             if (unarchived)
             {
