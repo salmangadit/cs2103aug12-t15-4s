@@ -146,7 +146,7 @@ namespace WhiteBoard
                 if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                 {
                     log.Debug("Replaced text in command rich text box");
-                    TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
+                    TextRange replaceText = FindLastWordFromPosition(txtCommand.Document.ContentStart, words[1]);
                     replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
                     replaceText.Text = "";
                 }
@@ -156,6 +156,19 @@ namespace WhiteBoard
                 autoCompleteList.Visibility = Visibility.Collapsed;
                 txtCommand.Focus();
                 txtCommand.CaretPosition = txtCommand.Document.ContentEnd;
+
+                // Then simulate search
+                var key = Key.Enter;                    // Key to send
+                var target = txtCommand;    // Target element
+                var routedEvent = Keyboard.KeyUpEvent; // Event to send
+
+                target.RaiseEvent(
+                  new KeyEventArgs(
+                    Keyboard.PrimaryDevice,
+                    PresentationSource.FromVisual(target),
+                    0,
+                    key) { RoutedEvent = routedEvent }
+                );
             }
         }
         #endregion
@@ -483,6 +496,24 @@ namespace WhiteBoard
                 txtCommand.Document = mcFlowDoc;
 
                 txtCommand.AppendText(commandHistory.DownClick());
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.Z)
+            {
+                
+                log.Debug("Undoing task");
+                Command command = controller.Undo(tasksOnScreen.ToList());
+                try
+                {
+                    ExecuteUndo(command);
+                }
+                catch (ApplicationException ex)
+                {
+                    toast.ShowToast(ex.Message);
+                }
+                // Data-bind list
+                lstTasks.DataContext = tasksOnScreen;
+                lstTasks.ItemsSource = tasksOnScreen;
+                lstTasks.Items.Refresh();
             }
 
             DoSyntaxHighlight();
