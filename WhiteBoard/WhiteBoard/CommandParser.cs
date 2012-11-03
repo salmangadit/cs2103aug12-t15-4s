@@ -29,6 +29,7 @@ namespace WhiteBoard
         private const string COMMAND_ARCHIVE = "ARCHIVE";
         private const string COMMAND_WEEK = "WEEK";
         private const string COMMAND_RANGE = "TO";
+        private const string COMMAND_RANGE_TILL = "TILL";
         private const string COMMAND_RANGE_ALT = "-";
         private const string COMMAND_RANGE_AND = "AND";
         private const int DATE_COUNT = 2;
@@ -653,6 +654,7 @@ namespace WhiteBoard
                     if (!modify)
                     {
                         if (String.Equals(str, COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, COMMAND_RANGE_TILL, StringComparison.CurrentCultureIgnoreCase)
                             || String.Equals(str, COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
                             || String.Equals(str, COMMAND_RANGE_ALT))
                         {
