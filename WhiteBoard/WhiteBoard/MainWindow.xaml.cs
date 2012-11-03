@@ -113,6 +113,19 @@ namespace WhiteBoard
                     autoCompleteList.Visibility = Visibility.Collapsed;
                     txtCommand.Focus();
                     txtCommand.CaretPosition = txtCommand.Document.ContentEnd;
+
+                    // Then simulate search
+                    var key = Key.Enter;                    // Key to send
+                    var target = txtCommand;    // Target element
+                    var routedEvent = Keyboard.KeyUpEvent; // Event to send
+
+                    target.RaiseEvent(
+                      new KeyEventArgs(
+                        Keyboard.PrimaryDevice,
+                        PresentationSource.FromVisual(target),
+                        0,
+                        key) { RoutedEvent = routedEvent }
+                    );
                 }
             }
         }
