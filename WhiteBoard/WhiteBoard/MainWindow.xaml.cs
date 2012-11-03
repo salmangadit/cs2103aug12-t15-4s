@@ -72,7 +72,7 @@ namespace WhiteBoard
             keywords = whiteboardSyntax.Keywords;
 
             // Set up toast notification
-            toast = new Toast(lblToast, lblToastText);
+            toast = new Toast(lblToast);
 
             // Set up command history
             commandHistory = new CommandHistory();
@@ -164,6 +164,7 @@ namespace WhiteBoard
                     {
                         log.Debug("Generating autocomplete list");
                         autoCompleteList.Show(autoComplete.Query(search));
+                         DisplayInstantSearch(instantSearch.GetTasksWithDescription(search));
                     }
                     catch (NullReferenceException)
                     {
@@ -182,6 +183,22 @@ namespace WhiteBoard
                 autoCompleteList.Visibility = Visibility.Visible;
             }
 
+        }
+
+        private void DisplayInstantSearch(List<Task> results)
+        {
+            if (results.Count == 0)
+                return;
+
+            tasksOnScreen.Clear();
+            foreach (Task task in results)
+            {
+                tasksOnScreen.Add(task);
+            }
+
+            lstTasks.DataContext = tasksOnScreen;
+            lstTasks.ItemsSource = tasksOnScreen;
+            lstTasks.Items.Refresh();
         }
         #endregion
 
