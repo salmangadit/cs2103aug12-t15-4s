@@ -27,6 +27,17 @@ namespace WhiteBoard
             this.commandType = CommandType.Archive;
         }
 
+        public ArchiveCommand(FileHandler fileHandler, List<Task> screenState)
+            : base(fileHandler, screenState)
+        {
+            taskIdsToArchive = new List<int>();
+            foreach (Task task in screenState)
+            {
+                this.taskIdsToArchive.Add(task.Id);
+            }
+            this.commandType = CommandType.Archive;
+        }
+
         public override CommandType CommandType
         {
             get
