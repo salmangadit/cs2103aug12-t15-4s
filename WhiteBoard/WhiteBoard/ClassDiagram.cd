@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WhiteBoard.AddCommand">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABASAAAAAAAAAAAACAAAAAAAAAAAABAA=</HashCode>
+      <FileName>AddCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.ArchiveCommand">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAABASAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>ArchiveCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Command" Collapsed="true">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAABASAAAAAAAAABACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Command.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.CommandParser">
+    <Position X="16.5" Y="4.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>aAKAEAgGAYAwGBCDATAAEAkwBIDiKAAIMBwAAAhgAGA=</HashCode>
+      <FileName>CommandParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Controller">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAACAAEAAAAAAAAAAAgA=</HashCode>
+      <FileName>Controller.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.DeleteCommand">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABASAAAQAAAEEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DeleteCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.EditCommand">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAABASAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EditCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.FileHandler">
+    <Position X="18.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAQAAAAAAAQAAEAAAAAAAAAEACBAACAAAAgAA=</HashCode>
+      <FileName>FileHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.MainWindow">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAEAAAEAAAQAAIAAgAAAAAAAFAAAAABgAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.SearchCommand">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAABASAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SearchCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Task">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgCACAAAAAgAAAIAAgAAAsAAEAABAAAAA=</HashCode>
+      <FileName>Task.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.UndoCommand">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAABASAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UndoCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.ViewCommand">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABASAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>ViewCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="WhiteBoard.CommandType">
+    <Position X="20" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAABAAAAAAAgAAAAAEBAAACAAAAAAAgAAA=</HashCode>
+      <FileName>CommandType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
