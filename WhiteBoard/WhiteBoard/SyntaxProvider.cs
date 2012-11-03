@@ -14,10 +14,9 @@ namespace WhiteBoard
         {
             keyWords = new List<string>();
             keyWords.Add("MODIFY");
-            keyWords.Add("CHANGE");
             keyWords.Add("UPDATE");
             keyWords.Add("SEARCH:");
-            keyWords.Add("UNDO:");
+            keyWords.Add("UNDO");
             keyWords.Add("DELETE");
             keyWords.Add("REMOVE");
             keyWords.Add("MARK");

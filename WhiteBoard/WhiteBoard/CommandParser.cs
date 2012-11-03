@@ -15,7 +15,7 @@ namespace WhiteBoard
     {
         private string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
-        private string[] COMMAND_MODIFY = { "MODIFY", "CHANGE", "UPDATE" };
+        private string[] COMMAND_MODIFY = { "MODIFY","UPDATE" };
         private string[] COMMAND_NEW_DATE = { "START", "END" };
         private string[] COMMAND_VIEW_DAY = { "ON", "AT" };
         private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
@@ -29,6 +29,7 @@ namespace WhiteBoard
         private const string COMMAND_ARCHIVE = "ARCHIVE";
         private const string COMMAND_WEEK = "WEEK";
         private const string COMMAND_RANGE = "TO";
+        private const string COMMAND_RANGE_TILL = "TILL";
         private const string COMMAND_RANGE_ALT = "-";
         private const string COMMAND_RANGE_AND = "AND";
         private const int DATE_COUNT = 2;
@@ -86,9 +87,9 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Splits usercommand string and adds to list
+        /// Splits usercommand string, removes extra blankspaces and adds to list
         /// </summary>
-        /// <param name="usercommand">The string input by user5</param>
+        /// <param name="usercommand">The string input by user</param>
         private void SplitString(string usercommand)
         {
             Debug.Assert(usercommand != null, "User command was null");
@@ -99,7 +100,7 @@ namespace WhiteBoard
             }
 
             inputCommand = usercommand;
-            inputCommand = Regex.Replace(inputCommand, @"\s+", " ");
+            inputCommand = Regex.Replace(inputCommand, @"\s+", " ");                        //Replace multiple blank spaces with single space
 
             Log.Debug("Extra white spaces removed. Input command : " + inputCommand);
 
@@ -112,6 +113,10 @@ namespace WhiteBoard
             }
         }
 
+        /// <summary>
+        /// Method to return UserCommand list for unit testing
+        /// </summary>
+        /// <returns>userCommand list</returns>
         public List<string> ReturnUserCommandListForTesting()
         {
             Debug.Assert(userCommand != null, "User command was null");
@@ -244,7 +249,7 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Checks whic task to mark as done based on the Task ID
+        /// Checks which task to mark as done based on the Task ID
         /// </summary>
         /// /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
         private Command ParseDone()
@@ -258,7 +263,7 @@ namespace WhiteBoard
             {
                 Log.Debug("Valid task ID entered. The ID is: " + checkId);
 
-                string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);
+                string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1); //Gets the substring from the index following the taskID
                 temp = temp.Trim();
                 if (String.Equals(temp, COMMAND_MARK, StringComparison.CurrentCultureIgnoreCase)
                     || String.Equals(temp, COMMAND_MARK_AS, StringComparison.CurrentCultureIgnoreCase))
@@ -298,40 +303,40 @@ namespace WhiteBoard
 
             if (userCommand.Count > 1)
             {
-                if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+                if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)            //View All
                 {
                     startDate = endDate = null;
                     archiveFlag = false;
                     viewFlag = 1;
                 }
 
-                else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+                else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)   //View Archive
                 {
                     startDate = endDate = null;
                     archiveFlag = true;
                     viewFlag = 1;
                 }
 
-                else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)
+                else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)      //View Week
                 {
                     DayOfWeek today = DateTime.Now.DayOfWeek;
                     int days = today - DayOfWeek.Monday;
                     DateTime temp_start = DateTime.Now.AddDays(-days);
                     DateTime temp_end = temp_start.AddDays(6);
                     startDate = temp_start;
-                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
+                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);        //Zeroes hour,min and secs
                     endDate = temp_end;
                     archiveFlag = false;
                     viewFlag = 1;
                 }
 
                 else
-                {
+                {                                                                               
                     startDate = null;
                     endDate = null;
                     if (ParseForDates(userCommand, nextIndex, false) > 0)
                     {
-                        viewFlag = 1;
+                        viewFlag = 1;           //ViewFlag is set to 1 if atleast one date or time is found
                         AssignDates();
                     }
                 }
@@ -341,7 +346,10 @@ namespace WhiteBoard
                     Log.Debug(String.Format("Valid parameters. Request to view tasks with startdate: {0} and/or enddate: {1}",
                         startDate.ToString(),
                         endDate.ToString()));
-
+                    if (endDate != null)
+                    {
+                        endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 23, 59, 59);
+                    }
                     Task viewtaskdetails = new Task(0, null, startDate, endDate, archiveFlag);
                     ViewCommand view = new ViewCommand(fileHandler, viewtaskdetails, screenState);
                     taskHistory.Push(view);
@@ -646,6 +654,7 @@ namespace WhiteBoard
                     if (!modify)
                     {
                         if (String.Equals(str, COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, COMMAND_RANGE_TILL, StringComparison.CurrentCultureIgnoreCase)
                             || String.Equals(str, COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
                             || String.Equals(str, COMMAND_RANGE_ALT))
                         {
@@ -768,12 +777,12 @@ namespace WhiteBoard
         private int IsValidTaskId(string str)
         {
             int taskid = -1;
-            if (char.ToUpperInvariant(str[0]) != 'T')
-            {
-                return -1;
-            }
-            else
-            {
+            //if (char.ToUpperInvariant(str[0]) != 'T')
+            //{
+            //    return -1;
+            //}
+            //else
+            //{
                 for (int i = 1; i < str.Length; ++i)
                 {
                     int temp = (int)Char.GetNumericValue(str[i]);
@@ -782,10 +791,10 @@ namespace WhiteBoard
                         return -1;
                     }
                 }
-                str = str.Substring(1);
+              //  str = str.Substring(1);
                 taskid = Convert.ToInt32(str);
                 return taskid;
-            }
+            //}
         }
 
         /// <summary>
@@ -797,7 +806,7 @@ namespace WhiteBoard
         {
             string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
                                     "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt",
+                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
                                     "HH:mm"};
             bool istime = false;
             DateTime temp;
@@ -820,7 +829,7 @@ namespace WhiteBoard
         {
             string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
                                     "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt",
+                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt","h tt","hh tt",
                                     "HH:mm"};
 
             string correctformat = String.Empty;
@@ -867,17 +876,22 @@ namespace WhiteBoard
         /// <returns>Returns true or false depending on whether the date is valid</returns>
         public bool IsDate(string datestring)
         {
+            System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-gb");
             string[] dateformat = { "dd/mm/yyyy", "dd-mm-yyyy", "dd.mm.yyyy",
+                                    "dd/mm/yy","dd-mm-yy","dd.mm.yy",
                                     "d/m/yyyy","dd/m/yyyy","d/mm/yyyy",
+                                    "d/m/yy","dd/m/yy","d/mm/yy",
                                     "d.m.yyyy","dd.m.yyyy","d.mm.yyyy",
-                                    "d-m-yyyy","dd-m-yyyy","d-mm-yyyy" };
+                                    "d.m.yy","dd.m.yy","d.mm.yy",
+                                    "d-m-yyyy","dd-m-yyyy","d-mm-yyyy",
+                                    "d-m-yy","dd-m-yy","d-mm-yy"};
             bool isdate = false;
             DateTime temp;
             foreach (string format in dateformat)
             {
                 if (!isdate)
                 {
-                    isdate = DateTime.TryParseExact(datestring, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
+                    isdate = DateTime.TryParseExact(datestring, format, cultureinfo, DateTimeStyles.None, out temp);
                 }
             }
             return isdate;
