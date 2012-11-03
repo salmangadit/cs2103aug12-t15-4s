@@ -244,7 +244,7 @@ namespace WhiteBoard
                     }
                 }
 
-                if (words[0].ToLower() == "modify" || words[0].ToLower() == "change" || words[0].ToLower() == "update")
+                if (words[0].ToLower() == "modify" || words[0].ToLower() == "update")
                 {
                     TextRange syntaxHighlight = FindLastWordFromPosition(txtCommand.Document.ContentStart, "start");
                     if (syntaxHighlight != null)
