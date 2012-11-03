@@ -48,11 +48,25 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
+            if (taskIdsToArchive.Count == 0)
+            {
+                throw new ApplicationException("No tasks to archive");
+            }
+
             foreach (int taskIdToArchive in taskIdsToArchive)
             {
                 Debug.Assert(taskIdToArchive > 0, "Invalid task ID");
+                bool isTaskArchived;
 
-                bool isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
+                try
+                {
+                    isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
+                }
+                catch (SystemException e)
+                {
+                    Log.Debug("Caught a System Exception" + e);
+                    throw new ApplicationException("There are no tasks to archive");
+                }
 
                 if (isTaskArchived)
                 {
@@ -61,7 +75,7 @@ namespace WhiteBoard
                 else
                 {
                     Log.Debug("Archive Command failed for" + taskIdToArchive);
-                    throw new SystemException("Unable To Archive Task" + taskIdToArchive);
+                    throw new ApplicationException("Unable To Archive Task with ID T" + taskIdToArchive);
                 }
             }
 

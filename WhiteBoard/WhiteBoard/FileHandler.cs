@@ -12,15 +12,6 @@ namespace WhiteBoard
 {
     delegate void FileUpdate(UpdateType update, Task task, Task uneditedTask);
 
-    enum UpdateType
-    {
-        Add,
-        Delete,
-        Archive,
-        Edit,
-        Unarchive
-    }
-
     class FileHandler
     {
         protected static readonly ILog log = LogManager.GetLogger(typeof(FileHandler));
@@ -33,7 +24,6 @@ namespace WhiteBoard
         private FileHandler()
         {
             string fileName = "TasksList.xml";
-            //log.Debug("Hello there");
 
             // set file path, we use the current Directory for the user and specified file name
             filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + fileName;
@@ -99,7 +89,9 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
+
+            // if file isn't empty deserialize first
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 lastTaskIndex = listOfAllTasks.Count - 1;
@@ -133,7 +125,6 @@ namespace WhiteBoard
         internal void AddTaskToFile(Task taskToAdd, int taskId)
         {
             List<Task> listOfAllTasks = new List<Task>();
-            //int indexOfTaskToAdd;
             Debug.Assert(taskId > 0, "Task Id should be a positive number!");
             taskToAdd.Id = taskId;
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
@@ -149,16 +140,18 @@ namespace WhiteBoard
                 Environment.Exit(0);
             }
 
-            if (listOfAllTasks.Count == 0) // If no tasks in file
+            // If no tasks in file
+            if (listOfAllTasks.Count == 0)
             {
                 listOfAllTasks.Add(taskToAdd);
             }
-
-            else if (listOfAllTasks.Count > 0) // If there are tasks in file
+            // If there are tasks in file
+            else if (listOfAllTasks.Count > 0)
             {
                 int indexOfTaskToAdd;
                 int lastTaskIndex = listOfAllTasks.Count - 1;
-                if (taskId < listOfAllTasks[0].Id) // If inserting at the top of the list
+                // If inserting at the top of the list
+                if (taskId < listOfAllTasks[0].Id)
                 {
                     indexOfTaskToAdd = 0;
                     listOfAllTasks.Insert(indexOfTaskToAdd, taskToAdd);
@@ -166,7 +159,8 @@ namespace WhiteBoard
 
                 for (int index = 0; index < (listOfAllTasks.Count - 1); index++)
                 {
-                    if ((taskId > listOfAllTasks[index].Id) && (taskId < listOfAllTasks[index + 1].Id)) // If inserting at the middle of the list
+                    // If inserting at the middle of the list
+                    if ((taskId > listOfAllTasks[index].Id) && (taskId < listOfAllTasks[index + 1].Id))
                     {
                         indexOfTaskToAdd = index + 1;
                         listOfAllTasks.Insert(indexOfTaskToAdd, taskToAdd);
@@ -174,7 +168,8 @@ namespace WhiteBoard
                     }
                 }
 
-                if (taskId > listOfAllTasks[lastTaskIndex].Id) // If inserting at the end of the list
+                // If inserting at the end of the list
+                if (taskId > listOfAllTasks[lastTaskIndex].Id)
                 {
                     listOfAllTasks.Add(taskToAdd);
                 }
@@ -195,7 +190,8 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
+            // if file isn't empty deserialize first
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
@@ -222,7 +218,8 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // if file isn't empty deserialize first
+            // if file isn't empty deserialize first
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
@@ -261,7 +258,8 @@ namespace WhiteBoard
             Task deletedTask = null;
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfTasks)
@@ -279,13 +277,17 @@ namespace WhiteBoard
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
             }
+            else
+            {
+                throw new SystemException("File is Empty");
+            }
 
             if (deleted)
             {
                 Notify(UpdateType.Delete, deletedTask);
                 log.Debug("Task deleted");
             }
-            // If file is already empty it will return false. Is that ok?
+
             return deleted;
         }
 
@@ -300,7 +302,9 @@ namespace WhiteBoard
             Task archivedTask = null;
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfTasks)
@@ -317,6 +321,10 @@ namespace WhiteBoard
                 StreamWriter objStrWrt = new StreamWriter(filePath);
                 objXmlSer.Serialize(objStrWrt, listOfTasks);
                 objStrWrt.Close();
+            }
+            else
+            {
+                throw new SystemException("File is Empty");
             }
 
             if (archived)
@@ -338,7 +346,8 @@ namespace WhiteBoard
             Task unarchivedTask = null;
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfTasks)
@@ -372,7 +381,8 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
@@ -385,7 +395,7 @@ namespace WhiteBoard
                 objStrRead.Close();
             }
 
-            return listOfNonArchivedTasks; // will return empty list if file is empty or no non-archived tasks
+            return listOfNonArchivedTasks;
         }
 
         internal List<Task> ViewArchive()
@@ -395,7 +405,9 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
@@ -408,7 +420,7 @@ namespace WhiteBoard
                 objStrRead.Close();
             }
 
-            return listOfArchivedTasks; // Will return empty list if file is empty or if file contains no archived tasks
+            return listOfArchivedTasks;
         }
 
         internal List<Task> ViewTasks(DateTime? date)
@@ -419,7 +431,8 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
@@ -434,7 +447,7 @@ namespace WhiteBoard
 
                     else if ((!t.Archive) && (t.EndTime != null))
                     {
-                        if(t.EndTime.Value.Date == date.Value.Date)
+                        if (t.EndTime.Value.Date == date.Value.Date)
                         {
                             listOfTasksForTheDay.Add(t);
                         }
@@ -453,7 +466,8 @@ namespace WhiteBoard
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
 
             StreamReader objStrRead = new StreamReader(filePath);
-            if (objStrRead.Peek() >= 0) // If file is not empty
+            // If file is not empty
+            if (objStrRead.Peek() >= 0)
             {
                 listOfAllTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfAllTasks)
@@ -469,21 +483,10 @@ namespace WhiteBoard
                         {
                             listOfTasksWithinRange.Add(t);
                         }
-
-                        //else if ((t.Deadline.HasValue) && (t.Deadline >= startDate) && (t.Deadline <= endDate))
-                        //{
-                        //    listOfTasksWithinRange.Add(t);
-                        //}
-
                         else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.EndTime.HasValue) && (t.EndTime >= endDate))
                         {
                             listOfTasksWithinRange.Add(t);
                         }
-
-                        //else if ((t.StartTime.HasValue) && (t.StartTime <= startDate) && (t.Deadline.HasValue) && (t.Deadline >= endDate))
-                        //{
-                        //    listOfTasksWithinRange.Add(t);
-                        //}
                     }
                 }
             }

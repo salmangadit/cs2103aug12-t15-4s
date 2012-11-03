@@ -75,6 +75,7 @@
     <Compile Include="Task.cs" />
     <Compile Include="Toast.cs" />
     <Compile Include="UndoCommand.cs" />
+    <Compile Include="UpdateType.cs" />
     <Compile Include="ViewCommand.cs" />
     <Page Include="AutoComplete.xaml">
       <SubType>Designer</SubType>
