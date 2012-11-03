@@ -11,11 +11,12 @@ namespace WhiteBoard
     class AddCommand : Command
     {
         Task taskToAdd;
-        List<Task> addedTask = new List<Task>();
+        List<Task> addedTask;
 
         public AddCommand(FileHandler fileHandler, Task taskToAdd, List<Task> screenState)
             : base(fileHandler, screenState)
         {
+            addedTask = new List<Task>();
             this.taskToAdd = taskToAdd;
             this.commandType = CommandType.Add;
         }
@@ -55,10 +56,18 @@ namespace WhiteBoard
                 throw new ApplicationException("Please provide a task description");
             }
 
-            fileHandler.AddTaskToFile(taskToAdd);
+            bool isTaskAdded = fileHandler.AddTaskToFile(taskToAdd);
             addedTask.Add(taskToAdd);
 
-            Log.Debug("Add Command was executed for task" + taskToAdd.Id);
+            if (isTaskAdded)
+            {
+                Log.Debug("Add Command was executed for" + taskToAdd.Id);
+            }
+            else
+            {
+                Log.Debug("Add Command failed for" + taskToAdd.Id);
+                throw new ApplicationException("Unable To Add Task with ID T" + taskToAdd.Id);
+            }
 
             return addedTask;
         }
