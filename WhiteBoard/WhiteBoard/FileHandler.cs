@@ -79,9 +79,10 @@ namespace WhiteBoard
             updateEvent(update, task, uneditedTask);
         }
 
-        internal void AddTaskToFile(Task taskToAdd)
+        internal bool AddTaskToFile(Task taskToAdd)
         {
             log.Debug("Task going to be added");
+            bool taskAdded = false;
             List<Task> listOfAllTasks = new List<Task>();
             int lastTaskIndex;
             int newTaskId = 1;
@@ -104,6 +105,7 @@ namespace WhiteBoard
 
             taskToAdd.Id = newTaskId;
             listOfAllTasks.Add(taskToAdd);
+            taskAdded = true;
             StreamWriter objStrWrt = new StreamWriter(filePath);
             try
             {
@@ -120,11 +122,13 @@ namespace WhiteBoard
             objStrWrt.Close();
             Notify(UpdateType.Add, taskToAdd);
             log.Debug("Task added");
+            return taskAdded;
         }
 
-        internal void AddTaskToFile(Task taskToAdd, int taskId)
+        internal bool AddTaskToFile(Task taskToAdd, int taskId)
         {
             List<Task> listOfAllTasks = new List<Task>();
+            bool taskAdded = false;
             Debug.Assert(taskId > 0, "Task Id should be a positive number!");
             taskToAdd.Id = taskId;
             XmlSerializer objXmlSer = new XmlSerializer(typeof(List<Task>));
@@ -144,6 +148,7 @@ namespace WhiteBoard
             if (listOfAllTasks.Count == 0)
             {
                 listOfAllTasks.Add(taskToAdd);
+                taskAdded = true;
             }
             // If there are tasks in file
             else if (listOfAllTasks.Count > 0)
@@ -155,6 +160,7 @@ namespace WhiteBoard
                 {
                     indexOfTaskToAdd = 0;
                     listOfAllTasks.Insert(indexOfTaskToAdd, taskToAdd);
+                    taskAdded = true;
                 }
 
                 for (int index = 0; index < (listOfAllTasks.Count - 1); index++)
@@ -164,6 +170,7 @@ namespace WhiteBoard
                     {
                         indexOfTaskToAdd = index + 1;
                         listOfAllTasks.Insert(indexOfTaskToAdd, taskToAdd);
+                        taskAdded = true;
                         break;
                     }
                 }
@@ -172,12 +179,14 @@ namespace WhiteBoard
                 if (taskId > listOfAllTasks[lastTaskIndex].Id)
                 {
                     listOfAllTasks.Add(taskToAdd);
+                    taskAdded = true;
                 }
             }
             StreamWriter objStrWrt = new StreamWriter(filePath);
             objXmlSer.Serialize(objStrWrt, listOfAllTasks);
             objStrWrt.Close();
             Notify(UpdateType.Add, taskToAdd);
+            return taskAdded;
         }
 
         internal Task GetTaskFromFile(int editedTaskId)
