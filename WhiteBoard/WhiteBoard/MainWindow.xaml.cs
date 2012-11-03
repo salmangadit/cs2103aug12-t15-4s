@@ -72,7 +72,7 @@ namespace WhiteBoard
             keywords = whiteboardSyntax.Keywords;
 
             // Set up toast notification
-            toast = new Toast(lblToast);
+            toast = new Toast(lblToast, lblToastText);
 
             // Set up command history
             commandHistory = new CommandHistory();
