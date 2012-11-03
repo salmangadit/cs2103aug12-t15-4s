@@ -84,7 +84,7 @@ namespace WhiteBoard
 
         public override List<Task> Undo()
         {
-            Debug.Assert(addedTask[0] != null, "No task in added task list");
+           Debug.Assert(addedTask[0] != null, "No task in added task list");
 
             if (fileHandler.DeleteTaskFromFile(addedTask[0].Id))
             {
