@@ -49,11 +49,6 @@ namespace WhiteBoard
             }
             else if (viewTaskDetails.Archive == false)
             {
-                // change time of end to 2359
-                // this should be done in parser, looks messy to do it here
-                DateTime endTime = (DateTime)viewTaskDetails.EndTime;
-                viewTaskDetails.EndTime = endTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
-
                 Log.Debug(String.Format("View tasks starting from {0} and ending on {1}", viewTaskDetails.StartTime, viewTaskDetails.EndTime));
                 tasksToView = fileHandler.ViewTasks(viewTaskDetails.StartTime, viewTaskDetails.EndTime);
             }
