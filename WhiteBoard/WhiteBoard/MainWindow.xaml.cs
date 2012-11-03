@@ -502,6 +502,10 @@ namespace WhiteBoard
                 
                 log.Debug("Undoing task");
                 Command command = controller.Undo(tasksOnScreen.ToList());
+
+                if (command == null)
+                    return;
+
                 try
                 {
                     ExecuteUndo(command);
