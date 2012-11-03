@@ -148,7 +148,7 @@ namespace WhiteBoard
             log.Debug("Checking AutoComplete requirement");
             // Auto Complete
             TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
-
+            InstantSearch instantSearch = new InstantSearch();
             string command = userTextRange.Text;
             command = command.Replace("\r\n", "");
 
