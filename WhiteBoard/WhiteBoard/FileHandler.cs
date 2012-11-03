@@ -407,7 +407,7 @@ namespace WhiteBoard
                 }
                 objStrRead.Close();
             }
-
+            listOfNonArchivedTasks = listOfNonArchivedTasks.OrderBy(x => x.StartTime).ToList();
             return listOfNonArchivedTasks;
         }
 
@@ -433,6 +433,7 @@ namespace WhiteBoard
                 objStrRead.Close();
             }
 
+            listOfArchivedTasks = listOfArchivedTasks.OrderBy(x => x.StartTime).ToList();
             return listOfArchivedTasks;
         }
 
@@ -468,6 +469,7 @@ namespace WhiteBoard
                 }
             }
             objStrRead.Close();
+            listOfTasksForTheDay = listOfTasksForTheDay.OrderBy(x => x.StartTime).ToList();
             return listOfTasksForTheDay;
         }
 
@@ -504,6 +506,7 @@ namespace WhiteBoard
                 }
             }
             objStrRead.Close();
+            listOfTasksWithinRange = listOfTasksWithinRange.OrderBy(x => x.StartTime).ToList();
             return listOfTasksWithinRange;
         }
     }
