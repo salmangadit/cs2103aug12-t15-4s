@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.Windows;
 
 namespace WhiteBoard
 {
@@ -132,24 +133,54 @@ namespace WhiteBoard
             get
             {
                 if (taskEndTime == null && taskStartTime == null)
-                    return Brushes.White;
+                    return NormalColor();
                 else if (taskEndTime != null)
                 {
                     if (DateTime.Now > taskEndTime)
-                        return Brushes.DarkSalmon;
+                        return OverdueColor();
                     else
-                        return Brushes.White;
+                        return NormalColor();
                 }
                 else if (taskEndTime == null && taskStartTime != null)
                 {
                     if (DateTime.Now > taskStartTime)
-                        return Brushes.DarkSalmon;
+                        return OverdueColor();
                     else
-                        return Brushes.White;
+                        return NormalColor();
                 }
 
-                return Brushes.White;
+                return NormalColor();
             }
+        }
+
+        private Brush OverdueColor()
+        {
+            // Create a diagonal linear gradient with four stops.   
+            LinearGradientBrush myLinearGradientBrush =
+                new LinearGradientBrush();
+            myLinearGradientBrush.StartPoint = new Point(0, 0);
+            myLinearGradientBrush.EndPoint = new Point(0, 1);
+            myLinearGradientBrush.GradientStops.Add(
+                new GradientStop(Colors.White, 0.0));
+            myLinearGradientBrush.GradientStops.Add(
+                new GradientStop(Colors.LightGray, 1));
+
+            return myLinearGradientBrush;
+        }
+
+        private Brush NormalColor()
+        {
+            // Create a diagonal linear gradient with four stops.   
+            LinearGradientBrush myLinearGradientBrush =
+                new LinearGradientBrush();
+            myLinearGradientBrush.StartPoint = new Point(0, 0);
+            myLinearGradientBrush.EndPoint = new Point(0, 2);
+            myLinearGradientBrush.GradientStops.Add(
+                new GradientStop(Colors.White, 0.0));
+            myLinearGradientBrush.GradientStops.Add(
+                new GradientStop(Colors.LightGray, 2));
+
+            return myLinearGradientBrush;
         }
 
         public bool Overdue
