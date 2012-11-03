@@ -73,7 +73,7 @@
             <Label.Margin>
                 <Thickness Bottom="10"/>
             </Label.Margin>
-            <TextBlock Name="lblToastText" TextWrapping="Wrap"/>
+            <TextBlock Name="lblToastText" Width="400" TextWrapping="Wrap"/>
         </Label>
         <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are">
 
