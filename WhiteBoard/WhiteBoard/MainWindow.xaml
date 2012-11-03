@@ -36,7 +36,7 @@
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <ListBox Name="lstTasks" Background="DarkGray" ItemContainerStyle="{StaticResource BorderedItem}">
             <ListBox.ItemTemplate>
@@ -69,12 +69,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Label Name="lblToast" FontFamily="./Resources/#From Where You Are" Visibility="Collapsed" Background="Cornsilk" BorderBrush="Black" BorderThickness="1" Grid.Row="0" Width="50" Height="30" VerticalAlignment="Bottom" HorizontalContentAlignment="Center">
-            <Label.Margin>
-                <Thickness Bottom="10"/>
-            </Label.Margin>
-            <TextBlock Name="lblToastText" Width="400" TextWrapping="Wrap"/>
-        </Label>
+        <TextBlock Name="lblToast" TextWrapping="Wrap" FontSize="14" FontFamily="./Resources/#From Where You Are"  Visibility="Collapsed" Background="Yellow" Grid.Row="0" HorizontalAlignment="Center" Width="400" VerticalAlignment="Center"/>
+        
         <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are">
 
         </RichTextBox>

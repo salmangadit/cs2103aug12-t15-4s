@@ -11,17 +11,15 @@ namespace WhiteBoard
 {
     class Toast
     {
-        Label lblToast;
-        TextBlock lblToastText;
+        TextBlock lblToast;
         bool enter;
         int toastTime;
         DispatcherTimer toastTimer, toastAnimationTimer;
         protected static readonly ILog log = LogManager.GetLogger(typeof(Toast));
 
-        public Toast(Label lblToast, TextBlock lblToastText)
+        public Toast(TextBlock lblToast)
         {
             this.lblToast = lblToast;
-            this.lblToastText = lblToastText;
         }
 
         public void ShowToast(string toast)
@@ -39,12 +37,19 @@ namespace WhiteBoard
             enter = true;
             toastTime = 0;
 
-            lblToastText.Text = toast;
-            lblToast.Width = toast.Length * 10;
+            lblToast.Text = toast;
+            if (toast.Length * 10 > 400)
+            {
+                lblToast.Width = 400;
+            }
+            else
+            {
+                lblToast.Width = toast.Length * 10;
+            }
             lblToast.Visibility = Visibility.Visible;
             lblToast.Opacity = 0;
         }
-        
+
         private void toastTimer_Tick(object sender, EventArgs e)
         {
             lblToast.Visibility = Visibility.Collapsed;

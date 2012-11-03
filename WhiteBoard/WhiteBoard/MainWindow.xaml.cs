@@ -48,14 +48,19 @@ namespace WhiteBoard
             tasksOnScreen = new ObservableCollection<Task>();
 
             Command command = controller.GetAllTasks(tasksOnScreen.ToList());
-
-            List<Task> tasksToView = command.Execute();
-            tasksOnScreen.Clear();
-            foreach (Task task in tasksToView)
+            try
             {
-                tasksOnScreen.Add(task);
+                List<Task> tasksToView = command.Execute();
+                tasksOnScreen.Clear();
+                foreach (Task task in tasksToView)
+                {
+                    tasksOnScreen.Add(task);
+                }
             }
-
+            catch (ApplicationException ex)
+            {
+                toast.ShowToast(ex.Message);
+            }
             // Data-bind list
             lstTasks.DataContext = tasksOnScreen;
             lstTasks.ItemsSource = tasksOnScreen;
@@ -72,7 +77,7 @@ namespace WhiteBoard
             keywords = whiteboardSyntax.Keywords;
 
             // Set up toast notification
-            toast = new Toast(lblToast, lblToastText);
+            toast = new Toast(lblToast);
 
             // Set up command history
             commandHistory = new CommandHistory();
@@ -98,7 +103,7 @@ namespace WhiteBoard
                     if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                     {
                         log.Debug("Replaced text in command rich text box");
-                        TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
+                        TextRange replaceText = FindLastWordFromPosition(txtCommand.Document.ContentStart, words[1]);
                         replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
                         replaceText.Text = "";
                     }
@@ -108,6 +113,19 @@ namespace WhiteBoard
                     autoCompleteList.Visibility = Visibility.Collapsed;
                     txtCommand.Focus();
                     txtCommand.CaretPosition = txtCommand.Document.ContentEnd;
+
+                    // Then simulate search
+                    var key = Key.Enter;                    // Key to send
+                    var target = txtCommand;    // Target element
+                    var routedEvent = Keyboard.KeyUpEvent; // Event to send
+
+                    target.RaiseEvent(
+                      new KeyEventArgs(
+                        Keyboard.PrimaryDevice,
+                        PresentationSource.FromVisual(target),
+                        0,
+                        key) { RoutedEvent = routedEvent }
+                    );
                 }
             }
         }
@@ -128,7 +146,7 @@ namespace WhiteBoard
                 if (words.Count() > 1 && !string.IsNullOrWhiteSpace(words[1]))
                 {
                     log.Debug("Replaced text in command rich text box");
-                    TextRange replaceText = FindWordFromPosition(txtCommand.Document.ContentStart, words[1]);
+                    TextRange replaceText = FindLastWordFromPosition(txtCommand.Document.ContentStart, words[1]);
                     replaceText = new TextRange(replaceText.Start, txtCommand.Document.ContentEnd);
                     replaceText.Text = "";
                 }
@@ -138,6 +156,19 @@ namespace WhiteBoard
                 autoCompleteList.Visibility = Visibility.Collapsed;
                 txtCommand.Focus();
                 txtCommand.CaretPosition = txtCommand.Document.ContentEnd;
+
+                // Then simulate search
+                var key = Key.Enter;                    // Key to send
+                var target = txtCommand;    // Target element
+                var routedEvent = Keyboard.KeyUpEvent; // Event to send
+
+                target.RaiseEvent(
+                  new KeyEventArgs(
+                    Keyboard.PrimaryDevice,
+                    PresentationSource.FromVisual(target),
+                    0,
+                    key) { RoutedEvent = routedEvent }
+                );
             }
         }
         #endregion
@@ -164,6 +195,7 @@ namespace WhiteBoard
                     {
                         log.Debug("Generating autocomplete list");
                         autoCompleteList.Show(autoComplete.Query(search));
+                         DisplayInstantSearch(instantSearch.GetTasksWithDescription(search));
                     }
                     catch (NullReferenceException)
                     {
@@ -182,6 +214,22 @@ namespace WhiteBoard
                 autoCompleteList.Visibility = Visibility.Visible;
             }
 
+        }
+
+        private void DisplayInstantSearch(List<Task> results)
+        {
+            if (results.Count == 0)
+                return;
+
+            tasksOnScreen.Clear();
+            foreach (Task task in results)
+            {
+                tasksOnScreen.Add(task);
+            }
+
+            lstTasks.DataContext = tasksOnScreen;
+            lstTasks.ItemsSource = tasksOnScreen;
+            lstTasks.Items.Refresh();
         }
         #endregion
 
@@ -364,6 +412,8 @@ namespace WhiteBoard
                 if (autoCompleteList.Visibility == Visibility.Visible)
                     autoCompleteList.Visibility = Visibility.Collapsed;
 
+                autoCompleteList.Clear();
+
                 // Add to command history
                 commandHistory.AddToHistory(userCommand);
 
@@ -446,6 +496,28 @@ namespace WhiteBoard
                 txtCommand.Document = mcFlowDoc;
 
                 txtCommand.AppendText(commandHistory.DownClick());
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.Z)
+            {
+                
+                log.Debug("Undoing task");
+                Command command = controller.Undo(tasksOnScreen.ToList());
+
+                if (command == null)
+                    return;
+
+                try
+                {
+                    ExecuteUndo(command);
+                }
+                catch (ApplicationException ex)
+                {
+                    toast.ShowToast(ex.Message);
+                }
+                // Data-bind list
+                lstTasks.DataContext = tasksOnScreen;
+                lstTasks.ItemsSource = tasksOnScreen;
+                lstTasks.Items.Refresh();
             }
 
             DoSyntaxHighlight();

@@ -85,6 +85,13 @@ namespace WhiteBoard
             }
         }
 
+        public void Clear()
+        {
+            autoCompleteList = new List<string>();
+            lstAutoComplete.DataContext = autoCompleteList;
+            lstAutoComplete.ItemsSource = autoCompleteList;
+        }
+
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
             if (lstAutoComplete.Items.Count > 0)
