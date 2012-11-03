@@ -17,6 +17,9 @@ namespace WhiteBoard
 
         public void AddToHistory(string command)
         {
+            if (command.Split(' ')[0].ToLower() == "search:")
+                return;
+
             commandHistory.Add(command);
             currIndex = -1;
         }

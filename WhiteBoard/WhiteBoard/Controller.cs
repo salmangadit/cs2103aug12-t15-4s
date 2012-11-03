@@ -26,5 +26,11 @@ namespace WhiteBoard
             CommandParser commandParser = new CommandParser(screenState, history);
             return commandParser.ParseCommand("VIEW ALL");
         }
+
+        public Command Undo(List<Task> screenState)
+        {
+            CommandParser commandParser = new CommandParser(screenState, history);
+            return commandParser.ParseCommand("UNDO");
+        }
     }
 }
