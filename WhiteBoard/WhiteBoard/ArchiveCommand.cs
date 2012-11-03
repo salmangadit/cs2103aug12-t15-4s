@@ -10,11 +10,13 @@ namespace WhiteBoard
     class ArchiveCommand : Command
     {
         List<int> taskIdsToArchive;
+        List<Task> tasksArchived;
 
         public ArchiveCommand(FileHandler fileHandler, int taskIdToArchive, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             taskIdsToArchive = new List<int>();
+            tasksArchived = new List<Task>();
             this.taskIdsToArchive.Add(taskIdToArchive);
             this.commandType = CommandType.Archive;
         }
@@ -23,6 +25,7 @@ namespace WhiteBoard
             : base(fileHandler, screenState)
         {
             taskIdsToArchive = new List<int>();
+            tasksArchived = new List<Task>();
             this.taskIdsToArchive = taskIdsToArchive;
             this.commandType = CommandType.Archive;
         }
@@ -31,6 +34,7 @@ namespace WhiteBoard
             : base(fileHandler, screenState)
         {
             taskIdsToArchive = new List<int>();
+            tasksArchived = new List<Task>();
             foreach (Task task in screenState)
             {
                 this.taskIdsToArchive.Add(task.Id);
@@ -60,6 +64,7 @@ namespace WhiteBoard
 
                 try
                 {
+                    tasksArchived.Add(fileHandler.GetTaskFromFile(taskIdToArchive));
                     isTaskArchived = fileHandler.ArchiveTaskInFile(taskIdToArchive);
                 }
                 catch (SystemException e)
@@ -79,7 +84,7 @@ namespace WhiteBoard
                 }
             }
 
-            return new List<Task>();
+            return tasksArchived;
         }
 
         public override List<Task> Undo()
