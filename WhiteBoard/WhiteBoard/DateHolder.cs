@@ -59,6 +59,8 @@ namespace WhiteBoard
             {
                 try
                 {
+                    var cultureinfo = new System.Globalization.CultureInfo("en-gb");
+                    DateTime.Parse(dateString, cultureinfo, System.Globalization.DateTimeStyles.None);
                     return DateTime.Parse(dateString);
                 }
                 catch(FormatException e)
