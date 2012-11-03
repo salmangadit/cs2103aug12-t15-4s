@@ -21,6 +21,8 @@ namespace WhiteBoard
         private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
         private string[] COMMAND_VIEW_ENDING = { "BY", "BEFORE", "ENDING" };
         private string[] COMMAND_KEYWORD_REMOVE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN", "START", "END" };
+        private const string COMMAND_MARK_DONE = "MARK ALL DONE";
+        private const string COMMAND_MARK_AS_DONE = "MARK ALL AS DONE";
         private const string COMMAND_MARK = "DONE";
         private const string COMMAND_MARK_AS = "AS DONE";
         private const string COMMAND_ALL = "ALL";
@@ -128,7 +130,7 @@ namespace WhiteBoard
                     {
                         return ParseSearch();
                     }
-                case "UNDO:":
+                case "UNDO":
                     {
                         return ParseUndo();
                     }
@@ -182,14 +184,19 @@ namespace WhiteBoard
         {
             Log.Debug("Undo keyword entered.");
 
-            Command lastcommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
-            if (lastcommand != null)
+            if (userCommand.Count == 1)
             {
-                UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
-                return undo;
+                Command lastcommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
+                if (lastcommand != null)
+                {
+                    UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
+                    return undo;
+                }
+                else
+                    return null;
             }
             else
-                return null;
+                return ParseNewTask();
         }
 
         /// <summary>
@@ -242,6 +249,7 @@ namespace WhiteBoard
         /// /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
         private Command ParseDone()
         {
+            string command = String.Join(" ",userCommand.ToArray());
             Log.Debug("Archive keyword entered. Checking task ID");
             currentIndex = 0;
             nextIndex = currentIndex + 1;
@@ -262,10 +270,21 @@ namespace WhiteBoard
                     return markdone;
                 }
             }
+            else if((String.Equals(command,COMMAND_MARK_DONE,StringComparison.CurrentCultureIgnoreCase))||
+                    (String.Equals(command,COMMAND_MARK_AS_DONE,StringComparison.CurrentCultureIgnoreCase)))
+            {
+                Log.Debug("Mark all as done");
+
+                ArchiveCommand markall = new ArchiveCommand(fileHandler,screenState);
+                taskHistory.Push(markall);
+                return markall;
+            }
+
             Log.Debug("Task ID not valid. Calling ParseNewTask()");
 
             return ParseNewTask();
         }
+
         /// <summary>
         /// Parses the command and extracts the parameters for the View Command
         /// </summary>
