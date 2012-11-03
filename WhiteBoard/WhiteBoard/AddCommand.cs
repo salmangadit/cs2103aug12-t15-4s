@@ -10,15 +10,23 @@ namespace WhiteBoard
 {
     class AddCommand : Command
     {
-        Task taskToAdd;
-        List<Task> addedTask;
+        //Task taskToAdd;
+        List<Task> tasksToAdd;
 
         public AddCommand(FileHandler fileHandler, Task taskToAdd, List<Task> screenState)
             : base(fileHandler, screenState)
         {
-            addedTask = new List<Task>();
-            this.taskToAdd = taskToAdd;
+            tasksToAdd = new List<Task>();
+            tasksToAdd.Add(taskToAdd);
             this.commandType = CommandType.Add;
+        }
+
+        public AddCommand(FileHandler fileHandler, List<Task> tasksToAdd, List<Task> screenState)
+            : base(fileHandler, screenState)
+        {
+            tasksToAdd = new List<Task>();
+            this.tasksToAdd = tasksToAdd;
+            this.commandType = CommandType.Archive;
         }
 
         public override CommandType CommandType
@@ -31,45 +39,51 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
-            Debug.Assert(taskToAdd != null, "Task to add is null");
-
-            if (taskToAdd.StartTime == null)
+            if (tasksToAdd.Count == 0)
             {
-                if (taskToAdd.EndTime != null)
+                throw new ApplicationException("No tasks to add");
+            }
+
+            foreach (Task taskToAdd in tasksToAdd)
+            {
+
+                if (taskToAdd.StartTime == null)
                 {
-                    throw new ApplicationException("Task can't have an end time without start time");
+                    if (taskToAdd.EndTime != null)
+                    {
+                        throw new ApplicationException("Task can't have an end time without start time");
+                    }
+                }
+
+                if (!isFloatingTask(taskToAdd) && (((DateTime)taskToAdd.StartTime).DayOfYear < DateTime.Now.DayOfYear))
+                {
+                    throw new ApplicationException("Task cannot start in the past");
+                }
+
+                if (!isFloatingTask(taskToAdd) && (taskToAdd.StartTime > taskToAdd.EndTime))
+                {
+                    throw new ApplicationException("Task cannot begin after it ends!");
+                }
+
+                if (taskToAdd.Description.Equals(String.Empty))
+                {
+                    throw new ApplicationException("Please provide a task description");
+                }
+
+                bool isTaskAdded = fileHandler.AddTaskToFile(taskToAdd);
+
+                if (isTaskAdded)
+                {
+                    Log.Debug("Add Command was executed for" + taskToAdd.Id);
+                }
+                else
+                {
+                    Log.Debug("Add Command failed for" + taskToAdd.Id);
+                    throw new ApplicationException("Unable To Add Task with ID T" + taskToAdd.Id);
                 }
             }
 
-            if (!isFloatingTask(taskToAdd) && (((DateTime)taskToAdd.StartTime).DayOfYear < DateTime.Now.DayOfYear))
-            {
-                throw new ApplicationException("Task cannot start in the past");
-            }
-
-            if (!isFloatingTask(taskToAdd) && (taskToAdd.StartTime > taskToAdd.EndTime))
-            {
-                throw new ApplicationException("Task cannot begin after it ends!");
-            }
-
-            if (taskToAdd.Description.Equals(String.Empty))
-            {
-                throw new ApplicationException("Please provide a task description");
-            }
-
-            bool isTaskAdded = fileHandler.AddTaskToFile(taskToAdd);
-            addedTask.Add(taskToAdd);
-
-            if (isTaskAdded)
-            {
-                Log.Debug("Add Command was executed for" + taskToAdd.Id);
-            }
-            else
-            {
-                Log.Debug("Add Command failed for" + taskToAdd.Id);
-                throw new ApplicationException("Unable To Add Task with ID T" + taskToAdd.Id);
-            }
-
-            return addedTask;
+            return tasksToAdd;
         }
 
         private bool isFloatingTask(Task taskToAdd)
@@ -84,18 +98,20 @@ namespace WhiteBoard
 
         public override List<Task> Undo()
         {
-            Debug.Assert(addedTask[0] != null, "No task in added task list");
+            foreach (Task taskAdded in tasksToAdd)
+            {
+                if (fileHandler.DeleteTaskFromFile(taskAdded.Id))
+                {
+                    Log.Debug("Add Command Undone for task" + taskAdded.Id);
+                }
+                else
+                {
+                    Log.Debug("Add Command Undo Failed for task" + taskAdded.Id);
+                    throw new SystemException("Add Command Undo Failed for task" + taskAdded.Id);
+                }
+            }
 
-            if (fileHandler.DeleteTaskFromFile(addedTask[0].Id))
-            {
-                Log.Debug("Add Command Undone for task" + addedTask[0].Id);
-                return screenState;
-            }
-            else
-            {
-                Log.Debug("Add Command Undo Failed for task" + addedTask[0].Id);
-                throw new SystemException("Add Command Undo Failed for task" + addedTask[0].Id);
-            }
+            return screenState;
         }
     }
 }
