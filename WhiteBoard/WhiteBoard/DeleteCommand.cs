@@ -52,12 +52,27 @@ namespace WhiteBoard
 
         public override List<Task> Execute()
         {
+            if (taskIdsToDelete.Count == 0)
+            {
+                throw new ApplicationException("No tasks to delete");
+            }
+
             foreach (int taskIdToDelete in taskIdsToDelete)
             {
                 Debug.Assert(taskIdToDelete > 0, "Invalid task ID");
 
-                tasksToDelete.Add(fileHandler.GetTaskFromFile(taskIdToDelete));
-                bool isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
+                bool isTaskDeleted;
+
+                try
+                {
+                    tasksToDelete.Add(fileHandler.GetTaskFromFile(taskIdToDelete));
+                    isTaskDeleted = fileHandler.DeleteTaskFromFile(taskIdToDelete);
+                }
+                catch (SystemException e)
+                {
+                    Log.Debug("Caught a System Exception" + e);
+                    throw new ApplicationException("There are no tasks to delete");
+                }
 
                 if (isTaskDeleted)
                 {
@@ -66,7 +81,7 @@ namespace WhiteBoard
                 else
                 {
                     Log.Debug("Delete Command failed for" + taskIdToDelete);
-                    throw new SystemException("Unable To Delete Task" + taskIdToDelete);
+                    throw new ApplicationException("Unable To Delete Task with ID T" + taskIdToDelete);
                 }
             }
 
