@@ -101,7 +101,7 @@ namespace WhiteBoard
 
             inputCommand = usercommand;
             inputCommand = Regex.Replace(inputCommand, @"\s+", " ");                        //Replace multiple blank spaces with single space
-
+            inputCommand = inputCommand.Trim();
             Log.Debug("Extra white spaces removed. Input command : " + inputCommand);
 
             userCommandArray = inputCommand.Split(' ');
