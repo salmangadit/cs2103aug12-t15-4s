@@ -18,6 +18,8 @@ namespace WhiteBoard
         const int NEAR_MISS_END_LENGTH = 2;
         const int NEAR_MISS_START_LENGTH = 1;
         const int NEAR_MISS_START_INDEX = 0;
+        const int NEAR_MISS_MIN_SEARCH_COUNT = 1;
+        const int NEAR_MISS_MAXIMUM_EDIT_DISTANCE = 2;
 
         public SearchCommand(FileHandler fileHandler, string searchString, List<Task> screenState)
             : base(fileHandler, screenState)
@@ -57,10 +59,14 @@ namespace WhiteBoard
             searchResults.Add(SearchResultType.Direct, resultSet);
 
             List<Task> directResults = resultSet.Distinct().ToList();
-            resultSet.Clear();
 
-            resultSet.AddRange(getNearMiss(listOfTasks));
-            searchResults.Add(SearchResultType.NearMiss, resultSet.Except(directResults).ToList());
+            if (directResults.Count < NEAR_MISS_MIN_SEARCH_COUNT)
+            {
+                resultSet.Clear();
+
+                resultSet.AddRange(getNearMiss(listOfTasks));
+                searchResults.Add(SearchResultType.NearMiss, resultSet.Except(directResults).ToList());
+            }
 
             if (searchResults.Count == 0)
             {
@@ -74,7 +80,7 @@ namespace WhiteBoard
         {
             List<Task> directHitTasks = new List<Task>();
 
-            foreach(Task task in tasks)
+            foreach (Task task in tasks)
             {
                 if (task.Description.Trim().ToLower().Contains(searchString.Trim().ToLower()))
                 {
@@ -87,35 +93,63 @@ namespace WhiteBoard
 
         private List<Task> getNearMiss(List<Task> tasks)
         {
-            List<Task> nearMissTasks = new List<Task>();
+            Dictionary<Task, int> nearMissTasks = new Dictionary<Task, int>();
 
-            List<string> searchQueries = getNearMissQueries();
-
-            foreach (string searchQuery in searchQueries)
+            foreach (Task task in tasks)
             {
-                foreach (Task task in tasks)
+                int editDistance = ComputeEditDistance(searchString.Trim().ToLower(), task.Description.Trim().ToLower());
+
+                if (editDistance <= NEAR_MISS_MAXIMUM_EDIT_DISTANCE)
                 {
-                    if (task.Description.Trim().ToLower().Contains(searchQuery.Trim().ToLower()))
-                    {
-                        nearMissTasks.Add(task);
-                    }
+                    nearMissTasks.Add(task, editDistance);
                 }
             }
 
-            return nearMissTasks;
+            // sort by best match
+            List<Task> sortedNearMissTasks = (from entry in nearMissTasks orderby entry.Value ascending select entry.Key).ToList();
+
+            return sortedNearMissTasks;
         }
 
-        private List<string> getNearMissQueries()
+        private int ComputeEditDistance(string query, string taskDescription)
         {
-            List<string> nearMissQueries = new List<string>();
+            int queryLength = query.Length;
+            int taskDescriptionLength = taskDescription.Length;
+            int[,] editDistance = new int[queryLength + 1, taskDescriptionLength + 1];
 
-            for (int i = searchString.Length - NEAR_MISS_START_LENGTH; i >= searchString.Length - NEAR_MISS_END_LENGTH; i--)
+            if (queryLength == 0)
             {
-                nearMissQueries.Add(searchString.Substring(NEAR_MISS_START_INDEX, i));
+                return taskDescriptionLength;
             }
 
-            return nearMissQueries;
+            if (taskDescriptionLength == 0)
+            {
+                return queryLength;
+            }
+
+            for (int i = 0; i <= queryLength; editDistance[i, 0] = i++)
+            {
+            }
+
+            for (int j = 0; j <= taskDescriptionLength; editDistance[0, j] = j++)
+            {
+            }
+
+            for (int i = 1; i <= queryLength; i++)
+            {
+                for (int j = 1; j <= taskDescriptionLength; j++)
+                {
+                    int cost = (taskDescription[j - 1] == query[i - 1]) ? 0 : 1;
+
+                    editDistance[i, j] = Math.Min(
+                        Math.Min(editDistance[i - 1, j] + 1, editDistance[i, j - 1] + 1),
+                        editDistance[i - 1, j - 1] + cost);
+                }
+            }
+
+            return editDistance[queryLength, taskDescriptionLength];
         }
+
 
         public override List<Task> Undo()
         {
