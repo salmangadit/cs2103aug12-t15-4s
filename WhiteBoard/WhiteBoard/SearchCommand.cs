@@ -6,18 +6,9 @@ using System.Collections.ObjectModel;
 
 namespace WhiteBoard
 {
-    enum SearchResultType
-    {
-        Direct,
-        NearMiss
-    }
-
     class SearchCommand : Command
     {
         string searchString;
-        const int NEAR_MISS_END_LENGTH = 2;
-        const int NEAR_MISS_START_LENGTH = 1;
-        const int NEAR_MISS_START_INDEX = 0;
         const int NEAR_MISS_MIN_SEARCH_COUNT = 1;
         const int NEAR_MISS_MAXIMUM_EDIT_DISTANCE = 2;
 
@@ -52,23 +43,14 @@ namespace WhiteBoard
 
             List<Task> resultSet = new List<Task>();
 
-            // to be decided V0.5 whether to use Dictionary as return, so it looks nice on GUI
-            Dictionary<SearchResultType, List<Task>> searchResults = new Dictionary<SearchResultType, List<Task>>();
-
             resultSet.AddRange(getDirectHit(listOfTasks));
-            searchResults.Add(SearchResultType.Direct, resultSet);
 
-            List<Task> directResults = resultSet.Distinct().ToList();
-
-            if (directResults.Count < NEAR_MISS_MIN_SEARCH_COUNT)
+            if (resultSet.Count < NEAR_MISS_MIN_SEARCH_COUNT)
             {
-                resultSet.Clear();
-
                 resultSet.AddRange(getNearMiss(listOfTasks));
-                searchResults.Add(SearchResultType.NearMiss, resultSet.Except(directResults).ToList());
             }
 
-            if (searchResults.Count == 0)
+            if (resultSet.Count == 0)
             {
                 throw new ApplicationException("No match found!");
             }
