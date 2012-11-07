@@ -15,7 +15,7 @@ namespace WhiteBoard
     {
         private string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
         private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
-        private string[] COMMAND_MODIFY = { "MODIFY","UPDATE" };
+        private string[] COMMAND_MODIFY = { "MODIFY", "UPDATE" };
         private string[] COMMAND_NEW_DATE = { "START", "END" };
         private string[] COMMAND_VIEW_DAY = { "ON", "AT" };
         private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
@@ -254,7 +254,7 @@ namespace WhiteBoard
         /// /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
         private Command ParseDone()
         {
-            string command = String.Join(" ",userCommand.ToArray());
+            string command = String.Join(" ", userCommand.ToArray());
             Log.Debug("Archive keyword entered. Checking task ID");
             currentIndex = 0;
             nextIndex = currentIndex + 1;
@@ -275,12 +275,12 @@ namespace WhiteBoard
                     return markdone;
                 }
             }
-            else if((String.Equals(command,COMMAND_MARK_DONE,StringComparison.CurrentCultureIgnoreCase))||
-                    (String.Equals(command,COMMAND_MARK_AS_DONE,StringComparison.CurrentCultureIgnoreCase)))
+            else if ((String.Equals(command, COMMAND_MARK_DONE, StringComparison.CurrentCultureIgnoreCase)) ||
+                    (String.Equals(command, COMMAND_MARK_AS_DONE, StringComparison.CurrentCultureIgnoreCase)))
             {
                 Log.Debug("Mark all as done");
 
-                ArchiveCommand markall = new ArchiveCommand(fileHandler,screenState);
+                ArchiveCommand markall = new ArchiveCommand(fileHandler, screenState);
                 taskHistory.Push(markall);
                 return markall;
             }
@@ -331,7 +331,7 @@ namespace WhiteBoard
                 }
 
                 else
-                {                                                                               
+                {
                     startDate = null;
                     endDate = null;
                     if (ParseForDates(userCommand, nextIndex, false) > 0)
@@ -346,7 +346,7 @@ namespace WhiteBoard
                     Log.Debug(String.Format("Valid parameters. Request to view tasks with startdate: {0} and/or enddate: {1}",
                         startDate.ToString(),
                         endDate.ToString()));
-                    if (endDate != null && (endDate.Value.Hour==0&&endDate.Value.Minute==0))
+                    if (endDate != null && (endDate.Value.Hour == 0 && endDate.Value.Minute == 0))
                     {
                         endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 23, 59, 59);
                     }
@@ -777,24 +777,16 @@ namespace WhiteBoard
         private int IsValidTaskId(string str)
         {
             int taskid = -1;
-            //if (char.ToUpperInvariant(str[0]) != 'T')
-            //{
-            //    return -1;
-            //}
-            //else
-            //{
-                for (int i = 1; i < str.Length; ++i)
+            for (int i = 1; i < str.Length; ++i)
+            {
+                int temp = (int)Char.GetNumericValue(str[i]);
+                if (!(temp >= 0 && temp <= 9))
                 {
-                    int temp = (int)Char.GetNumericValue(str[i]);
-                    if (!(temp >= 0 && temp <= 9))
-                    {
-                        return -1;
-                    }
+                    return -1;
                 }
-              //  str = str.Substring(1);
-                taskid = Convert.ToInt32(str);
-                return taskid;
-            //}
+            }
+            taskid = Convert.ToInt32(str);
+            return taskid;
         }
 
         /// <summary>
@@ -806,8 +798,22 @@ namespace WhiteBoard
         {
             string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
                                     "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
+                                    "hhmmtt","hmmtt","hhmm tt","hmm tt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
                                     "HH:mm"};
+
+            if (time.Length == 3)
+            {
+                time = time.PadLeft(4, '0');
+            }
+            else if (time.Length == 5)
+            {
+                time = time.PadLeft(6, '0');
+            }
+            else if (time.Length == 6 && time.Contains(' '))
+            {
+                time = time.PadLeft(7, '0');
+            }
+            time = time.PadLeft(4, '0');
             bool istime = false;
             DateTime temp;
             foreach (string format in timeformat)
@@ -829,9 +835,21 @@ namespace WhiteBoard
         {
             string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
                                     "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm","hmm", "htt","hhtt","h tt","hh tt",
+                                    "hhmmtt","hmmtt","hhmm tt","hmm tt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
                                     "HH:mm"};
 
+            if (time.Length == 3)
+            {
+                time = time.PadLeft(4, '0');
+            }
+            else if (time.Length == 5)
+            {
+                time = time.PadLeft(6, '0');
+            }
+            else if (time.Length == 6 && time.Contains(' '))
+            {
+                time = time.PadLeft(7, '0');
+            }
             string correctformat = String.Empty;
             bool istime = false;
             DateTime temp = new DateTime();
