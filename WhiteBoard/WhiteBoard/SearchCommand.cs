@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace WhiteBoard
 {
@@ -81,9 +82,28 @@ namespace WhiteBoard
             {
                 int editDistance = ComputeEditDistance(searchString.Trim().ToLower(), task.Description.Trim().ToLower());
 
+                // add task which have threshold within descriptions
                 if (editDistance <= NEAR_MISS_MAXIMUM_EDIT_DISTANCE)
                 {
                     nearMissTasks.Add(task, editDistance);
+                    continue;
+                }
+
+                // if task doesn't fit in, check for words within that might
+
+                // replace one or more whitespace in description with single whitespace
+                string processedLine = Regex.Replace(task.Description, @"\s+", " ");
+
+                string[] wordsInDescription = processedLine.Split(' ');
+
+                foreach (string word in wordsInDescription)
+                {
+                    editDistance = ComputeEditDistance(searchString.Trim().ToLower(), word.Trim().ToLower());
+
+                    if (editDistance <= NEAR_MISS_MAXIMUM_EDIT_DISTANCE)
+                    {
+                        nearMissTasks.Add(task, editDistance);
+                    }
                 }
             }
 
