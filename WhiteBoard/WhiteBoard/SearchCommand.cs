@@ -103,6 +103,7 @@ namespace WhiteBoard
                     if (editDistance <= NEAR_MISS_MAXIMUM_EDIT_DISTANCE)
                     {
                         nearMissTasks.Add(task, editDistance);
+                        break;
                     }
                 }
             }
