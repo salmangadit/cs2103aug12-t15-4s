@@ -1,8 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner"
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/SimpleShapesModel" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ActivityDesigner"
   dslVersion="1.0.0.0"
   Id="2a477759-efd7-4b00-9599-5eaf2d668790"
   name="UML" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <ownedCommentsInternal>
+    <comment
+      Id="3392afd5-c952-4d04-ab34-a4b467a1fc98">
+      <body>[Invalid Command]</body>
+    </comment>
+    <comment
+      Id="46ab1025-1a12-4acc-93a3-acfd71ce8503">
+      <body>[Valid Command]</body>
+    </comment>
+  </ownedCommentsInternal>
   <profileInstances>
     <packageHasProfileInstances
       Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b">
@@ -942,6 +952,182 @@
       <executionEvent
         Id="3c1657a7-30c0-45bc-bca9-24517df92867"
         name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <activity
+        Id="3ecfa76e-5337-4ba7-abf1-b71f4c579464"
+        name="Activity1"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false"
+        isReentrant="false"
+        isReadOnly="false"
+        isSingleExecution="false">
+        <nodes>
+          <initialNode
+            Id="7c922fb0-c589-43d3-975d-68437f424ee1"
+            name="Initial1"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="27bb5704-251d-49f6-8091-740672944fad"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="68b76cd4-1ebc-4d7e-abae-a2bdd9acc5ac"
+                  LastKnownName="User enters a command"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </initialNode>
+          <opaqueAction
+            Id="68b76cd4-1ebc-4d7e-abae-a2bdd9acc5ac"
+            name="User enters a command"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="e40f8314-f06f-4f5b-b410-8ce6e1e61c0d"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="261fa09f-d527-4f52-9fe4-fb354cd9edb7"
+                  LastKnownName="Command Parser parses"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction
+            Id="261fa09f-d527-4f52-9fe4-fb354cd9edb7"
+            name="Command Parser parses"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="8c9578d3-5f77-4392-85dc-1b8876dd62b4"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="9db23e38-e18c-45d8-989f-626998192f2a"
+                  LastKnownName="Command object created"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <decisionNode
+            Id="136ae697-d1c0-4ade-ba7f-5f5aefc30d6d"
+            name="Decision1"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="284d4504-738d-4d52-a66b-7155195010b6"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="74c97366-fc09-4502-b190-593e44258d1a"
+                  LastKnownName="Error message"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+              <controlFlow
+                Id="4592633a-fcd0-42ca-a114-63a577350703"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="9f80c80d-6afd-4128-a9e7-7f1e60570629"
+                  LastKnownName="File handler adds valid task"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </decisionNode>
+          <opaqueAction
+            Id="9db23e38-e18c-45d8-989f-626998192f2a"
+            name="Command object created"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="b65be351-fb85-4246-bc41-8628af2799f0"
+                isLeaf="false">
+                <decisionNodeMoniker
+                  Id="136ae697-d1c0-4ade-ba7f-5f5aefc30d6d"
+                  LastKnownName="Decision1"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction
+            Id="74c97366-fc09-4502-b190-593e44258d1a"
+            name="Error message"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="7541146e-e0a2-4e2f-b18e-41f3a185d979"
+                isLeaf="false">
+                <mergeNodeMoniker
+                  Id="fe4ded6b-842c-4b18-bae7-3955c30f5788"
+                  LastKnownName="Merge1"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction
+            Id="9f80c80d-6afd-4128-a9e7-7f1e60570629"
+            name="File handler adds valid task"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="c161320a-8b3b-4bfd-bf10-7ad00c55a857"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="81db26db-dfc3-4005-998c-16af910135c8"
+                  LastKnownName="Success message"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction
+            Id="81db26db-dfc3-4005-998c-16af910135c8"
+            name="Success message"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="66f1bcce-92e4-4814-b05d-7f1e318a561a"
+                isLeaf="false">
+                <mergeNodeMoniker
+                  Id="fe4ded6b-842c-4b18-bae7-3955c30f5788"
+                  LastKnownName="Merge1"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <mergeNode
+            Id="fe4ded6b-842c-4b18-bae7-3955c30f5788"
+            name="Merge1"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="485f1624-c121-4a1a-ba98-71242396493d"
+                isLeaf="false">
+                <opaqueActionMoniker
+                  Id="7d97ef5f-c81f-4626-9f63-9090ceb4c9b0"
+                  LastKnownName="Refresh screen and show message"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </mergeNode>
+          <opaqueAction
+            Id="7d97ef5f-c81f-4626-9f63-9090ceb4c9b0"
+            name="Refresh screen and show message"
+            isLeaf="false">
+            <flowNodeTargets>
+              <controlFlow
+                Id="a3f267f5-9b85-40ce-9553-b6a6780df838"
+                isLeaf="false">
+                <activityFinalNodeMoniker
+                  Id="feda4c03-7e7f-47f8-a808-f4a0c8927f16"
+                  LastKnownName="ActivityFinal1"
+                  LastKnownLocation="UML.uml" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <activityFinalNode
+            Id="feda4c03-7e7f-47f8-a808-f4a0c8927f16"
+            name="ActivityFinal1"
+            isLeaf="false" />
+        </nodes>
+      </activity>
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType
