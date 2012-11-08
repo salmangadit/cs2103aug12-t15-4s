@@ -16,6 +16,7 @@ using System.Windows.Threading;
 using System.Diagnostics;
 using log4net;
 using System.Threading;
+using System.IO;
 
 namespace WhiteBoard
 {
@@ -34,7 +35,9 @@ namespace WhiteBoard
         private Toast toast;
         private CommandHistory commandHistory;
         private SyntaxProvider whiteboardSyntax;
-        private Tutorial whiteboardTutorial;
+        private Tutorial whiteboardTutorial = null;
+
+        bool showTutorial = false;
         #endregion
 
         #region Protected Fields
@@ -47,6 +50,7 @@ namespace WhiteBoard
             Thread.Sleep(1000); //For Splash Screen
 
             InitializeComponent();
+            CheckIfFileExists();
             InstantiatePrivateComponents();
             DisplayTasksOnFirstLoad();
             InstantiateUserControls();
@@ -195,7 +199,13 @@ namespace WhiteBoard
             }
 
             DoSyntaxHighlight();
-        } 
+        }
+
+
+        private void btnHelp_Click(object sender, RoutedEventArgs e)
+        {
+            whiteboardTutorial.Visibility = Visibility.Visible;
+        }
         #endregion
 
         #region Private Class Helper Methods
@@ -213,7 +223,8 @@ namespace WhiteBoard
             toast = new Toast(lblToast);
             commandHistory = new CommandHistory();
             whiteboardSyntax = new SyntaxProvider();
-            whiteboardTutorial = new Tutorial();
+            if (whiteboardTutorial == null)
+                whiteboardTutorial = new Tutorial();
 
             log4net.Config.XmlConfigurator.Configure();
         }
@@ -227,6 +238,7 @@ namespace WhiteBoard
             try
             {
                 List<Task> tasksToView = command.Execute();
+
                 tasksOnScreen.Clear();
                 foreach (Task task in tasksToView)
                 {
@@ -235,12 +247,31 @@ namespace WhiteBoard
             }
             catch (ApplicationException ex)
             {
-                toast.ShowToast(ex.Message);
+                if (!showTutorial)
+                {
+                    toast.ShowToast(ex.Message);
+                }
             }
             // Data-bind list
             lstTasks.DataContext = tasksOnScreen;
             lstTasks.ItemsSource = tasksOnScreen;
             txtCommand.Focus();
+        }
+
+        private void CheckIfFileExists()
+        {
+            // Check if File Exists
+            string fileName = Constants.FILENAME;
+
+            // set file path, we use the current Directory for the user and specified file name
+            string filePath = Directory.GetCurrentDirectory() + System.IO.Path.DirectorySeparatorChar + fileName;
+
+            // check if file exists and create one if need be
+            if (!File.Exists(filePath))
+            {
+                // Show tutorial
+                showTutorial = true;
+            }
         }
 
         /// <summary>
@@ -257,7 +288,15 @@ namespace WhiteBoard
             // Prepare tutorial window
             mainGrid.Children.Add(whiteboardTutorial);
             Grid.SetRow(whiteboardTutorial, 0);
-            whiteboardTutorial.Visibility = Visibility.Visible;
+
+            if (showTutorial)
+            {
+                whiteboardTutorial.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                whiteboardTutorial.Visibility = Visibility.Collapsed;
+            }
         }
 
         #region AutoComplete
@@ -267,7 +306,7 @@ namespace WhiteBoard
         private void CheckAutoComplete()
         {
             log.Debug("Checking AutoComplete requirement");
-            
+
             TextRange userTextRange = new TextRange(txtCommand.Document.ContentStart, txtCommand.Document.ContentEnd);
             InstantSearch instantSearch = new InstantSearch();
             string command = userTextRange.Text;
@@ -738,7 +777,7 @@ namespace WhiteBoard
             Task editedTask = (command.Execute())[0];
             tasksOnScreen.Clear();
             tasksOnScreen.Add(editedTask);
-            toast.ShowToast( Constants.MESSAGE_COMMAND_EDIT + editedTask.Id);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_EDIT + editedTask.Id);
         }
 
         /// <summary>
@@ -752,5 +791,6 @@ namespace WhiteBoard
             toast.ShowToast(Constants.MESSAGE_COMMAND_ADD);
         }
         #endregion
+
     }
 }

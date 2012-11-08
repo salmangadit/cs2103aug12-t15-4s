@@ -70,9 +70,13 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <TextBlock Name="lblToast" TextWrapping="Wrap" FontSize="14" FontFamily="./Resources/#From Where You Are"  Visibility="Collapsed" Background="Yellow" Grid.Row="0" HorizontalAlignment="Center" Width="400" VerticalAlignment="Center"/>
-
-        <RichTextBox Name="txtCommand" Grid.Row="1" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are">
-
-        </RichTextBox>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+        <RichTextBox Grid.Column="0" Name="txtCommand" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
+            <Button Grid.Column="1" Name="btnHelp" Content="Help" Click="btnHelp_Click" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
+        </Grid>
     </Grid>
 </Window>
