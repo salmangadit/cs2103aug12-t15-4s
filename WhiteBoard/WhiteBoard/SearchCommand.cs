@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class SearchCommand : Command
     {
         string searchString;
@@ -32,14 +33,14 @@ namespace WhiteBoard
         {
             if (String.IsNullOrWhiteSpace(searchString))
             {
-                throw new ApplicationException("Enter a keyword to search for");
+                throw new ApplicationException(Constants.SEARCH_NO_KEYWORD);
             }
 
             List<Task> listOfTasks = fileHandler.ViewAll();
 
             if (listOfTasks.Count == 0)
             {
-                throw new ApplicationException("Nothing to search, add some tasks first");
+                throw new ApplicationException(Constants.SEARCH_NO_TASKS);
             }
 
             List<Task> resultSet = new List<Task>();
@@ -53,7 +54,7 @@ namespace WhiteBoard
 
             if (resultSet.Count == 0)
             {
-                throw new ApplicationException("No match found!");
+                throw new ApplicationException(Constants.SEARCH_NO_MATCH);
             }
 
             return resultSet.Distinct().ToList();
@@ -82,7 +83,7 @@ namespace WhiteBoard
             {
                 int editDistance = ComputeEditDistance(searchString.Trim().ToLower(), task.Description.Trim().ToLower());
 
-                // add task which have threshold within descriptions
+                // add task which descriptions within threshold
                 if (editDistance <= NEAR_MISS_MAXIMUM_EDIT_DISTANCE)
                 {
                     nearMissTasks.Add(task, editDistance);

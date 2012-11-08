@@ -7,6 +7,7 @@ using log4net;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     abstract class Command
     {
         protected static readonly ILog Log = LogManager.GetLogger(typeof(Command));

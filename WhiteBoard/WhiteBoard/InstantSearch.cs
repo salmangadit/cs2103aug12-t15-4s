@@ -8,6 +8,7 @@ using log4net;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class InstantSearch
     {
         private List<Task> tasks;
@@ -24,7 +25,7 @@ namespace WhiteBoard
 
         public List<Task> GetTasksWithDescription(string searchDescription)
         {
-            Debug.Assert(searchDescription != null, "Query string is null");
+            Debug.Assert(searchDescription != null, Constants.INSTANT_SEARCH_DEBUG_NULL);
 
             if (searchDescription.Length < 1)
             {
@@ -60,11 +61,11 @@ namespace WhiteBoard
 
         private void Update(UpdateType update, Task task, Task uneditedTask)
         {
-            Debug.Assert(task != null, "Task to update was null");
+            Debug.Assert(task != null, Constants.FILEHANDLER_UPDATE_DEBUG_NULL);
 
-            Debug.Assert(!(update == UpdateType.Edit && uneditedTask == null), "Unedited Task was null");
+            Debug.Assert(!(update == UpdateType.Edit && uneditedTask == null), Constants.FILEHANDLER_UPDATE_DEBUG_UNEDITED_NULL);
 
-            Log.Debug(String.Format("FileHandler triggered Update event {0} for task {1}", update, task.Id));
+            Log.Debug(String.Format(Constants.FILEHANDLER_UPDATE_LOG_UPDATE_TRIGGER, update, task.Id));
 
             switch (update)
             {
@@ -90,13 +91,13 @@ namespace WhiteBoard
                     break;
 
                 default:
-                    throw new NotImplementedException("No such update type");
+                    throw new NotImplementedException(Constants.FILEHANDLER_NO_SUCH_UPDATE_TYPE);
             }
         }
 
         private void GenerateDescriptionSet(List<Task> tasks)
         {
-            Log.Debug("Generating description set");
+            Log.Debug(Constants.LOG_DESCRIPTION_SET);
 
             foreach (Task task in tasks)
             {
@@ -106,7 +107,7 @@ namespace WhiteBoard
 
         private void AddToSets(Task task)
         {
-            Log.Debug(String.Format("Adding Task with description {0} and Id {1} to sets", task.Description, task.Id));
+            Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description, task.Id));
 
             tasks.Add(task);
             descriptionSet.Add(task.Id, task.Description);
@@ -114,7 +115,7 @@ namespace WhiteBoard
 
         private void RemoveFromSets(Task task)
         {
-            Log.Debug(String.Format("Removing Task with id {0} from sets", task.Id));
+            Log.Debug(String.Format(Constants.LOG_REMOVE_FROM_SET, task.Id));
 
             tasks.Remove(task);
             descriptionSet.Remove(task.Id);
