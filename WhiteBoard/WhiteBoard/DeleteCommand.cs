@@ -8,11 +8,17 @@ using System.Diagnostics;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// Deletes Task in file
+    /// </summary>
     class DeleteCommand : Command
     {
-        List<int> taskIdsToDelete;
-        List<Task> tasksToDelete;
+        #region Private Fields
+        private List<int> taskIdsToDelete;
+        private List<Task> tasksToDelete;
+        #endregion
 
+        #region Constructors
         public DeleteCommand(FileHandler fileHandler, int taskIdToDelete, List<Task> screenState)
             : base(fileHandler, screenState)
         {
@@ -42,7 +48,9 @@ namespace WhiteBoard
             }
             this.commandType = CommandType.Delete;
         }
+        #endregion
 
+        #region Public Properties
         public override CommandType CommandType
         {
             get
@@ -50,7 +58,9 @@ namespace WhiteBoard
                 return commandType;
             }
         }
+        #endregion
 
+        #region Public Class Methods
         public override List<Task> Execute()
         {
             if (taskIdsToDelete.Count == 0)
@@ -104,5 +114,6 @@ namespace WhiteBoard
         {
             return taskIdsToDelete;
         }
+        #endregion
     }
 }

@@ -8,11 +8,17 @@ using System.Diagnostics;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// Edits task in file
+    /// </summary>
     class EditCommand : Command
     {
-        List<Task> editTasksDetails;
-        List<Task> uneditedTasks;
+        #region Private Fieds
+        private List<Task> editTasksDetails;
+        private List<Task> uneditedTasks;
+        #endregion
 
+        #region Constructors
         public EditCommand(FileHandler fileHandler, Task editTaskDetails, List<Task> screenState)
             : base(fileHandler, screenState)
         {
@@ -30,7 +36,9 @@ namespace WhiteBoard
             this.editTasksDetails = editTasksDetails;
             this.commandType = CommandType.Edit;
         }
+        #endregion
 
+        #region Public Properties
         public override CommandType CommandType
         {
             get
@@ -38,7 +46,9 @@ namespace WhiteBoard
                 return commandType;
             }
         }
+        #endregion
 
+        #region Public Class Methods
         public override List<Task> Execute()
         {
             List<Task> editedTasks = new List<Task>();
@@ -99,16 +109,6 @@ namespace WhiteBoard
             return editedTasks;
         }
 
-        private bool isFloatingTask(Task taskToAdd)
-        {
-            if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public override List<Task> Undo()
         {
             foreach (Task uneditedTask in uneditedTasks)
@@ -130,5 +130,18 @@ namespace WhiteBoard
 
             return screenState;
         }
+        #endregion
+
+        #region Private Class Helper Methods
+        private bool isFloatingTask(Task taskToAdd)
+        {
+            if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

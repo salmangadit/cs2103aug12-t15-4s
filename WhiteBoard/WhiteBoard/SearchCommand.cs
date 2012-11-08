@@ -8,19 +8,28 @@ using System.Text.RegularExpressions;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// Search for tasks within file
+    /// Implements near miss for powerful search
+    /// </summary>
     class SearchCommand : Command
     {
-        string searchString;
+        #region Private Fields
+        private string searchString;
         const int NEAR_MISS_MIN_SEARCH_COUNT = 1;
         const int NEAR_MISS_MAXIMUM_EDIT_DISTANCE = 2;
+        #endregion
 
+        #region Constructors
         public SearchCommand(FileHandler fileHandler, string searchString, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.searchString = searchString;
             this.commandType = CommandType.Search;
         }
+        #endregion
 
+        #region Public Properties
         public override CommandType CommandType
         {
             get
@@ -28,7 +37,9 @@ namespace WhiteBoard
                 return commandType;
             }
         }
+        #endregion
 
+        #region Public Class Methods
         public override List<Task> Execute()
         {
             if (String.IsNullOrWhiteSpace(searchString))
@@ -60,6 +71,18 @@ namespace WhiteBoard
             return resultSet.Distinct().ToList();
         }
 
+        public override List<Task> Undo()
+        {
+            return screenState;
+        }
+
+        public string GetSearchString()
+        {
+            return searchString;
+        }
+        #endregion
+
+        #region Private Class Helper Methods
         private List<Task> getDirectHit(List<Task> tasks)
         {
             List<Task> directHitTasks = new List<Task>();
@@ -153,16 +176,6 @@ namespace WhiteBoard
 
             return editDistance[queryLength, taskDescriptionLength];
         }
-
-
-        public override List<Task> Undo()
-        {
-            return screenState;
-        }
-
-        public string GetSearchString()
-        {
-            return searchString;
-        }
+        #endregion
     }
 }

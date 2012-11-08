@@ -8,11 +8,17 @@ using System.Diagnostics;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// Archive Task in file
+    /// </summary>
     class ArchiveCommand : Command
     {
-        List<int> taskIdsToArchive;
-        List<Task> tasksArchived;
+        #region Private Fields
+        private List<int> taskIdsToArchive;
+        private List<Task> tasksArchived;
+        #endregion
 
+        #region Constructors
         public ArchiveCommand(FileHandler fileHandler, int taskIdToArchive, List<Task> screenState)
             : base(fileHandler, screenState)
         {
@@ -42,7 +48,9 @@ namespace WhiteBoard
             }
             this.commandType = CommandType.Archive;
         }
+        #endregion
 
+        #region Public Properties
         public override CommandType CommandType
         {
             get
@@ -50,7 +58,9 @@ namespace WhiteBoard
                 return commandType;
             }
         }
+        #endregion
 
+        #region Public Class Methods
         public override List<Task> Execute()
         {
             if (taskIdsToArchive.Count == 0)
@@ -113,5 +123,6 @@ namespace WhiteBoard
         {
             return taskIdsToArchive;
         }
+        #endregion
     }
 }

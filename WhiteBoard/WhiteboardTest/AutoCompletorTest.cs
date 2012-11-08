@@ -6,12 +6,11 @@ using System.Collections;
 
 namespace WhiteboardTest
 {
+    //@author U096089W
     /// <summary>
     ///This is a test class for AutoCompletorTest and is intended
     ///to contain all AutoCompletorTest Unit Tests
     ///</summary>
-
-    //@author U096089W
     [TestClass()]
     public class AutoCompletorTest
     {

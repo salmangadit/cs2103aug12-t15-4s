@@ -9,12 +9,18 @@ using log4net;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// AutoCompletor logic portion
+    /// </summary>
     class AutoCompletor
     {
+        #region Private Fields
         private List<string> lineSet = new List<string>();
         private List<string> wordSet = new List<string>();
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(AutoCompletor));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(AutoCompletor));
+        #endregion
 
+        #region Constructors
         public AutoCompletor()
         {
             GenerateQuerySet(FileHandler.Instance.ViewAll());
@@ -26,7 +32,9 @@ namespace WhiteBoard
         {
             GenerateQuerySet(tasks);
         }
+        #endregion
 
+        #region Public Class Methods
         public List<string> Query(string query)
         {
             Debug.Assert(query != null, Constants.DEBUG__QUERY_STRING_NULL);
@@ -56,7 +64,9 @@ namespace WhiteBoard
 
             return resultSet.ToList<string>();
         }
+        #endregion
 
+        #region Event Handlers
         private void Update(UpdateType update, Task task, Task uneditedTask)
         {
             Debug.Assert(task != null, Constants.FILEHANDLER_UPDATE_DEBUG_NULL);
@@ -92,7 +102,9 @@ namespace WhiteBoard
                     throw new NotImplementedException(Constants.FILEHANDLER_NO_SUCH_UPDATE_TYPE);
             }
         }
+        #endregion
 
+        #region Private Class Helper Methods
         private void GenerateQuerySet(List<Task> tasks)
         {
             Log.Debug(Constants.LOG_LINE_SET);
@@ -162,7 +174,9 @@ namespace WhiteBoard
                 wordSet.Remove(word);
             }
         }
+        #endregion
 
     }
+
 
 }

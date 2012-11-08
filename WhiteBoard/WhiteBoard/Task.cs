@@ -8,20 +8,22 @@ using System.Windows;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     /// <summary>
     /// Task class to store information about the users tasks
     /// </summary>
-
-    //@author U096089W
     public class Task
     {
-        int taskId;
-        string taskDescription;
+        #region Private Fields
+        private int taskId;
+        private string taskDescription;
 
-        DateTime? taskStartTime;
-        DateTime? taskEndTime;
-        bool archive;
+        private DateTime? taskStartTime;
+        private DateTime? taskEndTime;
+        private bool archive;
+        #endregion
 
+        #region Constructors
         public Task()
         {
         }
@@ -34,7 +36,9 @@ namespace WhiteBoard
             this.taskEndTime = taskEndTime;
             this.archive = archive;
         }
+        #endregion
 
+        #region Public Properties
         public int Id
         {
             get
@@ -143,6 +147,33 @@ namespace WhiteBoard
             }
         }
 
+        public bool Overdue
+        {
+            get
+            {
+                if (taskEndTime == null && taskStartTime == null)
+                    return false;
+                else if (taskEndTime != null)
+                {
+                    if (DateTime.Now > taskEndTime)
+                        return true;
+                    else
+                        return false;
+                }
+                else if (taskEndTime == null && taskStartTime != null)
+                {
+                    if (DateTime.Now > taskStartTime)
+                        return true;
+                    else
+                        return false;
+                }
+
+                return false;
+            }
+        }
+        #endregion
+
+        #region Private Class Helper Methods
         private Brush OverdueColor()
         {
             // Create a diagonal linear gradient with four stops.   
@@ -172,30 +203,6 @@ namespace WhiteBoard
 
             return myLinearGradientBrush;
         }
-
-        public bool Overdue
-        {
-            get
-            {
-                if (taskEndTime == null && taskStartTime == null)
-                    return false;
-                else if (taskEndTime != null)
-                {
-                    if (DateTime.Now > taskEndTime)
-                        return true;
-                    else
-                        return false;
-                }
-                else if (taskEndTime == null && taskStartTime != null)
-                {
-                    if (DateTime.Now > taskStartTime)
-                        return true;
-                    else
-                        return false;
-                }
-
-                return false;
-            }
-        }
+        #endregion
     }
 }

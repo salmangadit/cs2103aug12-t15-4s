@@ -9,12 +9,18 @@ using log4net;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// Returns Instant Search results to be displayed
+    /// </summary>
     class InstantSearch
     {
+        #region Private Fields
         private List<Task> tasks;
         private Dictionary<int, string> descriptionSet;
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(InstantSearch));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(InstantSearch));
+        #endregion
 
+        #region Constructors
         public InstantSearch()
         {
             tasks = FileHandler.Instance.ViewAll();
@@ -22,7 +28,9 @@ namespace WhiteBoard
             GenerateDescriptionSet(tasks);
             FileHandler.Instance.FileUpdateEvent += new FileUpdate(Update);
         }
+        #endregion
 
+        #region Public Class Methods
         public List<Task> GetTasksWithDescription(string searchDescription)
         {
             Debug.Assert(searchDescription != null, Constants.INSTANT_SEARCH_DEBUG_NULL);
@@ -45,20 +53,9 @@ namespace WhiteBoard
 
             return resultSet;
         }
+        #endregion
 
-        private Task getTaskWithId(int id)
-        {
-            foreach (Task task in tasks)
-            {
-                if (task.Id == id)
-                {
-                    return task;
-                }
-            }
-
-            return null;
-        }
-
+        #region Event Handlers
         private void Update(UpdateType update, Task task, Task uneditedTask)
         {
             Debug.Assert(task != null, Constants.FILEHANDLER_UPDATE_DEBUG_NULL);
@@ -94,6 +91,21 @@ namespace WhiteBoard
                     throw new NotImplementedException(Constants.FILEHANDLER_NO_SUCH_UPDATE_TYPE);
             }
         }
+        #endregion
+
+        #region Private Class Helper Methods
+        private Task getTaskWithId(int id)
+        {
+            foreach (Task task in tasks)
+            {
+                if (task.Id == id)
+                {
+                    return task;
+                }
+            }
+
+            return null;
+        }
 
         private void GenerateDescriptionSet(List<Task> tasks)
         {
@@ -120,7 +132,7 @@ namespace WhiteBoard
             tasks.Remove(task);
             descriptionSet.Remove(task.Id);
         }
-
+        #endregion
     }
 
 }

@@ -9,10 +9,16 @@ using log4net;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// To add Task to file
+    /// </summary>
     class AddCommand : Command
     {
-        List<Task> tasksToAdd;
+        #region Private Fields
+        private List<Task> tasksToAdd;
+        #endregion
 
+        #region Constructors
         public AddCommand(FileHandler fileHandler, Task taskToAdd, List<Task> screenState)
             : base(fileHandler, screenState)
         {
@@ -28,7 +34,9 @@ namespace WhiteBoard
             this.tasksToAdd = tasksToAdd;
             this.commandType = CommandType.Archive;
         }
+        #endregion
 
+        #region Public Properties
         public override CommandType CommandType
         {
             get
@@ -36,7 +44,9 @@ namespace WhiteBoard
                 return commandType;
             }
         }
+        #endregion
 
+        #region Public Class Methods
         public override List<Task> Execute()
         {
             if (tasksToAdd.Count == 0)
@@ -85,16 +95,6 @@ namespace WhiteBoard
             return tasksToAdd;
         }
 
-        private bool isFloatingTask(Task taskToAdd)
-        {
-            if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public override List<Task> Undo()
         {
             foreach (Task taskAdded in tasksToAdd)
@@ -112,5 +112,19 @@ namespace WhiteBoard
 
             return screenState;
         }
+        #endregion
+
+        #region Private Class Helper Methods
+        private bool isFloatingTask(Task taskToAdd)
+        {
+            if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
     }
 }
