@@ -160,7 +160,7 @@ namespace WhiteBoard
 
         private void RemoveFromSets(Task task)
         {
-            Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description));
+            //Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description));
 
             lineSet.Remove(task.Description);
 
