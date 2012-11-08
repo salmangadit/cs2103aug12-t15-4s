@@ -8,8 +8,10 @@ namespace WhiteBoard
     class DateHolder
     {
         private string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
-        private string dateString;
-        private int dateId;
+        private const int TODAY_ID = 7;
+        private const int TOMORROW_ID = 8;
+        private string dateString;                      //String containing the date
+        private int dateId;                             //The ID denoting whether the date is in day or date form
 
         public DateHolder(string datestring, int dateid)
         {
@@ -17,12 +19,15 @@ namespace WhiteBoard
             dateId = dateid;
         }
 
-        public DateTime DateParse()
+        public DateTime ConvertToDateTime()
         {
-            if (dateId == 1)
+            if (dateId == 1)                            //If date is in a day form
             {
                 int i = 0;
                 int dayid = -1;
+                int days_difference;
+                DayOfWeek today = DateTime.Now.DayOfWeek;
+                var day = today;
                 foreach (string str in DAYS_OF_WEEK)
                 {
                     if (String.Equals(dateString, str, StringComparison.CurrentCultureIgnoreCase))
@@ -31,13 +36,11 @@ namespace WhiteBoard
                     }
                     i++;
                 }
-                DayOfWeek today = DateTime.Now.DayOfWeek;
-                var day = today;
-                if (dayid == 7)
+                if (dayid == TODAY_ID)
                 {
                     day = today;
                 }
-                else if (dayid == 8)
+                else if (dayid == TOMORROW_ID)
                 {
                     day = today + 1;
                 }
@@ -46,11 +49,11 @@ namespace WhiteBoard
                     day = (DayOfWeek)dayid;
                 }
                 var days = day - today;
-                int days_diff = (int)days;
-                DateTime temp_date = DateTime.Now.AddDays(days_diff);
-                if ((days_diff < 0 || days_diff == 0) && dayid != 7)
+                days_difference = (int)days;
+                DateTime temp_date = DateTime.Now.AddDays(days_difference);
+                if ((days_difference < 0 || days_difference == 0) && dayid != 7)
                 {
-                    temp_date = temp_date.AddDays(7);
+                    temp_date = temp_date.AddDays(7);   //Denotes that the day belongs to the following week
                 }
                 return temp_date;
             }

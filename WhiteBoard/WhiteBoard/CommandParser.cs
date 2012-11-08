@@ -122,6 +122,7 @@ namespace WhiteBoard
             Debug.Assert(userCommand != null, "User command was null");
             return userCommand;
         }
+
         /// <summary>
         /// Parses the user command and determines the action to be done i.e Add, Modify, Delete etc.
         /// </summary>
@@ -573,7 +574,7 @@ namespace WhiteBoard
         {
             if (startEndDate[0] != null)
             {
-                startDate = startEndDate[0].DateParse();
+                startDate = startEndDate[0].ConvertToDateTime();
                 startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
                 if (startTimeFlag == 1)
                 {
@@ -588,7 +589,7 @@ namespace WhiteBoard
                 }
                 else if (startEndDate[1] != null)
                 {
-                    endDate = startEndDate[1].DateParse();
+                    endDate = startEndDate[1].ConvertToDateTime();
                     endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 0, 0, 0);
                     if (endTimeFlag == 1)
                     {
@@ -606,7 +607,7 @@ namespace WhiteBoard
                     {
                         if (startEndDate[1] != null)
                         {
-                            endDate = startEndDate[1].DateParse();
+                            endDate = startEndDate[1].ConvertToDateTime();
                             endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
                         }
                         else
@@ -805,7 +806,7 @@ namespace WhiteBoard
             {
                 time = time.PadLeft(4, '0');
             }
-            else if (time.Length == 5)
+            else if (time.Length == 5 && (!(time.Contains(':'))) && (!(time.Contains(' '))))
             {
                 time = time.PadLeft(6, '0');
             }
@@ -842,7 +843,7 @@ namespace WhiteBoard
             {
                 time = time.PadLeft(4, '0');
             }
-            else if (time.Length == 5)
+            else if (time.Length == 5 && (!(time.Contains(':'))) && (!(time.Contains(' '))))
             {
                 time = time.PadLeft(6, '0');
             }
