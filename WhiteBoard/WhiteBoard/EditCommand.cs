@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class EditCommand : Command
     {
         List<Task> editTasksDetails;
@@ -44,7 +45,7 @@ namespace WhiteBoard
 
             foreach (Task editTaskDetails in editTasksDetails)
             {
-                Debug.Assert(editTaskDetails.Id > 0, "Task ID is invalid");
+                Debug.Assert(editTaskDetails.Id > 0, Constants.DEBUG_INVALID_TASK_ID);
 
                 int editedTaskId = editTaskDetails.Id;
                 Task uneditedTask = fileHandler.GetTaskFromFile(editedTaskId);
@@ -61,35 +62,35 @@ namespace WhiteBoard
                 {
                     if (editedTask.EndTime != null)
                     {
-                        throw new ApplicationException("Task can't have an end time without start time");
+                        throw new ApplicationException(Constants.TASK_NO_START_GOT_END);
                     }
                 }
 
-                if (!isFloatingTask(editedTask) && (editedTaskStartTime != uneditedTask.StartTime && (((DateTime)editedTask.StartTime).Date < DateTime.Now.Date))) //needs changing breaks when modifying a task that is already there in past
+                if (!isFloatingTask(editedTask) && (editedTaskStartTime != uneditedTask.StartTime && (((DateTime)editedTask.StartTime).Date < DateTime.Now.Date)))
                 {
-                    throw new ApplicationException("Task cannot start in the past");
+                    throw new ApplicationException(Constants.TASK_START_IN_PAST);
                 }
 
                 if (!isFloatingTask(editedTask) && (editedTask.StartTime > editedTask.EndTime))
                 {
-                    throw new ApplicationException("Task cannot begin after it ends!");
+                    throw new ApplicationException(Constants.TASK_BEGIN_AFTER_END);
                 }
 
                 if (editedTask.Description.Equals(String.Empty))
                 {
-                    throw new ApplicationException("Please provide a task description");
+                    throw new ApplicationException(Constants.TASK_NO_DESCRIPTION);
                 }
 
                 bool isTaskWrittern = fileHandler.WriteEditedTaskToFile(editedTask);
 
                 if (isTaskWrittern)
                 {
-                    Log.Debug("Edit Command was executed for" + editedTaskId);
+                    Log.Debug(Constants.EDIT_COMMAND_LOG_EXECUTED + editedTaskId);
                 }
                 else
                 {
-                    Log.Debug("Edit Command failed for" + editedTaskId);
-                    throw new ApplicationException("Unable To Edit Task with ID T" + editedTaskId);
+                    Log.Debug(Constants.EDIT_COMMAND_LOG_FAILED + editedTaskId);
+                    throw new ApplicationException(Constants.EDIT_COMMAND_UNABLE + editedTaskId);
                 }
 
                 editedTasks.Add(editedTask);
@@ -112,18 +113,18 @@ namespace WhiteBoard
         {
             foreach (Task uneditedTask in uneditedTasks)
             {
-                Debug.Assert(uneditedTask.Id > 0, "Invalid task ID");
+                Debug.Assert(uneditedTask.Id > 0, Constants.DEBUG_INVALID_TASK_ID);
 
                 bool isTaskWrittern = fileHandler.WriteEditedTaskToFile(uneditedTask);
 
                 if (isTaskWrittern)
                 {
-                    Log.Debug("Edit Command Undo was executed for" + uneditedTask.Id);
+                    Log.Debug(Constants.EDIT_COMMAND_UNDO_LOG_EXECUTED + uneditedTask.Id);
                 }
                 else
                 {
-                    Log.Debug("Edit Command Undo failed for" + uneditedTask.Id);
-                    throw new SystemException("Unable To Undo Edit Command for Task" + uneditedTask.Id);
+                    Log.Debug(Constants.EDIT_COMMAND_UNDO_LOG_FAILED + uneditedTask.Id);
+                    throw new SystemException(Constants.EDIT_COMMAND_UNDO_UNABLE + uneditedTask.Id);
                 }
             }
 

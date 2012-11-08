@@ -5,8 +5,7 @@ using System.Text;
 
 namespace WhiteBoard
 {
-    // remove this class when you refactor, better to use
-    // object is Class to check, faster and cleaner
+    //@author U096089W
     public enum CommandType
     {
         Add,
