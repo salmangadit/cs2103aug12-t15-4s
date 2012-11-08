@@ -15,19 +15,35 @@ using log4net;
 
 namespace WhiteBoard
 {
+    //@author U095146E
     /// <summary>
     /// Interaction logic for AutoComplete.xaml
     /// </summary>
     public partial class AutoComplete : UserControl
     {
-        List<String> autoCompleteList;
-        public event KeyEventHandler AutoCompleteKeyboardEvent = delegate { };
-        public event MouseEventHandler AutoCompleteMouseEvent = delegate { };
-
+        #region Private Fields
+        private List<String> autoCompleteList;
         private string selectedItem = null;
+        #endregion
 
+        #region Protected Fields
         protected static readonly ILog log = LogManager.GetLogger(typeof(AutoComplete));
+        #endregion
 
+        #region Constructors
+        public AutoComplete()
+        {
+            InitializeComponent();
+            autoCompleteList = new List<string>();
+            lstAutoComplete.DataContext = autoCompleteList;
+            lstAutoComplete.ItemsSource = autoCompleteList;
+        }
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// Returns number of items on AutoComplete List
+        /// </summary>
         public int Count
         {
             get
@@ -39,6 +55,9 @@ namespace WhiteBoard
             }
         }
 
+        /// <summary>
+        /// Returns currently selected item in AutoComplete List
+        /// </summary>
         public string SelectedItem
         {
             get
@@ -49,18 +68,22 @@ namespace WhiteBoard
                     return null;
             }
         }
+        #endregion
 
-        public AutoComplete()
-        {
-            InitializeComponent();
-            autoCompleteList = new List<string>();
-            lstAutoComplete.DataContext = autoCompleteList;
-            lstAutoComplete.ItemsSource = autoCompleteList;
-        }
+        #region Public Event Delegates
+        public event KeyEventHandler AutoCompleteKeyboardEvent = delegate { };
+        public event MouseEventHandler AutoCompleteMouseEvent = delegate { };
+        #endregion
 
+        #region Public Class Methods
+        /// <summary>
+        /// Display AutoComplete list with results
+        /// </summary>
+        /// <param name="searchResults">Results retrieved from AutoCompletor</param>
         public void Show(List<string> searchResults)
         {
             log.Debug("Showing Auto Complete List");
+
             if (searchResults == null)
                 throw new NullReferenceException();
 
@@ -74,13 +97,13 @@ namespace WhiteBoard
 
             if (autoCompleteList.Count > 0)
             {
-                if (autoCompleteList.Count > 10)
+                if (autoCompleteList.Count > Constants.AUTOCOMPLETE_MAX_ITEMS)
                 {
-                    this.Height = 150;
+                    this.Height = Constants.AUTOCOMPLETE_MAX_HEIGHT;
                 }
                 else
                 {
-                    this.Height = autoCompleteList.Count * 18;
+                    this.Height = autoCompleteList.Count * Constants.AUTOCOMPLETE_PER_ITEM_HEIGHT;
                 }
             }
         }
@@ -92,6 +115,12 @@ namespace WhiteBoard
             lstAutoComplete.ItemsSource = autoCompleteList;
         }
 
+        #endregion
+
+        #region Private Class Event Handlers
+        /// <summary>
+        /// Event to handle UserControl getting focus
+        /// </summary>
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
             if (lstAutoComplete.Items.Count > 0)
@@ -102,6 +131,9 @@ namespace WhiteBoard
             }
         }
 
+        /// <summary>
+        /// Event to check if enter key press and trigger appropriate delegate
+        /// </summary>
         private void lstAutoComplete_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -115,6 +147,11 @@ namespace WhiteBoard
             }
         }
 
+        /// <summary>
+        /// Event to check if mouse clicked on item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lstAutoComplete_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (lstAutoComplete.SelectedItem == null)
@@ -123,7 +160,6 @@ namespace WhiteBoard
             this.selectedItem = lstAutoComplete.SelectedItem.ToString();
             AutoCompleteMouseEvent(this, e);
         }
-
-
+        #endregion
     }
 }
