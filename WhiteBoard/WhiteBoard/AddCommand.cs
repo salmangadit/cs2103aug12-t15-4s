@@ -8,9 +8,9 @@ using log4net;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class AddCommand : Command
     {
-        //Task taskToAdd;
         List<Task> tasksToAdd;
 
         public AddCommand(FileHandler fileHandler, Task taskToAdd, List<Task> screenState)
@@ -41,45 +41,44 @@ namespace WhiteBoard
         {
             if (tasksToAdd.Count == 0)
             {
-                throw new ApplicationException("No tasks to add");
+                throw new ApplicationException(Constants.ADD_COMMAND_NO_TASKS);
             }
 
             foreach (Task taskToAdd in tasksToAdd)
             {
-
                 if (taskToAdd.StartTime == null)
                 {
                     if (taskToAdd.EndTime != null)
                     {
-                        throw new ApplicationException("Task can't have an end time without start time");
+                        throw new ApplicationException(Constants.TASK_NO_START_GOT_END);
                     }
                 }
 
                 if (!isFloatingTask(taskToAdd) && (((DateTime)taskToAdd.StartTime).Date < DateTime.Now.Date))
                 {
-                    throw new ApplicationException("Task cannot start in the past");
+                    throw new ApplicationException(Constants.TASK_START_IN_PAST);
                 }
 
                 if (!isFloatingTask(taskToAdd) && (taskToAdd.StartTime > taskToAdd.EndTime))
                 {
-                    throw new ApplicationException("Task cannot begin after it ends!");
+                    throw new ApplicationException(Constants.TASK_BEGIN_AFTER_END);
                 }
 
                 if (taskToAdd.Description.Equals(String.Empty))
                 {
-                    throw new ApplicationException("Please provide a task description");
+                    throw new ApplicationException(Constants.TASK_NO_DESCRIPTION);
                 }
 
                 bool isTaskAdded = fileHandler.AddTaskToFile(taskToAdd);
 
                 if (isTaskAdded)
                 {
-                    Log.Debug("Add Command was executed for" + taskToAdd.Id);
+                    Log.Debug(Constants.ADD_COMMAND_LOG_EXECUTED + taskToAdd.Id);
                 }
                 else
                 {
-                    Log.Debug("Add Command failed for" + taskToAdd.Id);
-                    throw new ApplicationException("Unable To Add Task with ID T" + taskToAdd.Id);
+                    Log.Debug(Constants.ADD_COMMAND_LOG_FAILED + taskToAdd.Id);
+                    throw new ApplicationException(Constants.ADD_COMMAND_UNABLE + taskToAdd.Id);
                 }
             }
 
@@ -102,12 +101,12 @@ namespace WhiteBoard
             {
                 if (fileHandler.DeleteTaskFromFile(taskAdded.Id))
                 {
-                    Log.Debug("Add Command Undone for task" + taskAdded.Id);
+                    Log.Debug(Constants.ADD_COMMAND_UNDO_LOG_EXECUTED + taskAdded.Id);
                 }
                 else
                 {
-                    Log.Debug("Add Command Undo Failed for task" + taskAdded.Id);
-                    throw new SystemException("Add Command Undo Failed for task" + taskAdded.Id);
+                    Log.Debug(Constants.ADD_COMMAND_UNDO_LOG_FAILED + taskAdded.Id);
+                    throw new SystemException(Constants.ADD_COMMAND_UNDO_UNABLE + taskAdded.Id);
                 }
             }
 

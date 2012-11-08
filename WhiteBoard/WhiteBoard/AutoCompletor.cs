@@ -8,6 +8,7 @@ using log4net;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class AutoCompletor
     {
         private List<string> lineSet = new List<string>();
@@ -20,7 +21,7 @@ namespace WhiteBoard
             FileHandler.Instance.FileUpdateEvent += new FileUpdate(Update);
         }
 
-        // for testing purposes only
+        // for unit testing purposes only
         public AutoCompletor(List<Task> tasks)
         {
             GenerateQuerySet(tasks);
@@ -28,7 +29,7 @@ namespace WhiteBoard
 
         public List<string> Query(string query)
         {
-            Debug.Assert(query != null, "Query string is null");
+            Debug.Assert(query != null, Constants.DEBUG__QUERY_STRING_NULL);
 
             if (query.Length < 1)
             {
@@ -58,11 +59,11 @@ namespace WhiteBoard
 
         private void Update(UpdateType update, Task task, Task uneditedTask)
         {
-            Debug.Assert(task != null, "Task to update was null");
+            Debug.Assert(task != null, Constants.FILEHANDLER_UPDATE_DEBUG_NULL);
 
-            Debug.Assert(!(update == UpdateType.Edit && uneditedTask == null), "Unedited Task was null");
+            Debug.Assert(!(update == UpdateType.Edit && uneditedTask == null), Constants.FILEHANDLER_UPDATE_DEBUG_UNEDITED_NULL);
 
-            Log.Debug(String.Format("FileHandler triggered Update event {0} for task {1}", update, task.Id));
+            Log.Debug(String.Format(Constants.FILEHANDLER_UPDATE_LOG_UPDATE_TRIGGER, update, task.Id));
 
             switch (update)
             {
@@ -88,19 +89,19 @@ namespace WhiteBoard
                     break;
 
                 default:
-                    throw new NotImplementedException("No such update type");
+                    throw new NotImplementedException(Constants.FILEHANDLER_NO_SUCH_UPDATE_TYPE);
             }
         }
 
         private void GenerateQuerySet(List<Task> tasks)
         {
-            Log.Debug("Generating line set");
+            Log.Debug(Constants.LOG_LINE_SET);
             foreach (Task task in tasks)
             {
                 lineSet.Add(task.Description);
             }
 
-            Log.Debug("Generating word set");
+            Log.Debug(Constants.LOG_WORD_SET);
             foreach (string line in lineSet)
             {
                 // replace one or more whitespace in description with single whitespace
@@ -118,7 +119,7 @@ namespace WhiteBoard
         // sorting for better visual appeal and branch prediction
         private static IEnumerable<string> SortByLength(IEnumerable<string> e)
         {
-            Log.Debug("Sorting set");
+            Log.Debug(Constants.LOG_SORT_SET);
 
             // sorts the array and returns a copy
             var sorted = from s in e
@@ -147,7 +148,7 @@ namespace WhiteBoard
 
         private void RemoveFromSets(Task task)
         {
-            Log.Debug(String.Format("Removing Task with description {0} from sets", task.Description));
+            Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description));
 
             lineSet.Remove(task.Description);
 

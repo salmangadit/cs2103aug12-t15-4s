@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class ArchiveCommand : Command
     {
         List<int> taskIdsToArchive;
@@ -54,12 +55,12 @@ namespace WhiteBoard
         {
             if (taskIdsToArchive.Count == 0)
             {
-                throw new ApplicationException("No tasks to archive");
+                throw new ApplicationException(Constants.ARCHIVE_COMMAND_NO_TASKS);
             }
 
             foreach (int taskIdToArchive in taskIdsToArchive)
             {
-                Debug.Assert(taskIdToArchive > 0, "Invalid task ID");
+                Debug.Assert(taskIdToArchive > 0, Constants.DEBUG_INVALID_TASK_ID);
                 bool isTaskArchived;
 
                 try
@@ -69,18 +70,18 @@ namespace WhiteBoard
                 }
                 catch (SystemException e)
                 {
-                    Log.Debug("Caught a System Exception" + e);
-                    throw new ApplicationException("There are no tasks to archive");
+                    Log.Debug(Constants.LOG_SYSTEM_EXCEPTION + e);
+                    throw new ApplicationException(Constants.ARCHIVE_COMMAND_NO_TASKS);
                 }
 
                 if (isTaskArchived)
                 {
-                    Log.Debug("Archive Command was executed for" + taskIdToArchive);
+                    Log.Debug(Constants.ARCHIVE_COMMAND_LOG_EXECUTED + taskIdToArchive);
                 }
                 else
                 {
-                    Log.Debug("Archive Command failed for" + taskIdToArchive);
-                    throw new ApplicationException("Unable To Archive Task with ID T" + taskIdToArchive);
+                    Log.Debug(Constants.ARCHIVE_COMMAND_LOG_FAILED + taskIdToArchive);
+                    throw new ApplicationException(Constants.ARCHIVE_COMMAND_UNABLE + taskIdToArchive);
                 }
             }
 
@@ -91,17 +92,17 @@ namespace WhiteBoard
         {
             foreach (int taskIdToArchive in taskIdsToArchive)
             {
-                Debug.Assert(taskIdToArchive > 0, "Invalid task ID");
+                Debug.Assert(taskIdToArchive > 0, Constants.DEBUG_INVALID_TASK_ID);
                 bool isTaskUnarchived = fileHandler.UnarchiveTaskInFile(taskIdToArchive);
 
                 if (isTaskUnarchived)
                 {
-                    Log.Debug("Archive Command was undone for" + taskIdToArchive);
+                    Log.Debug(Constants.ARCHIVE_COMMAND_UNDO_LOG_EXECUTED + taskIdToArchive);
                 }
                 else
                 {
-                    Log.Debug("Archive Command Undo failed for" + taskIdToArchive);
-                    throw new ApplicationException("Unable To Undo Archive Task with ID T" + taskIdToArchive);
+                    Log.Debug(Constants.ARCHIVE_COMMAND_UNDO_LOG_FAILED + taskIdToArchive);
+                    throw new ApplicationException(Constants.ARCHIVE_COMMAND_UNDO_UNABLE + taskIdToArchive);
                 }
 
             }

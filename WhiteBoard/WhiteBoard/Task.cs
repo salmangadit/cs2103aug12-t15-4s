@@ -8,9 +8,14 @@ using System.Windows;
 
 namespace WhiteBoard
 {
+    /// <summary>
+    /// Task class to store information about the users tasks
+    /// </summary>
+
+    //@author U096089W
     public class Task
     {
-        int taskId = 0;
+        int taskId;
         string taskDescription;
 
         DateTime? taskStartTime;
@@ -21,7 +26,7 @@ namespace WhiteBoard
         {
         }
 
-        public Task(int taskId = 0, string taskDescription = null, DateTime? taskStartTime = null, DateTime? taskEndTime = null, bool archive=false)
+        public Task(int taskId = 0, string taskDescription = null, DateTime? taskStartTime = null, DateTime? taskEndTime = null, bool archive = false)
         {
             this.taskId = taskId;
             this.taskDescription = taskDescription;
@@ -53,12 +58,6 @@ namespace WhiteBoard
         {
             get
             {
-                if (taskDescription == null)
-                {
-                    //return "Task Description is not set";
-                    //throw new ArgumentNullException("Task Description is not set");
-                }
-
                 return taskDescription;
             }
 
@@ -72,11 +71,6 @@ namespace WhiteBoard
         {
             get
             {
-                if (taskStartTime == null)
-                {
-                    //throw new ArgumentNullException("Start time is not set");
-                }
-
                 return taskStartTime;
             }
 
@@ -90,10 +84,6 @@ namespace WhiteBoard
         {
             get
             {
-                if (taskEndTime == null)
-                {
-                    //throw new ArgumentNullException("Start time is not set");
-                }
 
                 return taskEndTime;
             }
@@ -158,12 +148,12 @@ namespace WhiteBoard
             // Create a diagonal linear gradient with four stops.   
             LinearGradientBrush myLinearGradientBrush =
                 new LinearGradientBrush();
-            myLinearGradientBrush.StartPoint = new Point(0, 0);
-            myLinearGradientBrush.EndPoint = new Point(0, 1);
+            myLinearGradientBrush.StartPoint = new Point(Constants.TASK_OVERDUE_START_X, Constants.TASK_OVERDUE_START_Y);
+            myLinearGradientBrush.EndPoint = new Point(Constants.TASK_OVERDUE_END_X, Constants.TASK_OVERDUE_END_Y);
             myLinearGradientBrush.GradientStops.Add(
-                new GradientStop(Colors.White, 0.0));
+                new GradientStop(Colors.White, Constants.TASK_OVERDUE_GRADIENT_WHITE));
             myLinearGradientBrush.GradientStops.Add(
-                new GradientStop(Colors.LightGray, 1));
+                new GradientStop(Colors.LightGray, Constants.TASK_OVERDUE_GRADIENT_LIGHT_GRAY));
 
             return myLinearGradientBrush;
         }
@@ -173,12 +163,12 @@ namespace WhiteBoard
             // Create a diagonal linear gradient with four stops.   
             LinearGradientBrush myLinearGradientBrush =
                 new LinearGradientBrush();
-            myLinearGradientBrush.StartPoint = new Point(0, 0);
-            myLinearGradientBrush.EndPoint = new Point(0, 2);
+            myLinearGradientBrush.StartPoint = new Point(Constants.TASK_NORMAL_START_X, Constants.TASK_NORMAL_START_Y);
+            myLinearGradientBrush.EndPoint = new Point(Constants.TASK_NORMAL_END_X, Constants.TASK_NORMAL_END_Y);
             myLinearGradientBrush.GradientStops.Add(
-                new GradientStop(Colors.White, 0.0));
+                new GradientStop(Colors.White, Constants.TASK_NORMAL_GRADIENT_WHITE));
             myLinearGradientBrush.GradientStops.Add(
-                new GradientStop(Colors.LightGray, 2));
+                new GradientStop(Colors.LightGray, Constants.TASK_NORMAL_GRADIENT_LIGHT_GRAY));
 
             return myLinearGradientBrush;
         }
