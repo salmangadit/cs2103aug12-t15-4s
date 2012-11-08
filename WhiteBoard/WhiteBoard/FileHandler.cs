@@ -1,4 +1,6 @@
-﻿using System;
+﻿// @author U094776M
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,16 +16,20 @@ namespace WhiteBoard
 
     class FileHandler
     {
+        #region Private Fields
+
         protected static readonly ILog log = LogManager.GetLogger(typeof(FileHandler));
         private static FileHandler instance;
-
         private event FileUpdate updateEvent;
-
         string filePath;
+
+        #endregion
+
+        #region Constructors
 
         private FileHandler()
         {
-            string fileName = "TasksList.xml";
+            string fileName = Constants.FILENAME;
 
             // set file path, we use the current Directory for the user and specified file name
             filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + fileName;
@@ -39,6 +45,12 @@ namespace WhiteBoard
             }
         }
 
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// Implementing FileHandler as singleton
+        /// </summary>
         public static FileHandler Instance
         {
             get
@@ -52,33 +64,15 @@ namespace WhiteBoard
             }
         }
 
-        public event FileUpdate FileUpdateEvent
-        {
-            add
-            {
-                updateEvent += value;
-            }
-            remove
-            {
-                updateEvent -= value;
-            }
-        }
+        #endregion
 
-        private void Notify(UpdateType update, Task task, Task uneditedTask = null)
-        {
-            if (update == UpdateType.Edit && (task == null || uneditedTask == null))
-            {
-                throw new ArgumentNullException("Task not set for Edit");
-            }
+        #region Public Class Methods
 
-            if (task == null)
-            {
-                throw new ArgumentNullException("Task not set");
-            }
-
-            updateEvent(update, task, uneditedTask);
-        }
-
+        /// <summary>
+        /// Add task to xml file by serializing the task object to the xml file
+        /// </summary>
+        /// <param name="taskToAdd"> Task object containing task id, description, start time, end time and bool archive.</param>
+        /// <returns> True if task has been successfully added </returns>
         internal bool AddTaskToFile(Task taskToAdd)
         {
             log.Debug("Task going to be added");
@@ -113,17 +107,24 @@ namespace WhiteBoard
             }
             catch (ArgumentNullException)
             {
-                Console.WriteLine("Unable to serialize null values");
+                Console.WriteLine(Constants.UNABLE_TO_SERIALIZE);
             }
             catch (InvalidOperationException)
             {
-                Console.WriteLine("There was an error generating the XML document");
+                Console.WriteLine(Constants.ERROR_GENERATING_DOC);
             }
             objStrWrt.Close();
             Notify(UpdateType.Add, taskToAdd);
             log.Debug("Task added");
             return taskAdded;
         }
+
+        /// <summary>
+        /// Add a task to the file by serializing the task object to the xml file. This method is called when the user has to undo a delete command.
+        /// </summary>
+        /// <param name="taskToAdd"> Task object containing task id, description, start time, end time and bool archive. </param>
+        /// <param name="taskId"> Task Id of the task that has to be re-added</param>
+        /// <returns> True if task has been successfully added</returns>
 
         internal bool AddTaskToFile(Task taskToAdd, int taskId)
         {
@@ -183,11 +184,29 @@ namespace WhiteBoard
                 }
             }
             StreamWriter objStrWrt = new StreamWriter(filePath);
-            objXmlSer.Serialize(objStrWrt, listOfAllTasks);
+            try
+            {
+                objXmlSer.Serialize(objStrWrt, listOfAllTasks);
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine(Constants.UNABLE_TO_SERIALIZE);
+            }
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine(Constants.ERROR_GENERATING_DOC);
+            }
+
             objStrWrt.Close();
             Notify(UpdateType.Add, taskToAdd);
             return taskAdded;
         }
+
+        /// <summary>
+        /// Retrieve a task object from file for editing it by deserializing the entire xml file into a list of task objects and then matching the task id of the required task.
+        /// </summary>
+        /// <param name="editedTaskId"> Task id of the task that has to be retrieved for editing</param>
+        /// <returns> Returns the task object to be edited</returns>
 
         internal Task GetTaskFromFile(int editedTaskId)
         {
@@ -215,6 +234,12 @@ namespace WhiteBoard
             objStrRead.Close();
             return taskToBeEdited;
         }
+
+        /// <summary>
+        /// Write back the edited task to the file by serializing the edited task object.
+        /// </summary>
+        /// <param name="editedTask"> Edited task object</param>
+        /// <returns> True if edited task has been successfully written to the xml file </returns>
 
         internal bool WriteEditedTaskToFile(Task editedTask)
         {
@@ -245,7 +270,18 @@ namespace WhiteBoard
                 }
                 objStrRead.Close();
                 StreamWriter objStrWrt = new StreamWriter(filePath);
-                objXmlSer.Serialize(objStrWrt, listOfAllTasks);
+                try
+                {
+                    objXmlSer.Serialize(objStrWrt, listOfAllTasks);
+                }
+                catch (ArgumentNullException)
+                {
+                    Console.WriteLine(Constants.UNABLE_TO_SERIALIZE);
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine(Constants.ERROR_GENERATING_DOC);
+                }
                 objStrWrt.Close();
             }
 
@@ -255,6 +291,12 @@ namespace WhiteBoard
             }
             return edited;
         }
+
+        /// <summary>
+        /// Delete a task from the xml file by deserializing the entire file into a list of task objects and then removing it from the list. The list of objects is then serialized into the xml file.
+        /// </summary>
+        /// <param name="deletedTaskId"> Task Id of the task object to be deleted </param>
+        /// <returns></returns>
 
         internal bool DeleteTaskFromFile(int deletedTaskId)
         {
@@ -288,7 +330,7 @@ namespace WhiteBoard
             }
             else
             {
-                throw new SystemException("File is Empty");
+                throw new SystemException(Constants.ERROR_FILE_EMPTY);
             }
 
             if (deleted)
@@ -299,6 +341,12 @@ namespace WhiteBoard
 
             return deleted;
         }
+
+        /// <summary>
+        /// Archive a task in file by setting the archive flag to true.
+        /// </summary>
+        /// <param name="archivedTaskId"> Task Id of the task object to be archived</param>
+        /// <returns> True if successfully archived</returns>
 
         internal bool ArchiveTaskInFile(int archivedTaskId)
         {
@@ -333,7 +381,7 @@ namespace WhiteBoard
             }
             else
             {
-                throw new SystemException("File is Empty");
+                throw new SystemException(Constants.ERROR_FILE_EMPTY);
             }
 
             if (archived)
@@ -344,6 +392,12 @@ namespace WhiteBoard
 
             return archived;
         }
+
+        /// <summary>
+        /// Unarchive a task in the xml file by setting the archive flag of the task to false
+        /// </summary>
+        /// <param name="unarchivedTaskId"> Task Id of the task to be unarchived</param>
+        /// <returns> True if task has been unarchived successfully</returns>
 
         internal bool UnarchiveTaskInFile(int unarchivedTaskId)
         {
@@ -376,7 +430,7 @@ namespace WhiteBoard
             }
             else
             {
-                throw new SystemException("File is Empty");
+                throw new SystemException(Constants.ERROR_FILE_EMPTY);
             }
 
             if (unarchived)
@@ -386,6 +440,11 @@ namespace WhiteBoard
 
             return unarchived;
         }
+
+        /// <summary>
+        /// Deserializes the entire xml file into a list of task objects. Puts the unarchived tasks into a separate list.
+        /// </summary>
+        /// <returns> A list of unarchived task objects sorted by date </returns>
 
         internal List<Task> ViewAll()
         {
@@ -410,6 +469,11 @@ namespace WhiteBoard
             listOfNonArchivedTasks = listOfNonArchivedTasks.OrderBy(x => x.StartTime).ToList();
             return listOfNonArchivedTasks;
         }
+
+        /// <summary>
+        /// Deserializes the entire xml file into a list of task objects. Puts the archived tasks into a separate list.
+        /// </summary>
+        /// <returns> A list of archived task objects sorted by date</returns>
 
         internal List<Task> ViewArchive()
         {
@@ -436,6 +500,12 @@ namespace WhiteBoard
             listOfArchivedTasks = listOfArchivedTasks.OrderBy(x => x.StartTime).ToList();
             return listOfArchivedTasks;
         }
+
+        /// <summary>
+        /// Deserializes the entire xml file into a list of task objects. Puts the tasks for the date in a separate list.
+        /// </summary>
+        /// <param name="date"> The date for which tasks on it need to be viewed by the user</param>
+        /// <returns> List of task objects for that day sorted by date</returns>
 
         internal List<Task> ViewTasks(DateTime? date)
         {
@@ -481,6 +551,13 @@ namespace WhiteBoard
             return listOfTasksForTheDay;
         }
 
+        /// <summary>
+        /// Deserializes the entire xml file into a list of task objects. Puts the tasks within the date range in a separate list.
+        /// </summary>
+        /// <param name="startDate"> start date of the range</param>
+        /// <param name="endDate">end date of the range</param>
+        /// <returns> A list of tasks objects that fall within the range sorted by date</returns>
+
         internal List<Task> ViewTasks(DateTime? startDate, DateTime? endDate)
         {
             List<Task> listOfAllTasks = new List<Task>();
@@ -517,5 +594,43 @@ namespace WhiteBoard
             listOfTasksWithinRange = listOfTasksWithinRange.OrderBy(x => x.StartTime).ToList();
             return listOfTasksWithinRange;
         }
+
+        #endregion
+
+        #region Event Handlers
+
+        public event FileUpdate FileUpdateEvent
+        {
+            add
+            {
+                updateEvent += value;
+            }
+            remove
+            {
+                updateEvent -= value;
+            }
+        }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private void Notify(UpdateType update, Task task, Task uneditedTask = null)
+        {
+            if (update == UpdateType.Edit && (task == null || uneditedTask == null))
+            {
+                throw new ArgumentNullException("Task not set for Edit");
+            }
+
+            if (task == null)
+            {
+                throw new ArgumentNullException("Task not set");
+            }
+
+            updateEvent(update, task, uneditedTask);
+        }
+
+        #endregion
+
     }
 }

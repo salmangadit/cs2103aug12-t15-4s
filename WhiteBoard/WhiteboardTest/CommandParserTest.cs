@@ -1,4 +1,6 @@
-﻿using WhiteBoard;
+﻿//@author U094776M
+
+using WhiteBoard;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
