@@ -5,11 +5,9 @@ using System.Text;
 
 namespace WhiteBoard
 {
+    //@author U095159L
     class DateHolder
     {
-        private string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
-        private const int TODAY_ID = 7;
-        private const int TOMORROW_ID = 8;
         private string dateString;                      //String containing the date
         private int dateId;                             //The ID denoting whether the date is in day or date form
 
@@ -28,7 +26,7 @@ namespace WhiteBoard
                 int days_difference;
                 DayOfWeek today = DateTime.Now.DayOfWeek;
                 var day = today;
-                foreach (string str in DAYS_OF_WEEK)
+                foreach (string str in Constants.DAYS_OF_WEEK)
                 {
                     if (String.Equals(dateString, str, StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -36,11 +34,11 @@ namespace WhiteBoard
                     }
                     i++;
                 }
-                if (dayid == TODAY_ID)
+                if (dayid == Constants.TODAY_ID)
                 {
                     day = today;
                 }
-                else if (dayid == TOMORROW_ID)
+                else if (dayid == Constants.TOMORROW_ID)
                 {
                     day = today + 1;
                 }
@@ -59,14 +57,14 @@ namespace WhiteBoard
             }
 
             else
-            {
+            {                                           //Otherwise parse the date in a DateTime format
                 try
                 {
                     var cultureinfo = new System.Globalization.CultureInfo("en-gb");
                     DateTime.Parse(dateString, cultureinfo, System.Globalization.DateTimeStyles.None);
                     return DateTime.Parse(dateString);
                 }
-                catch(FormatException e)
+                catch (FormatException e)
                 {
                     throw e;
                 }

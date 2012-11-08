@@ -84,5 +84,46 @@ namespace WhiteBoard
         public static string ERROR_GENERATING_DOC = "There was an error generating the XML document";
         public static string ERROR_FILE_EMPTY = "File is empty";
 
+        //@author U095159L
+        public static string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
+        public static string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
+        public static string[] COMMAND_MODIFY = { "MODIFY", "UPDATE" };
+        public static string[] COMMAND_NEW_DATE = { "START", "END" };
+        public static string[] COMMAND_VIEW_DAY = { "ON", "AT" };
+        public static string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
+        public static string[] COMMAND_VIEW_ENDING = { "BY", "BEFORE", "ENDING" };
+        public static string[] COMMAND_KEYWORD_REMOVE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN", "START", "END" };
+
+        public static string[] DATE_FORMATS = { "dd/mm/yyyy", "dd-mm-yyyy", "dd.mm.yyyy","dd/mm/yy","dd-mm-yy","dd.mm.yy", "d/m/yyyy","dd/m/yyyy","d/mm/yyyy", "d/m/yy","dd/m/yy",
+                                                "d/mm/yy", "d.m.yyyy","dd.m.yyyy","d.mm.yyyy","d.m.yy","dd.m.yy","d.mm.yy","d-m-yyyy","dd-m-yyyy","d-mm-yyyy","d-m-yy","dd-m-yy","d-mm-yy"};
+
+        public static string[] TIME_FORMATS = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt","hh:mm", "h:mm", "h:mm tt","hh:mm tt",
+                                                "h:mmtt","hh:mmtt","hhmmtt","hmmtt","hhmm tt","hmm tt","hhmm","hmm", "htt","hhtt", "h tt","hh tt","HH:mm"};
+
+        public const string COMMAND_PM = "PM";
+        public const string COMMAND_AM = "AM";
+        public const string COMMAND_CASE_SEARCH = "SEARCH";
+        public const string COMMAND_CASE_MODIFY = "MODIFY";
+        public const string COMMAND_CASE_UPDATE = "UPDATE";
+        public const string COMMAND_CASE_UNDO = "UNDO";
+        public const string COMMAND_CASE_MARK = "MARK";
+        public const string COMMAND_CASE_DELETE = "DELETE";
+        public const string COMMAND_CASE_REMOVE = "REMOVE";
+        public const string COMMAND_CASE_VIEW = "VIEW";
+        public const string COMMAND_MARK_ALL_AS = "MARK ALL AS DONE";
+        public const string COMMAND_MARK_ALL = "MARK ALL DONE";
+        public const string COMMAND_MARK = "DONE";
+        public const string COMMAND_MARK_AS = "AS DONE";
+        public const string COMMAND_ALL = "ALL";
+        public const string COMMAND_ARCHIVE = "ARCHIVE";
+        public const string COMMAND_WEEK = "WEEK";
+        public const string COMMAND_RANGE = "TO";
+        public const string COMMAND_RANGE_TILL = "TILL";
+        public const string COMMAND_RANGE_ALT = "-";
+        public const string COMMAND_RANGE_AND = "AND";
+        public static int DATE_COUNT = 2;
+        public static int TODAY_ID = 7;
+        public static int TOMORROW_ID = 8;
+
     }
 }

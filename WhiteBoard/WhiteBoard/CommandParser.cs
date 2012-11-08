@@ -11,48 +11,28 @@ using log4net;
 
 namespace WhiteBoard
 {
+    //@author U095159L
     class CommandParser
     {
-        private string[] DAYS_OF_WEEK = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "TODAY", "TOMORROW" };
-        private string[] COMMAND_DATE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN" };
-        private string[] COMMAND_MODIFY = { "MODIFY", "UPDATE" };
-        private string[] COMMAND_NEW_DATE = { "START", "END" };
-        private string[] COMMAND_VIEW_DAY = { "ON", "AT" };
-        private string[] COMMAND_VIEW_RANGE = { "ON", "FROM", "BETWEEN" };
-        private string[] COMMAND_VIEW_ENDING = { "BY", "BEFORE", "ENDING" };
-        private string[] COMMAND_KEYWORD_REMOVE = { "BY", "ON", "BEFORE", "AT", "FROM", "BETWEEN", "START", "END" };
-        private const string COMMAND_MARK_DONE = "MARK ALL DONE";
-        private const string COMMAND_MARK_AS_DONE = "MARK ALL AS DONE";
-        private const string COMMAND_MARK = "DONE";
-        private const string COMMAND_MARK_AS = "AS DONE";
-        private const string COMMAND_ALL = "ALL";
-        private const string COMMAND_ARCHIVE = "ARCHIVE";
-        private const string COMMAND_WEEK = "WEEK";
-        private const string COMMAND_RANGE = "TO";
-        private const string COMMAND_RANGE_TILL = "TILL";
-        private const string COMMAND_RANGE_ALT = "-";
-        private const string COMMAND_RANGE_AND = "AND";
-        private const int DATE_COUNT = 2;
+        #region Protected Fields
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(CommandParser));
+        #endregion
 
-        private string searchString;
-        private string inputCommand;
-        private string taskDescription = null;
-        private DateTime? startDate = null;
-        private DateTime? endDate = null;
+        #region Private Fields
         private string[] userCommandArray;
-        private FileHandler fileHandler;
-        private Task taskToAdd;
-        private int taskId = 0;
-        private int checkId = 0;
-        private int checkFirstDate = 0;
+        private string inputCommand;
+        private string timeString;
+        private string correctFormat = String.Empty;
+        private string taskDescription = null;
 
         private bool archiveFlag = false;
-        private int modifyFlag = 0;
-        private int viewFlag = 0;
-        private int dateFlag = 0;
+
+        private int taskId = 0;
+        private int checkId = 0;
+        private int checkDate = 0;
         private int currentIndex = 0;
         private int nextIndex = 0;
-        private int previousIndex = 0;
+        private int taskDescriptionIndex = 0;
         private int startDateIndex = 0;
         private int endDateIndex = 0;
         private int startTimeFlag = 0;
@@ -61,16 +41,21 @@ namespace WhiteBoard
         private int secondDayFlag = 0;
         private int userError = 0;
 
+        private DateTime? startDate = null;
+        private DateTime? endDate = null;
+        private FileHandler fileHandler;
+        private Task taskToAdd;
+
         private List<string> stringList = new List<string>();
         private List<DateHolder> startEndDate = new DateHolder[2].ToList();
         private List<TimeSpan> startEndTime = new TimeSpan[2].ToList();
         private List<string> userCommand = new List<string>();
-
         private List<Task> screenState;
+
         private Stack<Command> taskHistory;
+        #endregion
 
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(CommandParser));
-
+        #region Constructors
         public CommandParser()
         {
         }
@@ -85,34 +70,9 @@ namespace WhiteBoard
             this.screenState = screenState;
             this.taskHistory = taskHistory;
         }
+        #endregion
 
-        /// <summary>
-        /// Splits usercommand string, removes extra blankspaces and adds to list
-        /// </summary>
-        /// <param name="usercommand">The string input by user</param>
-        private void SplitString(string usercommand)
-        {
-            Debug.Assert(usercommand != null, "User command was null");
-
-            if (usercommand == null)
-            {
-                return;
-            }
-
-            inputCommand = usercommand;
-            inputCommand = Regex.Replace(inputCommand, @"\s+", " ");                        //Replace multiple blank spaces with single space
-            inputCommand = inputCommand.Trim();
-            Log.Debug("Extra white spaces removed. Input command : " + inputCommand);
-
-            userCommandArray = inputCommand.Split(' ');
-
-            foreach (string str in userCommandArray)
-            {
-                str.Trim();
-                userCommand.Add(str);
-            }
-        }
-
+        #region Public Class Methods
         /// <summary>
         /// Method to return UserCommand list for unit testing
         /// </summary>
@@ -126,36 +86,35 @@ namespace WhiteBoard
         /// <summary>
         /// Parses the user command and determines the action to be done i.e Add, Modify, Delete etc.
         /// </summary>
-        /// <returns>Returns a command object with details of the ToDo item</returns>
+        /// <returns>Returns a command object with details of the Task item</returns>
         public Command ParseCommand(string usercommand)
         {
             SplitString(usercommand);
             switch (userCommand[0].ToString().ToUpper())
             {
-                case "SEARCH:":
+                case Constants.COMMAND_CASE_SEARCH:
                     {
                         return ParseSearch();
                     }
-                case "UNDO":
+                case Constants.COMMAND_CASE_UNDO:
                     {
                         return ParseUndo();
                     }
-                case "DELETE":
-                case "REMOVE":
+                case Constants.COMMAND_CASE_DELETE:
+                case Constants.COMMAND_CASE_REMOVE:
                     {
                         return ParseDelete();
                     }
-                case "MARK":
+                case Constants.COMMAND_CASE_MARK:
                     {
                         return ParseDone();
                     }
-                case "VIEW":
+                case Constants.COMMAND_CASE_VIEW:
                     {
                         return ParseView();
                     }
-                case "MODIFY":
-                case "CHANGE":
-                case "UPDATE":
+                case Constants.COMMAND_CASE_MODIFY:
+                case Constants.COMMAND_CASE_UPDATE:
                     {
                         return ParseModify();
                     }
@@ -165,6 +124,36 @@ namespace WhiteBoard
                     }
             }
         }
+        #endregion
+
+        #region Private Class Helper Methods
+        /// <summary>
+        /// Splits usercommand string, removes extra blankspaces and adds each split word to list
+        /// </summary>
+        /// <param name="usercommand">The string input by user</param>
+        private void SplitString(string usercommand)
+        {
+            Debug.Assert(usercommand != null, "User command was null");
+
+            if (usercommand == null)
+            {
+                return;
+            }
+
+            inputCommand = usercommand;
+            inputCommand = Regex.Replace(inputCommand, @"\s+", " ");                        //Replace multiple blank spaces with single space
+            inputCommand = inputCommand.Trim();                                             //Remove leading and trailing whitespaces
+
+            Log.Debug("Extra white spaces removed. Input command : " + inputCommand);
+
+            userCommandArray = inputCommand.Split(' ');
+
+            foreach (string str in userCommandArray)
+            {
+                str.Trim();
+                userCommand.Add(str);
+            }
+        }
 
         /// <summary>
         /// Returns the string to be searched
@@ -172,11 +161,11 @@ namespace WhiteBoard
         /// <returns>The information that is to be searched</returns>
         private Command ParseSearch()
         {
-            searchString = ConvertToString(userCommand, stringList, 1, userCommand.Count - 1);
+            string searchstring = ConvertToString(userCommand, stringList, 1, userCommand.Count - 1);
 
-            Log.Debug(String.Format("Search keyword entered. The search term is : {0}", searchString));
+            Log.Debug(String.Format("Search keyword entered. The search term is : {0}", searchstring));
 
-            SearchCommand search = new SearchCommand(fileHandler, searchString, screenState);
+            SearchCommand search = new SearchCommand(fileHandler, searchstring, screenState);
             taskHistory.Push(search);
             return search;
         }
@@ -192,10 +181,10 @@ namespace WhiteBoard
 
             if (userCommand.Count == 1)
             {
-                Command lastcommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
-                if (lastcommand != null)
+                Command previouscommand = (taskHistory.Count > 0 ? taskHistory.Pop() : null);
+                if (previouscommand != null)
                 {
-                    UndoCommand undo = new UndoCommand(fileHandler, lastcommand, screenState);
+                    UndoCommand undo = new UndoCommand(fileHandler, previouscommand, screenState);
                     return undo;
                 }
                 else
@@ -206,9 +195,9 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Checks which task to delete based on the Task ID
+        /// Checks which tasks to delete based on the Task ID or whether to delete all tasks on screen
         /// </summary>
-        /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
+        /// <returns>DeleteCommand object along with the corresponding Task ID</returns>
         private Command ParseDelete()
         {
             Log.Debug("Delete keyword entered. Checking task ID");
@@ -228,7 +217,7 @@ namespace WhiteBoard
                     taskHistory.Push(delete);
                     return delete;
                 }
-                else if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase))
+                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase))     //Delete all tasks on screen
                 {
                     Log.Debug("Delete all command");
 
@@ -250,24 +239,26 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Checks which task to mark as done based on the Task ID
+        /// Checks which task to mark as done based on the Task ID or whether to archive all tasks on screen
         /// </summary>
         /// /// <returns>DeleteCommand Object with the corresponding Task ID</returns>
         private Command ParseDone()
         {
             string command = String.Join(" ", userCommand.ToArray());
+
             Log.Debug("Archive keyword entered. Checking task ID");
+
             currentIndex = 0;
             nextIndex = currentIndex + 1;
-            checkId = IsValidTaskId(userCommand[nextIndex]);
+            checkId = IsValidTaskId(userCommand[nextIndex]);    //Checks if a valid integer ID is entered
             if (checkId > 0)
             {
                 Log.Debug("Valid task ID entered. The ID is: " + checkId);
 
-                string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1); //Gets the substring from the index following the taskID
+                string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);   //Gets the substring starting from the index following the taskID
                 temp = temp.Trim();
-                if (String.Equals(temp, COMMAND_MARK, StringComparison.CurrentCultureIgnoreCase)
-                    || String.Equals(temp, COMMAND_MARK_AS, StringComparison.CurrentCultureIgnoreCase))
+                if (String.Equals(temp, Constants.COMMAND_MARK, StringComparison.CurrentCultureIgnoreCase)
+                    || String.Equals(temp, Constants.COMMAND_MARK_AS, StringComparison.CurrentCultureIgnoreCase))
                 {
                     archiveFlag = true;
                     taskId = checkId;
@@ -276,8 +267,8 @@ namespace WhiteBoard
                     return markdone;
                 }
             }
-            else if ((String.Equals(command, COMMAND_MARK_DONE, StringComparison.CurrentCultureIgnoreCase)) ||
-                    (String.Equals(command, COMMAND_MARK_AS_DONE, StringComparison.CurrentCultureIgnoreCase)))
+            else if ((String.Equals(command, Constants.COMMAND_MARK_ALL, StringComparison.CurrentCultureIgnoreCase)) ||  //Check whether to mark all tasks on screen as done
+                    (String.Equals(command, Constants.COMMAND_MARK_ALL_AS, StringComparison.CurrentCultureIgnoreCase)))
             {
                 Log.Debug("Mark all as done");
 
@@ -294,9 +285,10 @@ namespace WhiteBoard
         /// <summary>
         /// Parses the command and extracts the parameters for the View Command
         /// </summary>
+        /// <returns>View command object containing the date and time for which the user has requested to view</returns>
         private Command ParseView()
         {
-            viewFlag = 0;
+            int datefoundflag = 0;      //datefoundflag is set to 1 if atleast one date/time is found
             currentIndex = 0;
             nextIndex = currentIndex + 1;
 
@@ -304,31 +296,25 @@ namespace WhiteBoard
 
             if (userCommand.Count > 1)
             {
-                if (String.Equals(userCommand[nextIndex], COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)            //View All
+                if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)            //View All
                 {
                     startDate = endDate = null;
                     archiveFlag = false;
-                    viewFlag = 1;
+                    datefoundflag = 1;
                 }
 
-                else if (String.Equals(userCommand[nextIndex], COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)   //View Archive
+                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)   //View Archive
                 {
                     startDate = endDate = null;
                     archiveFlag = true;
-                    viewFlag = 1;
+                    datefoundflag = 1;
                 }
 
-                else if (String.Equals(userCommand[nextIndex], COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)      //View Week
+                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)      //View Week
                 {
-                    DayOfWeek today = DateTime.Now.DayOfWeek;
-                    int days = today - DayOfWeek.Monday;
-                    DateTime temp_start = DateTime.Now.AddDays(-days);
-                    DateTime temp_end = temp_start.AddDays(6);
-                    startDate = temp_start;
-                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);        //Zeroes hour,min and secs
-                    endDate = temp_end;
+                    AssignWeek();
                     archiveFlag = false;
-                    viewFlag = 1;
+                    datefoundflag = 1;
                 }
 
                 else
@@ -337,18 +323,19 @@ namespace WhiteBoard
                     endDate = null;
                     if (ParseForDates(userCommand, nextIndex, false) > 0)
                     {
-                        viewFlag = 1;           //ViewFlag is set to 1 if atleast one date or time is found
+                        datefoundflag = 1;
                         AssignDates();
                     }
                 }
 
-                if (viewFlag == 1)
+                if (datefoundflag == 1)
                 {
                     Log.Debug(String.Format("Valid parameters. Request to view tasks with startdate: {0} and/or enddate: {1}",
                         startDate.ToString(),
                         endDate.ToString()));
                     if (endDate != null && (endDate.Value.Hour == 0 && endDate.Value.Minute == 0))
                     {
+                        //All tasks for the entire day should be shown, hence we set the time to 23:59:59
                         endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 23, 59, 59);
                     }
                     Task viewtaskdetails = new Task(0, null, startDate, endDate, archiveFlag);
@@ -360,14 +347,12 @@ namespace WhiteBoard
                 else
                 {
                     Log.Debug("Invalid view parameters. Calling ParseNewTask()");
-
                     return ParseNewTask();
                 }
             }
             else
             {
                 Log.Debug("Invalid view parameters. Calling ParseNewTask()");
-
                 return ParseNewTask();
             }
         }
@@ -378,12 +363,14 @@ namespace WhiteBoard
         /// <returns>Returns a command object with details of the ToDo item</returns>
         private Command ParseModify()
         {
+            int datefoundflag = 0;      //datefoundflag is set to 1 if atleast one date/time is found
+            int validtaskid = 0;
             currentIndex = 0;
             nextIndex = currentIndex + 1;
 
             Log.Debug("Modify keyword entered. Checking task ID");
 
-            foreach (string keyword in COMMAND_MODIFY)
+            foreach (string keyword in Constants.COMMAND_MODIFY)
             {
                 if (String.Equals(keyword, userCommand[currentIndex], StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                 {
@@ -393,12 +380,12 @@ namespace WhiteBoard
                         Log.Debug("Valid task ID entered. The ID is: " + checkId);
 
                         taskId = checkId;
-                        modifyFlag = 1;
+                        validtaskid = 1;
                     }
                 }
             }
 
-            if (modifyFlag != 0)
+            if (validtaskid != 0)
             {
                 currentIndex = 0;
                 int invertdates = 0;
@@ -406,14 +393,15 @@ namespace WhiteBoard
 
                 foreach (string str in userCommand)
                 {
-                    foreach (string keyword in COMMAND_NEW_DATE)
+                    foreach (string keyword in Constants.COMMAND_NEW_DATE)
                     {
                         if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                         {
-                            if (dateFlag == 0)
+                            if (datefoundflag == 0)
                             {
-                                if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase))
+                                if (String.Equals(str, Constants.COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase))
                                 {
+                                    //Keyword for new start date found
                                     Log.Debug("Keyword for new start date found. Parsing for dates");
 
                                     startDateIndex = currentIndex + 1;
@@ -421,12 +409,13 @@ namespace WhiteBoard
                                     {
                                         Log.Debug("New dates found");
 
-                                        dateFlag = 1;
+                                        datefoundflag = 1;
                                     }
                                 }
 
-                                if (String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
+                                if (String.Equals(str, Constants.COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
                                 {
+                                    //Keyword for new end date found
                                     Log.Debug("Keyword for new end date found. Parsing for dates");
 
                                     endDateIndex = currentIndex + 1;
@@ -434,7 +423,7 @@ namespace WhiteBoard
                                     {
                                         Log.Debug("New dates found");
 
-                                        dateFlag = 1;
+                                        datefoundflag = 1;
                                         invertdates = 1;
                                     }
                                 }
@@ -444,9 +433,9 @@ namespace WhiteBoard
                     currentIndex++;
                 }
 
-                if (dateFlag == 0 && nextIndex < userCommand.Count - 1)
+                if (datefoundflag == 0 && nextIndex < userCommand.Count - 1) //if no new dates are found, get only the new task description if any
                 {
-                    if (String.Equals(userCommand[nextIndex + 1], COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase) && nextIndex < userCommand.Count - 2)
+                    if (String.Equals(userCommand[nextIndex + 1], Constants.COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase) && nextIndex < userCommand.Count - 2)
                     {
                         taskDescription = ConvertToString(userCommand, stringList, nextIndex + 2, userCommand.Count - 1);
                     }
@@ -458,16 +447,16 @@ namespace WhiteBoard
                     Log.Debug(String.Format("No new dates found. New task description is : {0}", taskDescription));
                 }
 
-                else if (dateFlag == 1)
+                else if (datefoundflag == 1)
                 {
                     AssignDates();
-                    if (invertdates == 1)
+                    if (invertdates == 1)   //end date was parsed before start date, need to swap values
                     {
                         DateTime? temp = startDate;
                         startDate = endDate;
                         endDate = temp;
                     }
-                    taskDescription = ConvertToString(userCommand, stringList, descindex, previousIndex);
+                    taskDescription = ConvertToString(userCommand, stringList, descindex, taskDescriptionIndex);
                     if (taskDescription == String.Empty)
                     {
                         taskDescription = null;
@@ -500,54 +489,56 @@ namespace WhiteBoard
         /// <summary>
         /// Parses the user command and determines the date and the taskdescription
         /// </summary>
+        /// <returns>Returns an AddCommand object containing the description and start and end DateTime values</returns>
         private Command ParseNewTask()
         {
+            int datefoundflag = 0;      //datefoundflag is set to 1 if atleast one date/time is found
+            int keywordfound = 0;       //keywordfound is set to 1 if one of the keywords in COMMAND_DATE is found
             currentIndex = 0;
-            dateFlag = 0;
-            int calldaterange = 0;
 
             Log.Debug("Parsing for adding a new task");
 
             foreach (string str in userCommand)
             {
-                if (dateFlag == 0)
+                if (datefoundflag == 0)
                 {
                     if ((String.Equals(str, "TODAY", StringComparison.CurrentCultureIgnoreCase)) || (String.Equals(str, "TOMORROW", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         nextIndex = currentIndex;
-                        calldaterange = 1;
+                        keywordfound = 1;
                     }
 
-                    if (calldaterange == 0)
+                    if (keywordfound == 0)
                     {
-                        foreach (string keyword in COMMAND_DATE)
+                        foreach (string keyword in Constants.COMMAND_DATE)
                         {
                             if (String.Equals(keyword, str, StringComparison.CurrentCultureIgnoreCase) && currentIndex < userCommand.Count() - 1)
                             {
                                 nextIndex = currentIndex + 1;
-                                calldaterange = 1;
+                                keywordfound = 1;
                             }
                         }
                     }
-                    if (calldaterange == 1 && dateFlag == 0)
+
+                    if (keywordfound == 1 && datefoundflag == 0)
                     {
                         if (ParseForDates(userCommand, nextIndex, false) > 0)
                         {
-                            dateFlag = 1;
+                            datefoundflag = 1;
                             AssignDates();
                         }
                     }
-                    calldaterange = 0;
+                    keywordfound = 0;
                     currentIndex++;
                 }
             }
-            if (dateFlag == 1 && userError == 0)
+            if (datefoundflag == 1 && userError == 0)
             {
                 Log.Debug(String.Format("Valid date parameters. Add new task with startdate: {0} and/or enddate: {1}",
                         startDate.ToString(),
                         endDate.ToString()));
 
-                taskDescription = ConvertToString(userCommand, stringList, 0, previousIndex);
+                taskDescription = ConvertToString(userCommand, stringList, 0, taskDescriptionIndex);
             }
 
             else
@@ -567,61 +558,19 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Method to check the various date and times parsed and assign them accordingly
-        /// to the start and end dates.
+        /// Assigns the start date with the monday of the current week and 
+        /// the end date with the sunday of the same week
+        /// User for the "View Week" command
         /// </summary>
-        private void AssignDates()
+        private void AssignWeek()
         {
-            if (startEndDate[0] != null)
-            {
-                startDate = startEndDate[0].ConvertToDateTime();
-                startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
-                if (startTimeFlag == 1)
-                {
-                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[0].Hours, startEndTime[0].Minutes, 0);
-                }
-                if (startEndDate[1] == null)
-                {
-                    if (endTimeFlag == 1)
-                    {
-                        endDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
-                    }
-                }
-                else if (startEndDate[1] != null)
-                {
-                    endDate = startEndDate[1].ConvertToDateTime();
-                    endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 0, 0, 0);
-                    if (endTimeFlag == 1)
-                    {
-                        endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
-                    }
-                }
-            }
-            else if (startEndDate[0] == null)
-            {
-                if (startTimeFlag == 1)
-                {
-                    startDate = DateTime.Now;
-                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[0].Hours, startEndTime[0].Minutes, 0);
-                    if (endTimeFlag == 1)
-                    {
-                        if (startEndDate[1] != null)
-                        {
-                            endDate = startEndDate[1].ConvertToDateTime();
-                            endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
-                        }
-                        else
-                        {
-                            endDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
-                        }
-                    }
-                }
-                else
-                {
-                    userError = 1;
-                }
-            }
-
+            DayOfWeek today = DateTime.Now.DayOfWeek;
+            int days = today - DayOfWeek.Monday;
+            DateTime temp_start = DateTime.Now.AddDays(-days);
+            DateTime temp_end = temp_start.AddDays(6);      //Adds six days from Monday to get Saturday
+            startDate = temp_start;
+            startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);        //Zeroes the hour, minute and seconds fields
+            endDate = temp_end;
         }
 
         /// Checks if a date range is given and extracts the start and end date
@@ -643,7 +592,7 @@ namespace WhiteBoard
             int i = 0;
             int startdateindex = index;
 
-            List<string> sublist = commandlist.GetRange(startdateindex, userCommand.Count - (startdateindex));
+            List<string> sublist = commandlist.GetRange(startdateindex, userCommand.Count - (startdateindex)); //Split the command starting from the index following the keyword
             firstsublist = sublist;
 
             Log.Debug(String.Format("User command split at keyword : ", firstsublist.ToString()));
@@ -652,20 +601,20 @@ namespace WhiteBoard
             {
                 if (splitindex < 0)
                 {
-                    if (!modify)
+                    if (!modify)    //If the ParseModify() method is calling this method
                     {
-                        if (String.Equals(str, COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
-                            || String.Equals(str, COMMAND_RANGE_TILL, StringComparison.CurrentCultureIgnoreCase)
-                            || String.Equals(str, COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
-                            || String.Equals(str, COMMAND_RANGE_ALT))
+                        if (String.Equals(str, Constants.COMMAND_RANGE, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, Constants.COMMAND_RANGE_TILL, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, Constants.COMMAND_RANGE_AND, StringComparison.CurrentCultureIgnoreCase)
+                            || String.Equals(str, Constants.COMMAND_RANGE_ALT))
                         {
                             splitindex = i;
                         }
                     }
-                    else
+                    else            //If any other method is calling this method
                     {
-                        if (String.Equals(str, COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase)
-                        || String.Equals(str, COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
+                        if (String.Equals(str, Constants.COMMAND_NEW_DATE[0], StringComparison.CurrentCultureIgnoreCase)
+                        || String.Equals(str, Constants.COMMAND_NEW_DATE[1], StringComparison.CurrentCultureIgnoreCase))
                         {
                             splitindex = i;
                         }
@@ -674,7 +623,7 @@ namespace WhiteBoard
                 i++;
             }
 
-            if (splitindex > 0)
+            if (splitindex > 0)     //If a keyword is found that denotes multiple dates or a date range then split the command further
             {
                 secondsublist = sublist.GetRange(splitindex, sublist.Count - (splitindex));
                 firstsublist = sublist.GetRange(0, (sublist.Count - secondsublist.Count));
@@ -686,6 +635,7 @@ namespace WhiteBoard
 
             foreach (string word in firstsublist)
             {
+                //If the "PM" of the time is separated with a blank space, check the previous string and parse the time
                 if (startTimeFlag == 0 && (String.Equals(word, "PM", StringComparison.CurrentCultureIgnoreCase) || (String.Equals(word, "AM", StringComparison.CurrentCultureIgnoreCase))))
                 {
                     string temp = word;
@@ -694,24 +644,24 @@ namespace WhiteBoard
                         startEndTime[0] = ParseTime(temp);
                         if (firstDayFlag == 0)
                         {
-                            previousIndex = (userCommand.IndexOf(word) - 2);
+                            taskDescriptionIndex = (userCommand.IndexOf(word) - 2);  //Index of last word of task description
                         }
                         startTimeFlag = 1;
                     }
                 }
             }
 
-            foreach (string word in firstsublist)
+            foreach (string word in firstsublist)   //Parse the first part of the command for day and time
             {
-                if (firstDayFlag == 0 && (checkFirstDate = IsValidDate(word)) > 0)
+                if (firstDayFlag == 0 && (checkDate = IsValidDate(word)) > 0)
                 {
-                    DateHolder date = new DateHolder(word, checkFirstDate);
+                    DateHolder date = new DateHolder(word, checkDate);
                     startEndDate[0] = date;
                     endDate = null;
                     firstDayFlag = 1;
                     if (startTimeFlag == 0)
                     {
-                        previousIndex = (userCommand.IndexOf(word) - 1);
+                        taskDescriptionIndex = (userCommand.IndexOf(word) - 1);     //Index of last word of task description
                     }
                 }
 
@@ -721,18 +671,20 @@ namespace WhiteBoard
                     startTimeFlag = 1;
                     if (firstDayFlag == 0)
                     {
-                        previousIndex = (userCommand.IndexOf(word) - 1);
+                        taskDescriptionIndex = (userCommand.IndexOf(word) - 1);
                     }
                 }
             }
 
             if (splitindex > 0 && (startTimeFlag > 0 || firstDayFlag > 0))
             {
+                //If a date or time was found, then parse the second part of the command for another date or time
                 Log.Debug("Date found in first part. Parsing second part");
 
                 foreach (string word in secondsublist)
                 {
-                    if (endTimeFlag == 0 && (String.Equals(word, "PM", StringComparison.CurrentCultureIgnoreCase) || (String.Equals(word, "AM", StringComparison.CurrentCultureIgnoreCase))))
+                    if (endTimeFlag == 0 && (String.Equals(word, Constants.COMMAND_PM, StringComparison.CurrentCultureIgnoreCase)
+                        || (String.Equals(word, Constants.COMMAND_AM, StringComparison.CurrentCultureIgnoreCase))))
                     {
                         string temp = word;
                         if (IsTime((temp = String.Format("{0} {1}", secondsublist[secondsublist.IndexOf(word) - 1], word))))
@@ -745,9 +697,9 @@ namespace WhiteBoard
 
                 foreach (string word in secondsublist)
                 {
-                    if (secondDayFlag == 0 && (checkFirstDate = IsValidDate(word)) > 0)
+                    if (secondDayFlag == 0 && (checkDate = IsValidDate(word)) > 0)
                     {
-                        DateHolder date = new DateHolder(word, checkFirstDate);
+                        DateHolder date = new DateHolder(word, checkDate);
                         startEndDate[1] = date;
                         secondDayFlag = 1;
                     }
@@ -759,6 +711,7 @@ namespace WhiteBoard
                     }
                 }
             }
+
             if (startEndDate[0] == null && startEndDate[1] == null && startTimeFlag == 0 && endTimeFlag == 0)
             {
                 Log.Debug("No dates found.");
@@ -769,12 +722,68 @@ namespace WhiteBoard
                 return 1;
         }
 
+        /// <summary>
+        /// Method to check the various date and times parsed and assign them accordingly
+        /// to the start and end dates.
+        /// </summary>
+        private void AssignDates()
+        {
+            if (startEndDate[0] != null)    //If there is a start date
+            {
+                startDate = startEndDate[0].ConvertToDateTime();
+                startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, 0, 0, 0);
+                if (startTimeFlag == 1)     //And there is a start time
+                {
+                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[0].Hours, startEndTime[0].Minutes, 0);
+                }
+                if (startEndDate[1] == null)
+                {
+                    if (endTimeFlag == 1)   //If there is no end date, but there is an end time, add it for the startDate's date
+                    {
+                        endDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                    }
+                }
+                else if (startEndDate[1] != null)
+                {
+                    endDate = startEndDate[1].ConvertToDateTime();
+                    endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, 0, 0, 0);
+                    if (endTimeFlag == 1)   //Or if there is an end date, add the end time to the endDate
+                    {
+                        endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                    }
+                }
+            }
+            else if (startEndDate[0] == null)   //Id there is no start date
+            {
+                if (startTimeFlag == 1)     //But if there is a start time, assume it is today and add the time to it
+                {
+                    startDate = DateTime.Now;
+                    startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[0].Hours, startEndTime[0].Minutes, 0);
+                    if (endTimeFlag == 1)
+                    {
+                        if (startEndDate[1] != null)    //If there is no end date, but there is an end time, add it for the startDate's date
+                        {
+                            endDate = startEndDate[1].ConvertToDateTime();
+                            endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, endDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                        }
+                        else   //Or if there is an end date, add the end time to the endDate
+                        {
+                            endDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day, startEndTime[1].Hours, startEndTime[1].Minutes, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    userError = 1;
+                }
+            }
+        }
 
         /// <summary>
-        /// Checks whether the string is a task ID
+        /// Checks whether the string is a valid integer for the task ID
         /// </summary>
         /// <param name="str">The string to be checked</param>
-        /// <returns>Returns true if string is a valid task ID</returns>
+        /// <returns>Returns -1 if string is not a valid task ID otherwise returns the ID</returns>
         private int IsValidTaskId(string str)
         {
             int taskid = -1;
@@ -797,31 +806,28 @@ namespace WhiteBoard
         /// <returns>Returns true if time is valid</returns>
         private bool IsTime(string time)
         {
-            string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
-                                    "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm tt","hmm tt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
-                                    "HH:mm"};
-
-            if (time.Length == 3)
+            timeString = time;
+            //Pad certain time with zeroes to make the recognisable as a time format
+            if (timeString.Length == 3)
             {
-                time = time.PadLeft(4, '0');
+                timeString = timeString.PadLeft(4, '0');
             }
             else if (time.Length == 5 && (!(time.Contains(':'))) && (!(time.Contains(' '))))
             {
-                time = time.PadLeft(6, '0');
+                timeString = timeString.PadLeft(6, '0');
             }
-            else if (time.Length == 6 && time.Contains(' '))
+            else if (timeString.Length == 6 && timeString.Contains(' '))
             {
-                time = time.PadLeft(7, '0');
+                timeString = timeString.PadLeft(7, '0');
             }
-            time = time.PadLeft(4, '0');
             bool istime = false;
             DateTime temp;
-            foreach (string format in timeformat)
+            foreach (string format in Constants.TIME_FORMATS)
             {
                 if (!istime)
                 {
-                    istime = DateTime.TryParseExact(time, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
+                    istime = DateTime.TryParseExact(timeString, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
+                    correctFormat = format;
                 }
             }
             return istime;
@@ -834,39 +840,11 @@ namespace WhiteBoard
         /// <returns>The timespan object</returns>
         private TimeSpan ParseTime(string time)
         {
-            string[] timeformat = { "hh.mm", "h.mm", "h.mm tt","hh.mm tt","h.mmtt","hh.mmtt",
-                                    "hh:mm", "h:mm", "h:mm tt","hh:mm tt", "h:mmtt","hh:mmtt",
-                                    "hhmmtt","hmmtt","hhmm tt","hmm tt","hhmm","hmm", "htt","hhtt", "h tt","hh tt",
-                                    "HH:mm"};
-
-            if (time.Length == 3)
-            {
-                time = time.PadLeft(4, '0');
-            }
-            else if (time.Length == 5 && (!(time.Contains(':'))) && (!(time.Contains(' '))))
-            {
-                time = time.PadLeft(6, '0');
-            }
-            else if (time.Length == 6 && time.Contains(' '))
-            {
-                time = time.PadLeft(7, '0');
-            }
-            string correctformat = String.Empty;
-            bool istime = false;
             DateTime temp = new DateTime();
-            foreach (string format in timeformat)
+            if (IsTime(time))
             {
-                if (!istime)
-                {
-                    istime = DateTime.TryParseExact(time, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp);
-                    correctformat = format;
-                }
+                temp = DateTime.ParseExact(timeString, correctFormat, CultureInfo.InvariantCulture, DateTimeStyles.None);
             }
-            if (istime)
-            {
-                temp = DateTime.ParseExact(time, correctformat, CultureInfo.InvariantCulture, DateTimeStyles.None);
-            }
-
             Debug.Assert(temp != null, "Time returned was null");
             return temp.TimeOfDay;
         }
@@ -878,7 +856,7 @@ namespace WhiteBoard
         /// <returns>False if not a valid day</returns>
         private bool IsDay(string checkday)
         {
-            foreach (string str in DAYS_OF_WEEK)
+            foreach (string str in Constants.DAYS_OF_WEEK)
             {
                 if (String.Equals(checkday, str, StringComparison.CurrentCultureIgnoreCase))
                 {
@@ -896,17 +874,9 @@ namespace WhiteBoard
         public bool IsDate(string datestring)
         {
             System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-gb");
-            string[] dateformat = { "dd/mm/yyyy", "dd-mm-yyyy", "dd.mm.yyyy",
-                                    "dd/mm/yy","dd-mm-yy","dd.mm.yy",
-                                    "d/m/yyyy","dd/m/yyyy","d/mm/yyyy",
-                                    "d/m/yy","dd/m/yy","d/mm/yy",
-                                    "d.m.yyyy","dd.m.yyyy","d.mm.yyyy",
-                                    "d.m.yy","dd.m.yy","d.mm.yy",
-                                    "d-m-yyyy","dd-m-yyyy","d-mm-yyyy",
-                                    "d-m-yy","dd-m-yy","d-mm-yy"};
             bool isdate = false;
             DateTime temp;
-            foreach (string format in dateformat)
+            foreach (string format in Constants.DATE_FORMATS)
             {
                 if (!isdate)
                 {
@@ -957,7 +927,7 @@ namespace WhiteBoard
                 templist.Add(list[i]);
             }
 
-            foreach (string keyword in COMMAND_KEYWORD_REMOVE)
+            foreach (string keyword in Constants.COMMAND_KEYWORD_REMOVE)
             {
                 if (templist.Count > 0)
                 {
@@ -970,5 +940,6 @@ namespace WhiteBoard
             tempstring = String.Join(" ", templist.ToArray());
             return tempstring;
         }
+        #endregion
     }
 }
