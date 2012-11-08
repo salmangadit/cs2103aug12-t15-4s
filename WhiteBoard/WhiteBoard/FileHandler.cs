@@ -10,7 +10,7 @@ using log4net;
 
 namespace WhiteBoard
 {
-    // @author U094776M
+    //@author U094776M
     delegate void FileUpdate(UpdateType update, Task task, Task uneditedTask);
 
     class FileHandler
