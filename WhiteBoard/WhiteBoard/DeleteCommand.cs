@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace WhiteBoard
 {
+    //@author U096089W
     class DeleteCommand : Command
     {
         List<int> taskIdsToDelete;
@@ -54,12 +55,12 @@ namespace WhiteBoard
         {
             if (taskIdsToDelete.Count == 0)
             {
-                throw new ApplicationException("No tasks to delete");
+                throw new ApplicationException(Constants.DELETE_COMMAND_NO_TASKS);
             }
 
             foreach (int taskIdToDelete in taskIdsToDelete)
             {
-                Debug.Assert(taskIdToDelete > 0, "Invalid task ID");
+                Debug.Assert(taskIdToDelete > 0, Constants.DEBUG_INVALID_TASK_ID);
 
                 bool isTaskDeleted;
 
@@ -70,18 +71,18 @@ namespace WhiteBoard
                 }
                 catch (SystemException e)
                 {
-                    Log.Debug("Caught a System Exception" + e);
-                    throw new ApplicationException("There are no tasks to delete");
+                    Log.Debug(Constants.LOG_SYSTEM_EXCEPTION + e);
+                    throw new ApplicationException(Constants.DELETE_COMMAND_NO_TASKS);
                 }
 
                 if (isTaskDeleted)
                 {
-                    Log.Debug("Delete Command was executed for" + taskIdToDelete);
+                    Log.Debug(Constants.DELETE_COMMAND_LOG_EXECUTED + taskIdToDelete);
                 }
                 else
                 {
-                    Log.Debug("Delete Command failed for" + taskIdToDelete);
-                    throw new ApplicationException("Unable To Delete Task with ID T" + taskIdToDelete);
+                    Log.Debug(Constants.DELETE_COMMAND_LOG_FAILED + taskIdToDelete);
+                    throw new ApplicationException(Constants.DELETE_COMMAND_UNABLE + taskIdToDelete);
                 }
             }
 
@@ -92,9 +93,9 @@ namespace WhiteBoard
         {
             foreach (Task task in tasksToDelete)
             {
-                Debug.Assert(task.Id > 0, "Invalid task ID");
+                Debug.Assert(task.Id > 0, Constants.DEBUG_INVALID_TASK_ID);
                 fileHandler.AddTaskToFile(task, task.Id);
-                Log.Debug("Delete Command was undone for" + task.Id);
+                Log.Debug(Constants.DELETE_COMMAND_UNDO_LOG_EXECUTED + task.Id);
             }
             return screenState;
         }
