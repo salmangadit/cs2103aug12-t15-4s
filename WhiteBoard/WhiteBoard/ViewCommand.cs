@@ -7,17 +7,32 @@ using System.Diagnostics;
 
 namespace WhiteBoard
 {
+    //@author U095146E
     class ViewCommand : Command
     {
+        #region Private Fields
         Task viewTaskDetails;
+        #endregion
 
+        #region Constructors
+        /// <summary>
+        /// Constructor for ViewCommand Object
+        /// </summary>
+        /// <param name="fileHandler">Reference to fileHandler Singleton </param>
+        /// <param name="viewTaskDetails">Task object with parameters for current view command </param>
+        /// <param name="screenState">Reference to screenState from UI</param>
         public ViewCommand(FileHandler fileHandler, Task viewTaskDetails, List<Task> screenState)
             : base(fileHandler, screenState)
         {
             this.viewTaskDetails = viewTaskDetails;
             this.commandType = CommandType.View;
         }
+        #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// Returns type of Command - CommandType.View
+        /// </summary>
         public override CommandType CommandType
         {
             get
@@ -25,7 +40,13 @@ namespace WhiteBoard
                 return commandType;
             }
         }
+        #endregion
 
+        #region Public Class Methods
+        /// <summary>
+        /// Executes View Command by checking required criteria
+        /// </summary>
+        /// <returns>List of Tasks that match view criteria</returns>
         public override List<Task> Execute()
         {
             Debug.Assert(viewTaskDetails != null, "Task Details not set");
@@ -55,20 +76,25 @@ namespace WhiteBoard
             else
             {
                 Log.Debug("Invalid condition for Viewing Tasks");
-                throw new NotImplementedException("There is no such criteria for file viewing!");
+                throw new NotImplementedException(Constants.INVALID_VIEW);
             }
 
             if (tasksToView.Count == 0)
             {
-                throw new ApplicationException("There are no tasks to view");
+                throw new ApplicationException(Constants.EMPTY_VIEW);
             }
 
             return tasksToView;
         }
 
+        /// <summary>
+        /// Performs undo operation for view command by restoring previous screen state
+        /// </summary>
+        /// <returns>Screen state as a list of tasks</returns>
         public override List<Task> Undo()
         {
             return screenState;
         }
+        #endregion
     }
 }

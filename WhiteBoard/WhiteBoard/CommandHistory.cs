@@ -5,16 +5,26 @@ using System.Text;
 
 namespace WhiteBoard
 {
+    //@author U095146E
     class CommandHistory
     {
-        List<string> commandHistory;
-        int currIndex = -1;
+        #region Private Fields
+        private List<string> commandHistory;
+        private int currIndex = -1;
+        #endregion
 
+        #region Constructors
         public CommandHistory()
         {
             commandHistory = new List<string>();
         }
+        #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// Adds command entered by user to command history List
+        /// </summary>
+        /// <param name="command">Command entered by user</param>
         public void AddToHistory(string command)
         {
             if (command.Split(' ')[0].ToLower() == "search:")
@@ -23,7 +33,12 @@ namespace WhiteBoard
             commandHistory.Add(command);
             currIndex = -1;
         }
+        #endregion
 
+        #region Public Class Methods
+        /// <summary>
+        /// Returns previous string on list
+        /// </summary>
         public string UpClick()
         {
             if (commandHistory.Count == 0)
@@ -38,7 +53,9 @@ namespace WhiteBoard
 
             return commandHistory[currIndex];
         }
-
+        /// <summary>
+        /// Returns next string on list
+        /// </summary>
         public string DownClick()
         {
             if (commandHistory.Count == 0)
@@ -53,5 +70,6 @@ namespace WhiteBoard
 
             return commandHistory[currIndex];
         }
+        #endregion
     }
 }
