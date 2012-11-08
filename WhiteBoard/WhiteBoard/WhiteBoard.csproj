@@ -67,6 +67,7 @@
     <Compile Include="AutoCompletor.cs" />
     <Compile Include="CommandHistory.cs" />
     <Compile Include="CommandType.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DateHolder.cs" />
     <Compile Include="DeleteCommand.cs" />
     <Compile Include="EditCommand.cs" />
