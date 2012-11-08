@@ -78,6 +78,11 @@ namespace WhiteBoard
         public static string ARCHIVE_COMMAND_UNDO_LOG_FAILED = "Archive Command Undo failed for";
         public static string ARCHIVE_COMMAND_UNDO_UNABLE = "Unable To Undo Archive Command for Task";
 
+        //@author U094776M
+        public static string FILENAME = "TasksList.xml";
+        public static string UNABLE_TO_SERIALIZE = "Unable to serialize null values";
+        public static string ERROR_GENERATING_DOC = "There was an error generating the XML document";
+        public static string ERROR_FILE_EMPTY = "File is empty";
 
     }
 }
