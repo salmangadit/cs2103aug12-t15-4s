@@ -1,6 +1,4 @@
-﻿// @author U094776M
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +10,7 @@ using log4net;
 
 namespace WhiteBoard
 {
+    // @author U094776M
     delegate void FileUpdate(UpdateType update, Task task, Task uneditedTask);
 
     class FileHandler
