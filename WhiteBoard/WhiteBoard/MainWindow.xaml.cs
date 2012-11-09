@@ -598,6 +598,11 @@ namespace WhiteBoard
                     log.Debug("Archiving task");
                     ExecuteArchive(command);
                 }
+                else if (command.CommandType == CommandType.UnArchive)
+                {
+                    log.Debug("Unarchiving task");
+
+                }
                 else if (command.CommandType == CommandType.Search)
                 {
                     log.Debug("Searching task");
@@ -726,6 +731,37 @@ namespace WhiteBoard
             tasksArchivedToast.Remove(tasksArchivedToast.Length - 2, 1);
 
             toast.ShowToast(Constants.MESSAGE_COMMAND_ARCHIVE + tasksArchivedToast, this);
+        }
+
+        /// <summary>
+        /// Perform unarchive operation
+        /// </summary>
+        private void ExecuteUnarchive(Command command)
+        {
+            List<int> unArchiveTaskIds = ((UnArchiveCommand)command).GetUnArchivedTaskIds();
+            command.Execute();
+            List<Task> tasks = tasksOnScreen.ToList<Task>();
+
+            tasksOnScreen.Clear();
+
+            List<Task> tasksToAdd = tasks.Where(item => !unArchiveTaskIds.Contains(item.Id)).ToList(); ;
+
+            foreach (Task task in tasksToAdd)
+            {
+                tasksOnScreen.Add(task);
+            }
+
+            StringBuilder tasksUnarchivedToast = new StringBuilder();
+
+            foreach (int taskId in unArchiveTaskIds)
+            {
+                tasksUnarchivedToast.Append(taskId.ToString() + ", ");
+            }
+
+            // remove trailing ,
+            tasksUnarchivedToast.Remove(tasksUnarchivedToast.Length - 2, 1);
+
+            toast.ShowToast(Constants.MESSAGE_COMMAND_ARCHIVE + tasksUnarchivedToast, this);
         }
 
         /// <summary>
