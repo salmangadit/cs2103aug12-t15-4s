@@ -258,13 +258,20 @@ namespace WhiteBoard
                 string temp = ConvertToString(userCommand, stringList, nextIndex + 1, userCommand.Count - 1);   //Gets the substring starting from the index following the taskID
                 temp = temp.Trim();
                 if (String.Equals(temp, Constants.COMMAND_MARK, StringComparison.CurrentCultureIgnoreCase)
-                    || String.Equals(temp, Constants.COMMAND_MARK_AS, StringComparison.CurrentCultureIgnoreCase))
+                    || String.Equals(temp, Constants.COMMAND_MARK_AS, StringComparison.CurrentCultureIgnoreCase)) //Checks whether to archive a task
                 {
                     archiveFlag = true;
                     taskId = checkId;
                     ArchiveCommand markdone = new ArchiveCommand(fileHandler, taskId, screenState);
                     taskHistory.Push(markdone);
                     return markdone;
+                }
+                else if(String.Equals(temp, Constants.COMMAND_UNARCHIVE, StringComparison.CurrentCultureIgnoreCase)) //Checks whether to unarchive a a task
+                {
+                    taskId = checkId;
+                    UnArchiveCommand unarchive = new UnArchiveCommand(fileHandler,taskId,screenState);
+                    taskHistory.Push(unarchive);
+                    return unarchive;
                 }
             }
             else if ((String.Equals(command, Constants.COMMAND_MARK_ALL, StringComparison.CurrentCultureIgnoreCase)) ||  //Check whether to mark all tasks on screen as done
