@@ -217,7 +217,7 @@ namespace WhiteBoard
                     taskHistory.Push(delete);
                     return delete;
                 }
-                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase))     //Delete all tasks on screen
+                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == Constants.COMMAND_LENGTH)     //Delete all tasks on screen
                 {
                     Log.Debug("Delete all command");
 
@@ -303,21 +303,21 @@ namespace WhiteBoard
 
             if (userCommand.Count > 1)
             {
-                if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)            //View All
+                if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ALL, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == Constants.COMMAND_LENGTH)            //View All
                 {
                     startDate = endDate = null;
                     archiveFlag = false;
                     datefoundflag = 1;
                 }
 
-                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)   //View Archive
+                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_ARCHIVE, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == Constants.COMMAND_LENGTH)   //View Archive
                 {
                     startDate = endDate = null;
                     archiveFlag = true;
                     datefoundflag = 1;
                 }
 
-                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == 2)      //View Week
+                else if (String.Equals(userCommand[nextIndex], Constants.COMMAND_WEEK, StringComparison.CurrentCultureIgnoreCase) && userCommand.Count == Constants.COMMAND_LENGTH)      //View Week
                 {
                     AssignWeek();
                     archiveFlag = false;
@@ -794,7 +794,7 @@ namespace WhiteBoard
         private int IsValidTaskId(string str)
         {
             int taskid = -1;
-            for (int i = 1; i < str.Length; ++i)
+            for (int i = 0; i < str.Length; ++i)
             {
                 int temp = (int)Char.GetNumericValue(str[i]);
                 if (!(temp >= 0 && temp <= 9))
