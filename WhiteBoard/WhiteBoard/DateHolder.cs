@@ -8,15 +8,24 @@ namespace WhiteBoard
     //@author U095159L
     class DateHolder
     {
+        #region Private Fields
         private string dateString;                      //String containing the date
         private int dateId;                             //The ID denoting whether the date is in day or date form
+        #endregion
 
+        #region Constructors
         public DateHolder(string datestring, int dateid)
         {
             dateString = datestring;
             dateId = dateid;
         }
+        #endregion
 
+        #region Public Class Methods
+        /// <summary>
+        /// Function to parse the string containing the date according to its type i.e day of the week or a numerical date
+        /// </summary>
+        /// <returns>DateTime object</returns>
         public DateTime ConvertToDateTime()
         {
             if (dateId == 1)                            //If date is in a day form
@@ -70,5 +79,6 @@ namespace WhiteBoard
                 }
             }
         }
+        #endregion
     }
 }

@@ -95,7 +95,7 @@ namespace WhiteBoard
 
         public const string COMMAND_PM = "PM";
         public const string COMMAND_AM = "AM";
-        public const string COMMAND_CASE_SEARCH = "SEARCH";
+        public const string COMMAND_CASE_SEARCH = "SEARCH:";
         public const string COMMAND_CASE_MODIFY = "MODIFY";
         public const string COMMAND_CASE_UPDATE = "UPDATE";
         public const string COMMAND_CASE_UNDO = "UNDO";
