@@ -367,7 +367,7 @@ namespace WhiteBoard
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfTasks)
                 {
-                    if (t.Id == archivedTaskId)
+                    if ((t.Id == archivedTaskId) && (t.Archive == false))
                     {
                         t.Archive = true;
                         archived = true;
@@ -418,7 +418,7 @@ namespace WhiteBoard
                 listOfTasks = (List<Task>)objXmlSer.Deserialize(objStrRead);
                 foreach (Task t in listOfTasks)
                 {
-                    if (t.Id == unarchivedTaskId)
+                    if ((t.Id == unarchivedTaskId) && (t.Archive == true))
                     {
                         t.Archive = false;
                         unarchived = true;

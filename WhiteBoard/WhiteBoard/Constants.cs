@@ -112,6 +112,7 @@ namespace WhiteBoard
         public const string COMMAND_CASE_VIEW = "VIEW";
         public const string COMMAND_MARK_ALL_AS = "MARK ALL AS DONE";
         public const string COMMAND_MARK_ALL = "MARK ALL DONE";
+        public const string COMMAND_UNARCHIVE = "AS NOT DONE";
         public const string COMMAND_MARK = "DONE";
         public const string COMMAND_MARK_AS = "AS DONE";
         public const string COMMAND_ALL = "ALL";
