@@ -1,0 +1,83 @@
+﻿<Window x:Class="WhiteBoard.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:WhiteBoard"
+        Title="WhiteBoard" Height="500" Width="775" >
+    <Window.Resources>
+        <Style x:Key="BorderedItem" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Name="Border" BorderBrush="Black" BorderThickness=".5" CornerRadius="15">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                                    <GradientStop Color="White" Offset="0.0" />
+                                    <GradientStop Color="LightGray" Offset="2" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style x:Key="ArchivedItem" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Archive}" Value="True">
+                    <Setter Property="FontStyle" Value="Italic"/>
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter Property="TextDecorations" Value="Strikethrough"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+    <Grid Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <ListBox Name="lstTasks" Background="DarkGray" ItemContainerStyle="{StaticResource BorderedItem}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="75"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Vertical" Margin="5" Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="./Resources/#From Where You Are" Style="{StaticResource ArchivedItem}" FontSize="20" Text="["/>
+                                <TextBlock FontFamily="./Resources/#From Where You Are" Style="{StaticResource ArchivedItem}" FontSize="20" Text="{Binding Id}" />
+                                <TextBlock FontFamily="./Resources/#From Where You Are" Style="{StaticResource ArchivedItem}" FontSize="20" Text="] "/>
+                                <TextBlock FontFamily="./Resources/#From Where You Are" TextWrapping="Wrap"  Width="580" FontSize="20" Style="{StaticResource ArchivedItem}" Text="{Binding Description}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="./Resources/#From Where You Are" Foreground="DarkBlue" FontSize="14" Style="{StaticResource ArchivedItem}" Text="From : " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock FontFamily="./Resources/#From Where You Are" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding StartTime, StringFormat='f'}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="./Resources/#From Where You Are" Foreground="DarkBlue" FontSize="14" Style="{StaticResource ArchivedItem}" Text="  To  : " Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock FontFamily="./Resources/#From Where You Are" FontSize="14" Style="{StaticResource ArchivedItem}" Text="{Binding EndTime, StringFormat='f'}" Visibility="{Binding Floating, Converter={StaticResource BoolToVis}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Bottom" FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="20" Foreground="Red" Text="DUE TODAY"/>
+                        <Image Grid.Column="1" ToolTip="Task Overdue!" Source="warningIcon.png" Visibility="{Binding Overdue, Converter={StaticResource BoolToVis}}" Width="40" Height="40"></Image>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Name="lblToast" TextWrapping="Wrap" FontSize="14" FontFamily="./Resources/#From Where You Are"  Visibility="Collapsed" Background="Yellow" Grid.Row="0" HorizontalAlignment="Center" Width="400" VerticalAlignment="Center"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+        <RichTextBox Grid.Column="0" Name="txtCommand" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
+            <Button Grid.Column="1" Name="btnHelp" Content="Help" Click="btnHelp_Click" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
+        </Grid>
+    </Grid>
+</Window>
