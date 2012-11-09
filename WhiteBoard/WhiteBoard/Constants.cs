@@ -139,12 +139,11 @@ namespace WhiteBoard
         public static int AUTOCOMPLETE_MAX_ITEMS = 10;
         public static int AUTOCOMPLETE_MAX_HEIGHT = 180;
         public static int AUTOCOMPLETE_PER_ITEM_HEIGHT = 18;
-        #endregion
-
+        
         //@author U095159L
         public static int DATE_COUNT = 2;
         public static int TODAY_ID = 7;
         public static int TOMORROW_ID = 8;
-
+        #endregion
     }
 }
