@@ -127,7 +127,7 @@ namespace WhiteBoard
 
         private void RemoveFromSets(Task task)
         {
-            Log.Debug(String.Format(Constants.LOG_REMOVE_FROM_SET, task.Id));
+            Log.Debug(String.Format(Constants.LOG_REMOVE_FROM_SET, task.Description, task.Id));
 
             tasks.Remove(task);
             descriptionSet.Remove(task.Id);
