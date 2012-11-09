@@ -180,16 +180,15 @@ namespace WhiteboardTest
         public void ParseForDatesTest()
         {
             CommandParser_Accessor target = new CommandParser_Accessor(); // TODO: Initialize to an appropriate value
-            List<string> commandlist = new List<string>(); ; // TODO: Initialize to an appropriate value
-            commandlist.Add("Go");
-            commandlist.Add("shopping");
-            commandlist.Add("on");
-            commandlist.Add("10.12.12");
-            int index = 1; // TODO: Initialize to an appropriate value
+            target.userCommand.Add("Go");
+            target.userCommand.Add("shopping");
+            target.userCommand.Add("on");
+            target.userCommand.Add("10.12.12");
+            int index = 3; // TODO: Initialize to an appropriate value
             bool modify = false; // TODO: Initialize to an appropriate value
             int expected = 1; // TODO: Initialize to an appropriate value
             int actual;
-            actual = target.ParseForDates(commandlist, index, modify);
+            actual = target.ParseForDates(target.userCommand, index, modify);
             Assert.AreEqual(expected, actual);
             //Assert.Inconclusive("Verify the correctness of this test method.");
         }
