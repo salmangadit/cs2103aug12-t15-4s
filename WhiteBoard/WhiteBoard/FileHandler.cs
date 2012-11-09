@@ -283,6 +283,7 @@ namespace WhiteBoard
                 }
                 objStrWrt.Close();
             }
+            objStrRead.Close();
 
             if (edited)
             {
@@ -331,6 +332,7 @@ namespace WhiteBoard
             {
                 throw new SystemException(Constants.ERROR_FILE_EMPTY);
             }
+            objStrRead.Close();
 
             if (deleted)
             {
@@ -383,6 +385,8 @@ namespace WhiteBoard
                 throw new SystemException(Constants.ERROR_FILE_EMPTY);
             }
 
+            objStrRead.Close();
+
             if (archived)
             {
                 Notify(UpdateType.Archive, archivedTask);
@@ -431,6 +435,8 @@ namespace WhiteBoard
             {
                 throw new SystemException(Constants.ERROR_FILE_EMPTY);
             }
+
+            objStrRead.Close();
 
             if (unarchived)
             {
@@ -493,9 +499,8 @@ namespace WhiteBoard
                         listOfArchivedTasks.Add(t);
                     }
                 }
-                objStrRead.Close();
             }
-
+            objStrRead.Close();
             listOfArchivedTasks = listOfArchivedTasks.OrderBy(x => x.StartTime).ToList();
             return listOfArchivedTasks;
         }
