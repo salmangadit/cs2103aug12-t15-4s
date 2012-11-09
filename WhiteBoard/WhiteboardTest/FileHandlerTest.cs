@@ -66,15 +66,13 @@ namespace WhiteboardTest
         [DeploymentItem("WhiteBoard.exe")]
         public void AddTaskToFileTest()
         {
-            Task task1 = new Task(1, "Hello World", new DateTime(2012, 11, 11));
+            Task task1 = new Task(0, "Hello World", new DateTime(2012, 11, 11));
             FileHandler filehandler = FileHandler.UnitTestInstance;
             filehandler.AddTaskToFile(task1);
             Task task2 = filehandler.GetTaskFromFile(1);
-            List<Task> list1 = new List<Task>();
-            list1.Add(task1);
-            List<Task> list2 = new List<Task>();
-            list1.Add(task2);
-            CollectionAssert.AreEqual(list1, list2);
+            Assert.AreEqual(task1.Id, task2.Id);
+            Assert.AreEqual(task1.Description, task2.Description);
+            Assert.AreEqual(task1.StartTime, task2.StartTime);
         }
     }
 }
