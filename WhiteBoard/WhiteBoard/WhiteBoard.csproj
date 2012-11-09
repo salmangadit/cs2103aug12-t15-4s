@@ -98,7 +98,7 @@
     </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="CommandParser.cs" />
-    <Compile Include="Controller.cs" />
+    <Compile Include="FacadeLayer.cs" />
     <Compile Include="FileHandler.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
