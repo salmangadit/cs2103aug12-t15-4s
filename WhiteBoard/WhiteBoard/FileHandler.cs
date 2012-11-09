@@ -462,9 +462,9 @@ namespace WhiteBoard
                     {
                         listOfNonArchivedTasks.Add(t);
                     }
-                }
-                objStrRead.Close();
+                }             
             }
+            objStrRead.Close();
             listOfNonArchivedTasks = listOfNonArchivedTasks.OrderBy(x => x.StartTime).ToList();
             return listOfNonArchivedTasks;
         }
