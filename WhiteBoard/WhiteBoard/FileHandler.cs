@@ -26,9 +26,14 @@ namespace WhiteBoard
 
         #region Constructors
 
-        private FileHandler()
+        private FileHandler(bool unittest = false)
         {
             string fileName = Constants.FILENAME;
+
+            if (unittest)
+            {
+                fileName = Constants.UNIT_TEST_FILE;
+            }
 
             // set file path, we use the current Directory for the user and specified file name
             filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + fileName;
@@ -57,6 +62,22 @@ namespace WhiteBoard
                 if (instance == null)
                 {
                     instance = new FileHandler();
+                }
+
+                return instance;
+            }
+        }
+
+        /// <summary>
+        /// Instance used for Unit Testing
+        /// </summary>
+        public static FileHandler UnitTestInstance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new FileHandler(true);
                 }
 
                 return instance;
