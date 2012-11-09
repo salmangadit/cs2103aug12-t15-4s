@@ -171,6 +171,31 @@ namespace WhiteBoard
                 return false;
             }
         }
+
+        public bool DueToday
+        {
+            get
+            {
+                if (taskEndTime == null && taskStartTime == null)
+                    return false;
+                else if (taskEndTime != null)
+                {
+                    if ((DateTime.Now <= taskEndTime) && (DateTime.Now >= taskStartTime) )
+                        return true;
+                    else
+                        return false;
+                }
+                else if (taskEndTime == null && taskStartTime != null)
+                {
+                    if (DateTime.Now == taskStartTime)
+                        return true;
+                    else
+                        return false;
+                }
+
+                return false;
+            }
+        }
         #endregion
 
         #region Private Class Helper Methods
