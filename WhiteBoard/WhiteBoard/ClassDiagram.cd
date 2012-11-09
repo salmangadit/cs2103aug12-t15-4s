@@ -1,105 +1,240 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="WhiteBoard.AddCommand">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Position X="4" Y="4.25" Width="1.5" />
+    <Members>
+      <Method Name="isFloatingTask" Hidden="true" />
+      <Field Name="tasksToAdd" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABASAAAAAAAAAAAACAAAAAAAAAAAABAA=</HashCode>
+      <HashCode>AAAAgAAAAAAABASAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
       <FileName>AddCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.ArchiveCommand">
-    <Position X="5" Y="1.75" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Properties" Collapsed="true" />
-    </Compartments>
+    <Position X="8.75" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="taskIdsToArchive" Hidden="true" />
+      <Field Name="tasksArchived" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAABASAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAEAAAAAAAABASAAIAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
       <FileName>ArchiveCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WhiteBoard.Command" Collapsed="true">
-    <Position X="7.25" Y="0.5" Width="1.5" />
+  <Class Name="WhiteBoard.Command">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <Members>
+      <Field Name="commandType" Hidden="true" />
+      <Field Name="fileHandler" Hidden="true" />
+      <Field Name="Log" Hidden="true" />
+      <Field Name="screenState" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAIAABASAAAAAAAAABACAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAIAABASAAAAAAAAABAiAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Command.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.CommandParser">
-    <Position X="16.5" Y="4.25" Width="1.5" />
+    <Position X="6.5" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="archiveFlag" Hidden="true" />
+      <Method Name="AssignDates" Hidden="true" />
+      <Field Name="checkFirstDate" Hidden="true" />
+      <Field Name="checkId" Hidden="true" />
+      <Field Name="COMMAND_ALL" Hidden="true" />
+      <Field Name="COMMAND_ARCHIVE" Hidden="true" />
+      <Field Name="COMMAND_DATE" Hidden="true" />
+      <Field Name="COMMAND_KEYWORD_REMOVE" Hidden="true" />
+      <Field Name="COMMAND_MARK" Hidden="true" />
+      <Field Name="COMMAND_MARK_AS" Hidden="true" />
+      <Field Name="COMMAND_MARK_AS_DONE" Hidden="true" />
+      <Field Name="COMMAND_MARK_DONE" Hidden="true" />
+      <Field Name="COMMAND_MODIFY" Hidden="true" />
+      <Field Name="COMMAND_NEW_DATE" Hidden="true" />
+      <Field Name="COMMAND_RANGE" Hidden="true" />
+      <Field Name="COMMAND_RANGE_ALT" Hidden="true" />
+      <Field Name="COMMAND_RANGE_AND" Hidden="true" />
+      <Field Name="COMMAND_RANGE_TILL" Hidden="true" />
+      <Field Name="COMMAND_VIEW_DAY" Hidden="true" />
+      <Field Name="COMMAND_VIEW_ENDING" Hidden="true" />
+      <Field Name="COMMAND_VIEW_RANGE" Hidden="true" />
+      <Field Name="COMMAND_WEEK" Hidden="true" />
+      <Method Name="ConvertToString" Hidden="true" />
+      <Field Name="currentIndex" Hidden="true" />
+      <Field Name="DATE_COUNT" Hidden="true" />
+      <Field Name="dateFlag" Hidden="true" />
+      <Field Name="DAYS_OF_WEEK" Hidden="true" />
+      <Field Name="endDate" Hidden="true" />
+      <Field Name="endDateIndex" Hidden="true" />
+      <Field Name="endTimeFlag" Hidden="true" />
+      <Field Name="fileHandler" Hidden="true" />
+      <Field Name="firstDayFlag" Hidden="true" />
+      <Field Name="inputCommand" Hidden="true" />
+      <Method Name="IsDay" Hidden="true" />
+      <Method Name="IsTime" Hidden="true" />
+      <Method Name="IsValidDate" Hidden="true" />
+      <Method Name="IsValidTaskId" Hidden="true" />
+      <Field Name="Log" Hidden="true" />
+      <Field Name="modifyFlag" Hidden="true" />
+      <Field Name="nextIndex" Hidden="true" />
+      <Method Name="ParseDelete" Hidden="true" />
+      <Method Name="ParseDone" Hidden="true" />
+      <Method Name="ParseForDates" Hidden="true" />
+      <Method Name="ParseModify" Hidden="true" />
+      <Method Name="ParseNewTask" Hidden="true" />
+      <Method Name="ParseSearch" Hidden="true" />
+      <Method Name="ParseTime" Hidden="true" />
+      <Method Name="ParseUndo" Hidden="true" />
+      <Method Name="ParseView" Hidden="true" />
+      <Field Name="previousIndex" Hidden="true" />
+      <Field Name="screenState" Hidden="true" />
+      <Field Name="searchString" Hidden="true" />
+      <Field Name="secondDayFlag" Hidden="true" />
+      <Method Name="SplitString" Hidden="true" />
+      <Field Name="startDate" Hidden="true" />
+      <Field Name="startDateIndex" Hidden="true" />
+      <Field Name="startEndDate" Hidden="true" />
+      <Field Name="startEndTime" Hidden="true" />
+      <Field Name="startTimeFlag" Hidden="true" />
+      <Field Name="stringList" Hidden="true" />
+      <Field Name="taskDescription" Hidden="true" />
+      <Field Name="taskHistory" Hidden="true" />
+      <Field Name="taskId" Hidden="true" />
+      <Field Name="taskToAdd" Hidden="true" />
+      <Field Name="userCommand" Hidden="true" />
+      <Field Name="userCommandArray" Hidden="true" />
+      <Field Name="userError" Hidden="true" />
+      <Field Name="viewFlag" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>aAKAEAgGAYAwGBCDATAAEAkwBIDiKAAIMBwAAAhgAGA=</HashCode>
+      <HashCode>aAKAUBgKAYAiGBCDIShAEAkwJIymKCAICB4ggAjiEGA=</HashCode>
       <FileName>CommandParser.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.Controller">
-    <Position X="20" Y="0.5" Width="1.5" />
+    <Position X="12.25" Y="7.5" Width="2.5" />
+    <Members>
+      <Field Name="history" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAACAAEAAAAAAAAAAAgA=</HashCode>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAABAAAAAAEAAAAAAAAAAAgA=</HashCode>
       <FileName>Controller.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.DeleteCommand">
-    <Position X="7.25" Y="1.75" Width="1.5" />
+    <Position X="11" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="taskIdsToDelete" Hidden="true" />
+      <Field Name="tasksToDelete" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABASAAAQAAAEEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAABASAAAAAAAAEAAAABAAAAAAAAAAAAQA=</HashCode>
       <FileName>DeleteCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.EditCommand">
-    <Position X="9.5" Y="1.75" Width="1.5" />
+    <Position X="13" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="editTasksDetails" Hidden="true" />
+      <Method Name="isFloatingTask" Hidden="true" />
+      <Field Name="uneditedTasks" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAABASAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAABASAAAAAAAAAEAAAAAAAAAAgAAAAIAA=</HashCode>
       <FileName>EditCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.FileHandler">
-    <Position X="18.25" Y="4.25" Width="1.5" />
+    <Position X="10.25" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="filePath" Hidden="true" />
+      <Field Name="instance" Hidden="true" />
+      <Field Name="log" Hidden="true" />
+      <Method Name="Notify" Hidden="true" />
+      <Event Name="updateEvent" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>AACAAAAAQAAAAAAAQAAEAAAAAAAAAEACBAACAAAAgAA=</HashCode>
+      <HashCode>AACAAAAAQAAAAAAAQAAECAAAAABAAEBCRAACgAACgAA=</HashCode>
       <FileName>FileHandler.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.MainWindow">
-    <Position X="16.5" Y="0.5" Width="1.5" />
+    <Position X="28.25" Y="1.75" Width="1.5" />
+    <Members>
+      <Method Name="AutoCompleteKeyBubbleEvent" Hidden="true" />
+      <Method Name="AutoCompleteMouseBubbleEvent" Hidden="true" />
+      <Method Name="CheckAutoComplete" Hidden="true" />
+      <Method Name="DisplayInstantSearch" Hidden="true" />
+      <Method Name="DoSyntaxHighlight" Hidden="true" />
+      <Method Name="ExecuteAdd" Hidden="true" />
+      <Method Name="ExecuteArchive" Hidden="true" />
+      <Method Name="ExecuteDelete" Hidden="true" />
+      <Method Name="ExecuteEdit" Hidden="true" />
+      <Method Name="ExecuteSearch" Hidden="true" />
+      <Method Name="ExecuteUndo" Hidden="true" />
+      <Method Name="ExecuteView" Hidden="true" />
+      <Method Name="FindLastWordFromPosition" Hidden="true" />
+      <Method Name="FindWordFromPosition" Hidden="true" />
+      <Method Name="MainWindow" Hidden="true" />
+      <Method Name="txtCommand_KeyUp" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAEAAAEAAAQAAIAAgAAAAAAAFAAAAABgAAA=</HashCode>
+      <HashCode>AACQAAAACAAQQEEAAAAQCIIAgQAAEAAQIAEAAACgQAA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.SearchCommand">
-    <Position X="2.75" Y="1.75" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Properties" Collapsed="true" />
-    </Compartments>
+    <Position X="6.5" Y="4.25" Width="1.5" />
+    <Members>
+      <Method Name="ComputeEditDistance" Hidden="true" />
+      <Method Name="getDirectHit" Hidden="true" />
+      <Method Name="getNearMiss" Hidden="true" />
+      <Field Name="NEAR_MISS_MAXIMUM_EDIT_DISTANCE" Hidden="true" />
+      <Field Name="NEAR_MISS_MIN_SEARCH_COUNT" Hidden="true" />
+      <Field Name="searchString" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>IAAAAAAAAAAABASAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>IAAAAAAAAAAABASAABAAAAAAAAQgAAgAQAAAAAAAQAA=</HashCode>
       <FileName>SearchCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.Task">
-    <Position X="18.25" Y="0.5" Width="1.5" />
+    <Position X="8.5" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="archive" Hidden="true" />
+      <Method Name="NormalColor" Hidden="true" />
+      <Method Name="OverdueColor" Hidden="true" />
+      <Field Name="taskDescription" Hidden="true" />
+      <Field Name="taskEndTime" Hidden="true" />
+      <Field Name="taskId" Hidden="true" />
+      <Field Name="taskStartTime" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAgCACAAAAAgAAAIAAgAAAsAAEAABAAAAA=</HashCode>
+      <HashCode>AAACAQABAAAgCACAAAAFgAAAIAAgAAAsAAAgAAAAAAA=</HashCode>
       <FileName>Task.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.UndoCommand">
-    <Position X="11.75" Y="1.75" Width="1.5" />
+    <Position X="15.25" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="commandToUndo" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
@@ -109,21 +244,165 @@
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.ViewCommand">
-    <Position X="14" Y="1.75" Width="1.5" />
+    <Position X="17.5" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="viewTaskDetails" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABASAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <HashCode>AAAEAAAAAAAABASAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="WhiteBoard.App">
+    <Position X="25.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.AutoComplete">
+    <Position X="19.25" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="autoCompleteList" Hidden="true" />
+      <Field Name="log" Hidden="true" />
+      <Method Name="lstAutoComplete_KeyUp" Hidden="true" />
+      <Method Name="lstAutoComplete_MouseUp" Hidden="true" />
+      <Field Name="selectedItem" Hidden="true" />
+      <Method Name="UserControl_GotFocus" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAICEQAAEAEAAAAABAAAADSIAA=</HashCode>
+      <FileName>AutoComplete.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.AutoCompletor">
+    <Position X="15.25" Y="7.5" Width="1.5" />
+    <Members>
+      <Method Name="AddToSets" Hidden="true" />
+      <Method Name="GenerateQuerySet" Hidden="true" />
+      <Field Name="lineSet" Hidden="true" />
+      <Field Name="Log" Hidden="true" />
+      <Method Name="RemoveFromSets" Hidden="true" />
+      <Method Name="SortByLength" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+      <Field Name="wordSet" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAACAYAAAAAAAAAgAAAgAAAIAAAAAAQA=</HashCode>
+      <FileName>AutoCompletor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.CommandHistory">
+    <Position X="17.25" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="commandHistory" Hidden="true" />
+      <Field Name="currIndex" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAkAABAAA=</HashCode>
+      <FileName>CommandHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Constants" Collapsed="true">
+    <Position X="25.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gEEACEgQKAEIgKgQACBoAQwCkILCAFhOEAEJCBBiBoU=</HashCode>
+      <FileName>Constants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.DateHolder">
+    <Position X="4.5" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="dateId" Hidden="true" />
+      <Field Name="dateString" Hidden="true" />
+      <Field Name="DAYS_OF_WEEK" Hidden="true" />
+      <Field Name="TODAY_ID" Hidden="true" />
+      <Field Name="TOMORROW_ID" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAABACAABAAAAAAAAgAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>DateHolder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.InstantSearch">
+    <Position X="2.5" Y="7.5" Width="1.5" />
+    <Members>
+      <Method Name="AddToSets" Hidden="true" />
+      <Field Name="descriptionSet" Hidden="true" />
+      <Method Name="GenerateDescriptionSet" Hidden="true" />
+      <Method Name="getTaskWithId" Hidden="true" />
+      <Field Name="Log" Hidden="true" />
+      <Method Name="RemoveFromSets" Hidden="true" />
+      <Field Name="tasks" Hidden="true" />
+      <Method Name="Update" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAQKAAAAAAAACgAAAgAAAIAAAAAACA=</HashCode>
+      <FileName>InstantSearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.SyntaxProvider">
+    <Position X="21.25" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="keyWords" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>SyntaxProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Toast">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <Members>
+      <Field Name="enter" Hidden="true" />
+      <Field Name="lblToast" Hidden="true" />
+      <Field Name="log" Hidden="true" />
+      <Field Name="toastAnimationTimer" Hidden="true" />
+      <Method Name="toastAnimationTimer_Tick" Hidden="true" />
+      <Field Name="toastTime" Hidden="true" />
+      <Field Name="toastTimer" Hidden="true" />
+      <Method Name="toastTimer_Tick" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAEAAAAEAAQACIAAAAAAAAAAFAAAAABAAAA=</HashCode>
+      <FileName>Toast.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Properties.Resources" Collapsed="true">
+    <Position X="28.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WhiteBoard.Properties.Settings">
+    <Position X="26.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
   <Enum Name="WhiteBoard.CommandType">
-    <Position X="20" Y="4.25" Width="1.5" />
+    <Position X="25.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAABAAAAAAAgAAAAAEBAAACAAAAAAAgAAA=</HashCode>
       <FileName>CommandType.cs</FileName>
     </TypeIdentifier>
   </Enum>
+  <Enum Name="WhiteBoard.UpdateType" Collapsed="true">
+    <Position X="28.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAgAAAAAEAAAACAAAAgAAAAAA=</HashCode>
+      <FileName>UpdateType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="WhiteBoard.FileUpdate">
+    <Position X="27.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>FileHandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
