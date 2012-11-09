@@ -180,14 +180,14 @@ namespace WhiteBoard
                     return false;
                 else if (taskEndTime != null)
                 {
-                    if ((DateTime.Now <= taskEndTime) && (DateTime.Now >= taskStartTime) )
+                    if ((DateTime.Now.Date <= taskEndTime.Value.Date) && (DateTime.Now.Date >= taskStartTime.Value.Date) )
                         return true;
                     else
                         return false;
                 }
                 else if (taskEndTime == null && taskStartTime != null)
                 {
-                    if (DateTime.Now == taskStartTime)
+                    if (DateTime.Now.Date == taskStartTime.Value.Date)
                         return true;
                     else
                         return false;
