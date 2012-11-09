@@ -31,11 +31,6 @@ namespace WhiteBoard
             this.Visibility = Visibility.Collapsed;
         }
 
-        private void SetUpAnimation()
-        {
-            
-        }
-
         private void next1_Click(object sender, RoutedEventArgs e)
         {
             Storyboard myStoryboard = new Storyboard();

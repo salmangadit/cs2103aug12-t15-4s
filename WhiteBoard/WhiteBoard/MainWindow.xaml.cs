@@ -249,7 +249,7 @@ namespace WhiteBoard
             {
                 if (!showTutorial)
                 {
-                    toast.ShowToast(ex.Message);
+                    toast.ShowToast(ex.Message, this);
                 }
             }
             // Data-bind list
@@ -258,6 +258,9 @@ namespace WhiteBoard
             txtCommand.Focus();
         }
 
+        /// <summary>
+        /// Checking existence of file before deciding to show tutorial
+        /// </summary>
         private void CheckIfFileExists()
         {
             // Check if File Exists
@@ -562,7 +565,7 @@ namespace WhiteBoard
             }
             catch (FormatException)
             {
-                toast.ShowToast(Constants.INVALID_DATE_FORMAT);
+                toast.ShowToast(Constants.INVALID_DATE_FORMAT, this);
             }
 
             if (command == null)
@@ -608,7 +611,7 @@ namespace WhiteBoard
             }
             catch (ApplicationException ex)
             {
-                toast.ShowToast(ex.Message);
+                toast.ShowToast(ex.Message, this);
             }
 
             lstTasks.DataContext = tasksOnScreen;
@@ -632,7 +635,7 @@ namespace WhiteBoard
             }
             catch (ApplicationException ex)
             {
-                toast.ShowToast(ex.Message);
+                toast.ShowToast(ex.Message, this);
             }
             // Data-bind list
             lstTasks.DataContext = tasksOnScreen;
@@ -676,7 +679,7 @@ namespace WhiteBoard
             {
                 tasksOnScreen.Add(task);
             }
-            toast.ShowToast(Constants.MESSAGE_COMMAND_UNDO + ((UndoCommand)command).GetUndoCommandType().ToString());
+            toast.ShowToast(Constants.MESSAGE_COMMAND_UNDO + ((UndoCommand)command).GetUndoCommandType().ToString(), this);
         }
 
         /// <summary>
@@ -691,7 +694,7 @@ namespace WhiteBoard
             {
                 tasksOnScreen.Add(task);
             }
-            toast.ShowToast(Constants.MESSAGE_COMMAND_SEARCH + searchString);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_SEARCH + searchString, this);
         }
 
         /// <summary>
@@ -722,7 +725,7 @@ namespace WhiteBoard
             // remove trailing ,
             tasksArchivedToast.Remove(tasksArchivedToast.Length - 2, 1);
 
-            toast.ShowToast(Constants.MESSAGE_COMMAND_ARCHIVE + tasksArchivedToast);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_ARCHIVE + tasksArchivedToast, this);
         }
 
         /// <summary>
@@ -753,7 +756,7 @@ namespace WhiteBoard
             // remove trailing ,
             tasksDeletedToast.Remove(tasksDeletedToast.Length - 2, 1);
 
-            toast.ShowToast(Constants.MESSAGE_COMMAND_DELETE + tasksDeletedToast);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_DELETE + tasksDeletedToast, this);
         }
 
         /// <summary>
@@ -777,7 +780,7 @@ namespace WhiteBoard
             Task editedTask = (command.Execute())[0];
             tasksOnScreen.Clear();
             tasksOnScreen.Add(editedTask);
-            toast.ShowToast(Constants.MESSAGE_COMMAND_EDIT + editedTask.Id);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_EDIT + editedTask.Id, this);
         }
 
         /// <summary>
@@ -788,7 +791,7 @@ namespace WhiteBoard
             Task taskToAdd = (command.Execute())[0];
             tasksOnScreen.Clear();
             tasksOnScreen.Add(taskToAdd);
-            toast.ShowToast(Constants.MESSAGE_COMMAND_ADD);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_ADD, this);
         }
         #endregion
 

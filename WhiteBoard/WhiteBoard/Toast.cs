@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows;
 using log4net;
+using System.Windows.Media.Animation;
 
 namespace WhiteBoard
 {
@@ -16,7 +17,8 @@ namespace WhiteBoard
         private TextBlock lblToast;
         private bool fadeIn;
         private int toastDuration;
-        private DispatcherTimer toastTimer, toastAnimationTimer;
+        private Storyboard storyboard;
+        private DoubleAnimation fadeInAnimation, fadeOutAnimation;
         #endregion
 
         #region Protected Fields
@@ -39,13 +41,9 @@ namespace WhiteBoard
         /// Method to display toast on screen
         /// </summary>
         /// <param name="toast">Message to show on toast</param>
-        public void ShowToast(string toast)
+        public void ShowToast(string toast, MainWindow main)
         {
             log.Debug("Showing toast...");
-
-            InstantiateToastTimer();
-            InstantiateAnimationTimer();
-
             fadeIn = true;
             toastDuration = 0;
 
@@ -63,67 +61,49 @@ namespace WhiteBoard
 
             lblToast.Visibility = Visibility.Visible;
             lblToast.Opacity = 0;
-        }
-        #endregion
 
-        #region Event Handlers
-        /// <summary>
-        /// Event handler for hiding the toast
-        /// </summary>
-        private void toastTimer_Tick(object sender, EventArgs e)
-        {
-            lblToast.Visibility = Visibility.Collapsed;
-            toastTimer.Stop();
-        }
+            storyboard = new Storyboard();
 
-        /// <summary>
-        /// Event handler for toast animation timer. This animation is handle a series of ticks and concurrent
-        /// modifications to the toast opacity.
-        /// </summary>
-        private void toastAnimationTimer_Tick(object sender, EventArgs e)
-        {
-            toastDuration++;
-            if (lblToast.Opacity < 1 && fadeIn)
-            {
-                if (lblToast.Opacity >= 0.8)
-                {
-                    fadeIn = false;
-                }
-                lblToast.Opacity += 0.2;
-            }
-            else if (toastDuration >= 15)
-            {
-                if (lblToast.Opacity <= 0.2)
-                {
-                    log.Debug("Hiding toast...");
-                    toastAnimationTimer.Stop();
-                }
-                lblToast.Opacity -= 0.2;
-            }
+            FadeInAnimation(main);
+
+            FadeOutAnimation(main);
         }
         #endregion
 
         #region Private Class Helper Methods
         /// <summary>
-        /// Instantiate timer to display toast
+        /// Animation to perform fade out of Toast
         /// </summary>
-        private void InstantiateAnimationTimer()
+        /// <param name="main"></param>
+        private void FadeOutAnimation(MainWindow main)
         {
-            toastAnimationTimer = new DispatcherTimer();
-            toastAnimationTimer.Tick += new EventHandler(toastAnimationTimer_Tick);
-            toastAnimationTimer.Interval = new TimeSpan(0, 0, 0, 0, Constants.TOAST_ANIMATION_MILLISECONDS);
-            toastAnimationTimer.Start();
+            fadeOutAnimation = new DoubleAnimation();
+            fadeOutAnimation.From = 1.0;
+            fadeOutAnimation.To = 0.0;
+            fadeOutAnimation.Duration = new Duration(TimeSpan.FromSeconds(2));
+            storyboard.Children.Add(fadeOutAnimation);
+            Storyboard.SetTargetName(fadeOutAnimation, "lblToast");
+            Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(TextBlock.OpacityProperty));
+
+            storyboard.Begin(main);
         }
 
         /// <summary>
-        /// Instantiate timer to animate the toast
+        /// Animation to perform fade in Toast
         /// </summary>
-        private void InstantiateToastTimer()
+        /// <param name="main"></param>
+        private void FadeInAnimation(MainWindow main)
         {
-            toastTimer = new System.Windows.Threading.DispatcherTimer();
-            toastTimer.Tick += new EventHandler(toastTimer_Tick);
-            toastTimer.Interval = new TimeSpan(0, 0, Constants.TOAST_DISPLAY_DURATION_SECONDS);
-            toastTimer.Start();
+            //Fade in toast
+            fadeInAnimation = new DoubleAnimation();
+            fadeInAnimation.From = 0.0;
+            fadeInAnimation.To = 1.0;
+            fadeInAnimation.Duration = new Duration(TimeSpan.FromSeconds(2));
+            storyboard.Children.Add(fadeInAnimation);
+            Storyboard.SetTargetName(fadeInAnimation, "lblToast");
+            Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(TextBlock.OpacityProperty));
+
+            storyboard.Begin(main);
         }
         #endregion
     }
