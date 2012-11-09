@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 namespace WhiteBoard
 {
     //@author U095146E
-    class Controller
+    class FacadeLayer
     {
         #region Private Fields
         private Stack<Command> history;
@@ -17,7 +17,7 @@ namespace WhiteBoard
         /// <summary>
         /// Constructor for controller
         /// </summary>
-        public Controller()
+        public FacadeLayer()
         {
             history = new Stack<Command>();
         }
