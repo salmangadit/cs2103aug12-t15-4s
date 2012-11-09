@@ -15,8 +15,6 @@ namespace WhiteBoard
     {
         #region Private Fields
         private TextBlock lblToast;
-        private bool fadeIn;
-        private int toastDuration;
         private Storyboard storyboard;
         private DoubleAnimation fadeInAnimation, fadeOutAnimation;
         #endregion
@@ -44,8 +42,6 @@ namespace WhiteBoard
         public void ShowToast(string toast, MainWindow main)
         {
             log.Debug("Showing toast...");
-            fadeIn = true;
-            toastDuration = 0;
 
             lblToast.Text = toast;
 

@@ -601,7 +601,7 @@ namespace WhiteBoard
                 else if (command.CommandType == CommandType.UnArchive)
                 {
                     log.Debug("Unarchiving task");
-
+                    ExecuteUnarchive(command);
                 }
                 else if (command.CommandType == CommandType.Search)
                 {
