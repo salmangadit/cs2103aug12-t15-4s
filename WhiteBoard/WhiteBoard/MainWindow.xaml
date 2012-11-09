@@ -64,8 +64,8 @@
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Bottom" FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="20" Foreground="Red" Text="DUE TODAY"/>
-                        <Image Grid.Column="1" ToolTip="Task Overdue!" Source="warningIcon.png" Visibility="{Binding Overdue, Converter={StaticResource BoolToVis}}" Width="40" Height="40"></Image>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="18" Foreground="Red" Text="TODAY!" Visibility="{Binding DueToday, Converter={StaticResource BoolToVis}}"/>
+                        <Image Grid.Column="1" ToolTip="Task Overdue!" Margin="0,0,0,25" Source="warningIcon.png" Visibility="{Binding Overdue, Converter={StaticResource BoolToVis}}" Width="40" Height="40"></Image>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
