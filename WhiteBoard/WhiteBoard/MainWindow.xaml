@@ -70,13 +70,27 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <StackPanel Name="stkNoTasks" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=lstTasks, Path=Items.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Image Source="notasks.png" Width="75" Height="75"/>
+            <TextBlock FontFamily="./Resources/#Permanent Marker" Style="{StaticResource ArchivedItem}" FontSize="45" Foreground="Gray" Text="No Tasks To View"/>
+        </StackPanel>
         <TextBlock Name="lblToast" TextWrapping="Wrap" FontSize="14" FontFamily="./Resources/#From Where You Are"  Visibility="Collapsed" Background="Yellow" Grid.Row="0" HorizontalAlignment="Center" Width="400" VerticalAlignment="Center"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
-        <RichTextBox Grid.Column="0" Name="txtCommand" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
+            <RichTextBox Grid.Column="0" Name="txtCommand" KeyUp="txtCommand_KeyUp" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
             <Button Grid.Column="1" Name="btnHelp" Content="Help" Click="btnHelp_Click" FontSize="12" FontFamily="./Resources/#From Where You Are"/>
         </Grid>
     </Grid>
