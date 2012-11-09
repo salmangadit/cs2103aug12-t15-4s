@@ -143,7 +143,7 @@ namespace WhiteBoard
 
         private void AddToSets(Task task)
         {
-            Log.Debug(String.Format("Adding Task with description {0} to sets", task.Description));
+            Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description, task.Id));
 
             lineSet.Add(task.Description);
 
@@ -160,7 +160,7 @@ namespace WhiteBoard
 
         private void RemoveFromSets(Task task)
         {
-            //Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description));
+            Log.Debug(String.Format(Constants.LOG_REMOVE_FROM_SET, task.Description, task.Id));
 
             lineSet.Remove(task.Description);
 
