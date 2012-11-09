@@ -37,7 +37,7 @@ namespace WhiteBoard
         public static string LOG_WORD_SET = "Generating word set";
         public static string LOG_ADD_TO_SET = "Adding Task with description {0} and Id {1} to sets";
         public static string LOG_SORT_SET = "Sorting set";
-        public static string LOG_REMOVE_FROM_SET = "Removing Task with id {0} from sets";
+        public static string LOG_REMOVE_FROM_SET = "Removing Task with description {0} and id {1} from sets";
         public static string LOG_SYSTEM_EXCEPTION = "Caught a System Exception";
         public static string DEBUG_INVALID_TASK_ID = "Task ID is invalid";
         public static string DEBUG__QUERY_STRING_NULL = "Query string is null";
