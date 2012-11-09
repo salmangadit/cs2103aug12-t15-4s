@@ -13,7 +13,6 @@
         <StackPanel Grid.Row="0" Orientation="Vertical">
             <Button Name="skipTour" Click="skipTour_Click" FontFamily="./Resources/#From Where You Are" Content="Skip Tour" Foreground="White" Background="Gray" HorizontalAlignment="Right" Width="75" Margin="0,5,10,0" />
             <TextBlock FontFamily="./Resources/#From Where You Are" HorizontalAlignment="Center" FontSize="40" Text="Welcome to WhiteBoard" Foreground="White"/>
-            <TextBlock FontFamily="./Resources/#From Where You Are" HorizontalAlignment="Right" Text="Get Things Done" Margin="0,0,20,0" Foreground="White"/>
         </StackPanel>
         <TextBlock Name="txtIntro"  FontFamily="./Resources/#From Where You Are" HorizontalAlignment="Center" FontSize="27" Margin="0,5,0,0" Text="Getting Started" Grid.Row="1" Foreground="White"></TextBlock>
         <TextBlock Name="txtContent1" FontFamily="./Resources/#From Where You Are" HorizontalAlignment="Center" FontSize="20" Margin="0,100,0,0" Text="This here is your all-purpose command bar" Grid.Row="1" Foreground="White"></TextBlock>
@@ -88,8 +87,9 @@
         <StackPanel  Visibility="Collapsed"  Name="stkContent9" Grid.Row="1" HorizontalAlignment="Center" Margin="0,50,0,0" VerticalAlignment="Center" Orientation="Vertical" Opacity="0">
             <TextBlock Text="Syntax Highlighting" HorizontalAlignment="Center" Foreground="LightBlue"  FontFamily="./Resources/#From Where You Are" FontSize="20"/>
             <TextBlock Text="Toast Alerts for Messages" HorizontalAlignment="Center" Foreground="LightBlue" FontFamily="./Resources/#From Where You Are" FontSize="20"/>
+            <TextBlock Text="Command History" HorizontalAlignment="Center" Foreground="LightBlue" FontFamily="./Resources/#From Where You Are" FontSize="20"/>
         </StackPanel>
-        <TextBlock  Visibility="Collapsed"  Name="txtEnjoy"  FontFamily="./Resources/#From Where You Are" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="22" Margin="0,5,0,0" Text="WhiteBoard it - Get Things Done Today!" Grid.Row="1" Foreground="White" Opacity="0"></TextBlock>
+        <TextBlock  Visibility="Collapsed"  Name="txtEnjoy"  FontFamily="./Resources/#From Where You Are" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="22" Margin="0,5,0,0" Text="WhiteBoard, Get Things Done!" Grid.Row="1" Foreground="White" Opacity="0"></TextBlock>
         <Button  Visibility="Collapsed"  Click="next9_Click" Name="next9" Grid.Row="1" FontFamily="./Resources/#From Where You Are" Content="Start!" Foreground="White" Background="Gray" HorizontalAlignment="Right" Height="30" Width="75" Margin="0,0,40,20" VerticalAlignment="Bottom" Opacity="0" />
     </Grid>
 </UserControl>
