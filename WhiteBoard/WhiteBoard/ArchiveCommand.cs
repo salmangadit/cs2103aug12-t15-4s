@@ -101,19 +101,19 @@ namespace WhiteBoard
         //@author U095146E
         public override List<Task> Undo()
         {
-            foreach (int taskIdToArchive in taskIdsToArchive)
+            foreach (int taskIdToUnArchive in taskIdsToArchive)
             {
-                Debug.Assert(taskIdToArchive > 0, Constants.DEBUG_INVALID_TASK_ID);
-                bool isTaskUnarchived = fileHandler.UnarchiveTaskInFile(taskIdToArchive);
+                Debug.Assert(taskIdToUnArchive > 0, Constants.DEBUG_INVALID_TASK_ID);
+                bool isTaskUnarchived = fileHandler.UnarchiveTaskInFile(taskIdToUnArchive);
 
                 if (isTaskUnarchived)
                 {
-                    Log.Debug(Constants.ARCHIVE_COMMAND_UNDO_LOG_EXECUTED + taskIdToArchive);
+                    Log.Debug(Constants.ARCHIVE_COMMAND_UNDO_LOG_EXECUTED + taskIdToUnArchive);
                 }
                 else
                 {
-                    Log.Debug(Constants.ARCHIVE_COMMAND_UNDO_LOG_FAILED + taskIdToArchive);
-                    throw new ApplicationException(Constants.ARCHIVE_COMMAND_UNDO_UNABLE + taskIdToArchive);
+                    Log.Debug(Constants.ARCHIVE_COMMAND_UNDO_LOG_FAILED + taskIdToUnArchive);
+                    throw new ApplicationException(Constants.ARCHIVE_COMMAND_UNDO_UNABLE + taskIdToUnArchive);
                 }
 
             }

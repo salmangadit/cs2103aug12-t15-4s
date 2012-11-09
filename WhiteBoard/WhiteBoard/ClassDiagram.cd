@@ -14,15 +14,16 @@
       <FileName>AddCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WhiteBoard.ArchiveCommand">
+  <Class Name="WhiteBoard.UnArchiveCommand">
     <Position X="10" Y="4.25" Width="1.75" />
     <Members>
-      <Field Name="taskIdsToArchive" Hidden="true" />
-      <Field Name="tasksArchived" Hidden="true" />
+      <Field Name="taskIdsToUnArchive" Hidden="true" />
+      <Field Name="tasksUnArchived" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAABASAAIAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
-      <FileName>ArchiveCommand.cs</FileName>
+      <HashCode>AAAAAAAAAAAABASAAAAAAAAAAAAAAAAAAAAGAQAAAAA=</HashCode>
+      <FileName>UnArchiveCommand.cs</FileName>
+      <NewMemberFileName>ArchiveCommand.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.Command">
@@ -283,7 +284,7 @@
   <Class Name="WhiteBoard.Constants" Collapsed="true">
     <Position X="28.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>oMEIGEgUKgFIkLgaQihsASwilILiKFpOsN1NKFHiBqU=</HashCode>
+      <HashCode>oMEIGEgULgFIkLgaQihsASwinMLiKFpOsN1NKFHiBqU=</HashCode>
       <FileName>Constants.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -352,7 +353,7 @@
   <Enum Name="WhiteBoard.CommandType">
     <Position X="29.25" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAABAAAAAAAgAAAAAEBAAACAAAAAAAgAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAABAAAAAAAgAAAAAEBAAACAAAAgAAgAAA=</HashCode>
       <FileName>CommandType.cs</FileName>
     </TypeIdentifier>
   </Enum>

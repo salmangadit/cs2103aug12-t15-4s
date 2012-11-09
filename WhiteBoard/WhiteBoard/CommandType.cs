@@ -16,6 +16,7 @@ namespace WhiteBoard
         Delete,
         Search,
         Archive,
-        Undo
+        Undo,
+        UnArchive
     }
 }

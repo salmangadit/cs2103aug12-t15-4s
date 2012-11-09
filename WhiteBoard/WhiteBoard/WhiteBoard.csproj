@@ -79,6 +79,7 @@
     <Compile Include="Tutorial.xaml.cs">
       <DependentUpon>Tutorial.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UnArchiveCommand.cs" />
     <Compile Include="UndoCommand.cs" />
     <Compile Include="UpdateType.cs" />
     <Compile Include="ViewCommand.cs" />

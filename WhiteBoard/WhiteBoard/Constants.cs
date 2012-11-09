@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WhiteBoard
 {
- 
+
     internal class Constants
     {
         #region Constant strings
@@ -70,6 +70,13 @@ namespace WhiteBoard
         public static string ARCHIVE_COMMAND_UNDO_LOG_EXECUTED = "Archive Command Undo was executed for";
         public static string ARCHIVE_COMMAND_UNDO_LOG_FAILED = "Archive Command Undo failed for";
         public static string ARCHIVE_COMMAND_UNDO_UNABLE = "Unable To Undo Archive Command for Task";
+        public static string UNARCHIVE_COMMAND_NO_TASKS = "No tasks to unarchive";
+        public static string UNARCHIVE_COMMAND_UNABLE = "Unable To UnArchive Task with ID T";
+        public static string UNARCHIVE_COMMAND_LOG_EXECUTED = "UnArchive Command was executed for";
+        public static string UNARCHIVE_COMMAND_LOG_FAILED = "UnArchive Command failed for";
+        public static string UNARCHIVE_COMMAND_UNDO_LOG_EXECUTED = "UnArchive Command Undo was executed for";
+        public static string UNARCHIVE_COMMAND_UNDO_LOG_FAILED = "UnArchive Command Undo failed for";
+        public static string UNARCHIVE_COMMAND_UNDO_UNABLE = "Unable To Undo UnArchive Command for Task";
 
         //@author U094776M
         public static string FILENAME = "TasksList.xml";
