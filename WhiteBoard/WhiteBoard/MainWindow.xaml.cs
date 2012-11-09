@@ -27,7 +27,7 @@ namespace WhiteBoard
     public partial class MainWindow : Window
     {
         #region Private Fields
-        private Controller controller;
+        private FacadeLayer controller;
         private AutoCompletor autoComplete;
         private ObservableCollection<Task> tasksOnScreen;
         private List<string> keywords;
@@ -214,7 +214,7 @@ namespace WhiteBoard
         /// </summary>
         private void InstantiatePrivateComponents()
         {
-            controller = new Controller();
+            controller = new FacadeLayer();
             autoComplete = new AutoCompletor();
             autoCompleteList = new AutoComplete();
             autoCompleteList.AutoCompleteKeyboardEvent += new KeyEventHandler(AutoCompleteKeyBubbleEvent);
