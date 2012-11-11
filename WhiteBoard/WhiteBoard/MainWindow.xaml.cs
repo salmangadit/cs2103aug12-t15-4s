@@ -761,7 +761,7 @@ namespace WhiteBoard
             // remove trailing ,
             tasksUnarchivedToast.Remove(tasksUnarchivedToast.Length - 2, 1);
 
-            toast.ShowToast(Constants.MESSAGE_COMMAND_ARCHIVE + tasksUnarchivedToast, this);
+            toast.ShowToast(Constants.MESSAGE_COMMAND_UNARCHIVE + tasksUnarchivedToast, this);
         }
 
         /// <summary>
