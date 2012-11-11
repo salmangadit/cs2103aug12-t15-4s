@@ -63,11 +63,6 @@ namespace WhiteBoard
                 resultSet.AddRange(getNearMiss(listOfTasks));
             }
 
-            if (resultSet.Count == 0)
-            {
-                throw new ApplicationException(Constants.SEARCH_NO_MATCH);
-            }
-
             return resultSet.Distinct().ToList();
         }
         //@author U095146E
