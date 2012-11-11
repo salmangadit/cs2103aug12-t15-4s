@@ -17,6 +17,7 @@ namespace WhiteBoard
         public static string MESSAGE_COMMAND_UNDO = "Command type undone: ";
         public static string MESSAGE_COMMAND_SEARCH = "Search results for: ";
         public static string MESSAGE_COMMAND_ARCHIVE = "Archived task(s) with Id: ";
+        public static string MESSAGE_COMMAND_UNARCHIVE = "Unarchived task(s) with Id: ";
         public static string MESSAGE_COMMAND_DELETE = "Deleted task with Id: ";
         public static string MESSAGE_COMMAND_EDIT = "Task Edited with Id: ";
         public static string MESSAGE_COMMAND_ADD = "Task Added!";
