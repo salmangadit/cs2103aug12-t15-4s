@@ -69,7 +69,7 @@ namespace WhiteboardTest
         [TestMethod()]
         public void GetViewCommandObjectTest()
         {
-            Controller target = new Controller(); // TODO: Initialize to an appropriate value
+            FacadeLayer target = new FacadeLayer(); // TODO: Initialize to an appropriate value
             string userString = "view all"; // TODO: Initialize to an appropriate value
             List<Task> screenState = new List<Task>(); // TODO: Initialize to an appropriate value
             FileHandler fileHandler = FileHandler.Instance;
@@ -86,7 +86,7 @@ namespace WhiteboardTest
         [TestMethod()]
         public void GetAddCommandObjectTest()
         {
-            Controller target = new Controller(); // TODO: Initialize to an appropriate value
+            FacadeLayer target = new FacadeLayer(); // TODO: Initialize to an appropriate value
             string userString = "test"; // TODO: Initialize to an appropriate value
             List<Task> screenState = new List<Task>(); // TODO: Initialize to an appropriate value
             FileHandler fileHandler = FileHandler.Instance;
@@ -103,7 +103,7 @@ namespace WhiteboardTest
         [TestMethod()]
         public void GetEditCommandObjectTest()
         {
-            Controller target = new Controller(); // TODO: Initialize to an appropriate value
+            FacadeLayer target = new FacadeLayer(); // TODO: Initialize to an appropriate value
             string userString = "modify T4 xxx"; // TODO: Initialize to an appropriate value
             List<Task> screenState = new List<Task>(); // TODO: Initialize to an appropriate value
             FileHandler fileHandler = FileHandler.Instance;
@@ -120,7 +120,7 @@ namespace WhiteboardTest
         [TestMethod()]
         public void GetAllTasksTest()
         {
-            Controller target = new Controller(); // TODO: Initialize to an appropriate value
+            FacadeLayer target = new FacadeLayer(); // TODO: Initialize to an appropriate value
             List<Task> screenState = new List<Task>(); // TODO: Initialize to an appropriate value
             Task view = new Task();
             FileHandler fileHandler = FileHandler.Instance;
