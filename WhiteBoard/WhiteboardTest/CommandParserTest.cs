@@ -163,7 +163,7 @@ namespace WhiteboardTest
         [TestMethod()]
         public void IsDateTest()
         {
-            CommandParser target = new CommandParser(); // TODO: Initialize to an appropriate value
+            CommandParser_Accessor target = new CommandParser_Accessor(); // TODO: Initialize to an appropriate value
             string datestring = "20.11.2012"; // TODO: Initialize to an appropriate value
             bool expected = true; // TODO: Initialize to an appropriate value
             bool actual;
