@@ -880,14 +880,13 @@ namespace WhiteBoard
         /// <returns>Returns true or false depending on whether the date is valid</returns>
         private bool IsDate(string datestring)
         {
-            System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-gb");
             bool isdate = false;
             DateTime temp;
             foreach (string format in Constants.DATE_FORMATS)
             {
                 if (!isdate)
                 {
-                    isdate = DateTime.TryParseExact(datestring, format, cultureinfo, DateTimeStyles.None, out temp);
+                    isdate = DateTime.TryParseExact(datestring, format, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out temp);
                 }
             }
             return isdate;

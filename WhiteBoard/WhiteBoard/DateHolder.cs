@@ -69,8 +69,7 @@ namespace WhiteBoard
             {                                           //Otherwise parse the date in a DateTime format
                 try
                 {
-                    var cultureinfo = new System.Globalization.CultureInfo("en-gb");
-                    DateTime.Parse(dateString, cultureinfo, System.Globalization.DateTimeStyles.None);
+                    DateTime.Parse(dateString, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
                     return DateTime.Parse(dateString);
                 }
                 catch (FormatException e)
