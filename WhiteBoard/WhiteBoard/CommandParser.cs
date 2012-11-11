@@ -878,7 +878,7 @@ namespace WhiteBoard
         /// </summary>
         /// <param name="datestring">A string containing the date information</param>
         /// <returns>Returns true or false depending on whether the date is valid</returns>
-        public bool IsDate(string datestring)
+        private bool IsDate(string datestring)
         {
             System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("en-gb");
             bool isdate = false;
