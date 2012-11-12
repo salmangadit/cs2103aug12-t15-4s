@@ -51,6 +51,9 @@ namespace WhiteBoard
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// Returns the type of Command
+        /// </summary>
         public override CommandType CommandType
         {
             get
@@ -61,6 +64,10 @@ namespace WhiteBoard
         #endregion
 
         #region Public Class Methods
+        /// <summary>
+        /// Deletes the Task(s) with given Id
+        /// </summary>
+        /// <returns>The Deleted Task(s)</returns>
         public override List<Task> Execute()
         {
             if (taskIdsToDelete.Count == 0)
@@ -100,6 +107,10 @@ namespace WhiteBoard
         }
 
         //@author U095146E
+        /// <summary>
+        /// Adds back the deleted task
+        /// </summary>
+        /// <returns>The screen state before archiving the Task(s)</returns>
         public override List<Task> Undo()
         {
             foreach (Task task in tasksToDelete)
@@ -111,6 +122,10 @@ namespace WhiteBoard
             return screenState;
         }
 
+        /// <summary>
+        /// Returns the deleted task Id
+        /// </summary>
+        /// <returns>Deleted Task id</returns>
         public List<int> GetDeletedTaskId()
         {
             return taskIdsToDelete;

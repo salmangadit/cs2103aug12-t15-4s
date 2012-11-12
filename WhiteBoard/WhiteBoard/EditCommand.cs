@@ -8,6 +8,9 @@ using System.Diagnostics;
 namespace WhiteBoard
 {
     //@author U096089W
+    /// <summary>
+    /// Modifies the given Task in file
+    /// </summary>
     class EditCommand : Command
     {
         List<Task> editTasksDetails;
@@ -31,6 +34,9 @@ namespace WhiteBoard
             this.commandType = CommandType.Edit;
         }
 
+        /// <summary>
+        /// Returns the type of Command
+        /// </summary>
         public override CommandType CommandType
         {
             get
@@ -39,6 +45,10 @@ namespace WhiteBoard
             }
         }
 
+        /// <summary>
+        /// Modifies the Task(s) with given Id to have new data
+        /// </summary>
+        /// <returns>The Edited Task(s)</returns>
         public override List<Task> Execute()
         {
             List<Task> editedTasks = new List<Task>();
@@ -99,6 +109,11 @@ namespace WhiteBoard
             return editedTasks;
         }
 
+        /// <summary>
+        /// Checks if a given Task is a floating task
+        /// </summary>
+        /// <param name="taskToAdd">The Task that is being added</param>
+        /// <returns>True if task is floating, false if not</returns>
         private bool isFloatingTask(Task taskToAdd)
         {
             if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
@@ -110,6 +125,10 @@ namespace WhiteBoard
         }
 
         //@author U095146E
+        /// <summary>
+        /// Restores the edited Task(s)
+        /// </summary>
+        /// <returns>The screen state before archiving the Task(s)</returns>
         public override List<Task> Undo()
         {
             foreach (Task uneditedTask in uneditedTasks)

@@ -30,6 +30,9 @@ namespace WhiteBoard
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// Returns the type of Command
+        /// </summary>
         public override CommandType CommandType
         {
             get
@@ -40,6 +43,10 @@ namespace WhiteBoard
         #endregion
 
         #region Public Class Methods
+        /// <summary>
+        /// Executes the Search for the given query
+        /// </summary>
+        /// <returns>The matching Task(s)</returns>
         public override List<Task> Execute()
         {
             if (String.IsNullOrWhiteSpace(searchString))
@@ -66,6 +73,10 @@ namespace WhiteBoard
             return resultSet.Distinct().ToList();
         }
         //@author U095146E
+        /// <summary>
+        /// Restores screen state before search was executed
+        /// </summary>
+        /// <returns>The screen state before archiving the Task(s)</returns>
         public override List<Task> Undo()
         {
             return screenState;
@@ -79,6 +90,11 @@ namespace WhiteBoard
 
         //@author U096089W
         #region Private Class Helper Methods
+        /// <summary>
+        /// Gets Tasks which match the search query exactly
+        /// </summary>
+        /// <param name="tasks">Tasks to search for</param>
+        /// <returns>Matching Tasks for given search query</returns>
         private List<Task> getDirectHit(List<Task> tasks)
         {
             List<Task> directHitTasks = new List<Task>();
@@ -94,6 +110,11 @@ namespace WhiteBoard
             return directHitTasks;
         }
 
+        /// <summary>
+        /// Gets Tasks which "almost" match the search query
+        /// </summary>
+        /// <param name="tasks">Tasks to search for</param>
+        /// <returns>"Almost" Matching Tasks for given search query</returns>
         private List<Task> getNearMiss(List<Task> tasks)
         {
             Dictionary<Task, int> nearMissTasks = new Dictionary<Task, int>();
@@ -134,10 +155,16 @@ namespace WhiteBoard
             return sortedNearMissTasks;
         }
 
-        private int ComputeEditDistance(string query, string taskDescription)
+        /// <summary>
+        /// Computes the Edit Distance for a given pair of strings
+        /// </summary>
+        /// <param name="source">source string</param>
+        /// <param name="target">target string to convert to</param>
+        /// <returns>the edit distance</returns>
+        private int ComputeEditDistance(string source, string target)
         {
-            int queryLength = query.Length;
-            int taskDescriptionLength = taskDescription.Length;
+            int queryLength = source.Length;
+            int taskDescriptionLength = target.Length;
             int[,] editDistance = new int[queryLength + 1, taskDescriptionLength + 1];
 
             if (queryLength == 0)
@@ -162,7 +189,7 @@ namespace WhiteBoard
             {
                 for (int j = 1; j <= taskDescriptionLength; j++)
                 {
-                    int cost = (taskDescription[j - 1] == query[i - 1]) ? 0 : 1;
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
 
                     editDistance[i, j] = Math.Min(
                         Math.Min(editDistance[i - 1, j] + 1, editDistance[i, j - 1] + 1),

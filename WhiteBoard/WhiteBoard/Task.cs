@@ -199,9 +199,12 @@ namespace WhiteBoard
         #endregion
 
         #region Private Class Helper Methods
+        /// <summary>
+        /// Create a diagonal linear gradient with four stops.  
+        /// </summary>
+        /// <returns>Brush for OverdueColor</returns>
         private Brush OverdueColor()
         {
-            // Create a diagonal linear gradient with four stops.   
             LinearGradientBrush myLinearGradientBrush =
                 new LinearGradientBrush();
             myLinearGradientBrush.StartPoint = new Point(Constants.TASK_OVERDUE_START_X, Constants.TASK_OVERDUE_START_Y);
@@ -214,9 +217,12 @@ namespace WhiteBoard
             return myLinearGradientBrush;
         }
 
+        /// <summary>
+        /// Create a diagonal linear gradient with four stops. 
+        /// </summary>
+        /// <returns>Brush for Normal Color</returns>
         private Brush NormalColor()
-        {
-            // Create a diagonal linear gradient with four stops.   
+        { 
             LinearGradientBrush myLinearGradientBrush =
                 new LinearGradientBrush();
             myLinearGradientBrush.StartPoint = new Point(Constants.TASK_NORMAL_START_X, Constants.TASK_NORMAL_START_Y);

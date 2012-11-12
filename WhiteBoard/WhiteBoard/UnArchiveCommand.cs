@@ -51,6 +51,9 @@ namespace WhiteBoard
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// Returns the type of Command
+        /// </summary>
         public override CommandType CommandType
         {
             get
@@ -61,6 +64,10 @@ namespace WhiteBoard
         #endregion
 
         #region Public Class Methods
+        /// <summary>
+        /// Unarchives the Task(s) with given Id
+        /// </summary>
+        /// <returns>The Unarchived Task(s)</returns>
         public override List<Task> Execute()
         {
             if (taskIdsToUnArchive.Count == 0)
@@ -99,6 +106,10 @@ namespace WhiteBoard
         }
 
         //@author U095146E
+        /// <summary>
+        /// Unarchives the archived Task(s)
+        /// </summary>
+        /// <returns>The screen state before archiving the Task(s)</returns>
         public override List<Task> Undo()
         {
             foreach (int taskIdToArchive in taskIdsToUnArchive)
@@ -120,6 +131,10 @@ namespace WhiteBoard
             return screenState;
         }
 
+        /// <summary>
+        /// Returns the unarchived task Id
+        /// </summary>
+        /// <returns>Unarchived Task id</returns>
         public List<int> GetUnArchivedTaskIds()
         {
             return taskIdsToUnArchive;

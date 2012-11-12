@@ -35,6 +35,11 @@ namespace WhiteBoard
         #endregion
 
         #region Public Class Methods
+        /// <summary>
+        /// Query the set to get suggested autocomplete sentences and words
+        /// </summary>
+        /// <param name="query">the query string user is searching for</param>
+        /// <returns>lines and words to match the query</returns>
         public List<string> Query(string query)
         {
             Debug.Assert(query != null, Constants.DEBUG__QUERY_STRING_NULL);
@@ -67,6 +72,12 @@ namespace WhiteBoard
         #endregion
 
         #region Event Handlers
+        /// <summary>
+        /// Handles the Update to file triggered by FileHandler
+        /// </summary>
+        /// <param name="update">type of update</param>
+        /// <param name="task">task associated with the update</param>
+        /// <param name="uneditedTask">unedited task in case of modify/edit update type</param>
         private void Update(UpdateType update, Task task, Task uneditedTask)
         {
             Debug.Assert(task != null, Constants.FILEHANDLER_UPDATE_DEBUG_NULL);
@@ -105,6 +116,10 @@ namespace WhiteBoard
         #endregion
 
         #region Private Class Helper Methods
+        /// <summary>
+        /// Generates query sets for autocompletor to query
+        /// </summary>
+        /// <param name="tasks">Tasks to generate query set on</param>
         private void GenerateQuerySet(List<Task> tasks)
         {
             Log.Debug(Constants.LOG_LINE_SET);
@@ -129,6 +144,11 @@ namespace WhiteBoard
         }
 
         // sorting for better visual appeal and branch prediction
+        /// <summary>
+        /// Sorts given Enumerable strings in shortest length first
+        /// </summary>
+        /// <param name="e">strings to sort</param>
+        /// <returns>sorted strings</returns>
         private static IEnumerable<string> SortByLength(IEnumerable<string> e)
         {
             Log.Debug(Constants.LOG_SORT_SET);
@@ -141,6 +161,10 @@ namespace WhiteBoard
             return sorted;
         }
 
+        /// <summary>
+        /// Adds data to query set for given Task
+        /// </summary>
+        /// <param name="task">task to add to query set</param>
         private void AddToSets(Task task)
         {
             Log.Debug(String.Format(Constants.LOG_ADD_TO_SET, task.Description, task.Id));
@@ -158,6 +182,10 @@ namespace WhiteBoard
             }
         }
 
+        /// <summary>
+        /// Removes date from query set for given Task
+        /// </summary>
+        /// <param name="task">Task to remove from query set</param>
         private void RemoveFromSets(Task task)
         {
             Log.Debug(String.Format(Constants.LOG_REMOVE_FROM_SET, task.Description, task.Id));

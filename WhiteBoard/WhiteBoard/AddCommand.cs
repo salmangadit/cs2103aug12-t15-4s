@@ -37,6 +37,9 @@ namespace WhiteBoard
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// Returns the type of Command
+        /// </summary>
         public override CommandType CommandType
         {
             get
@@ -47,6 +50,10 @@ namespace WhiteBoard
         #endregion
 
         #region Public Class Methods
+        /// <summary>
+        /// Adds the Task(s) passed in through the constructor
+        /// </summary>
+        /// <returns>The added Task(s)</returns>
         public override List<Task> Execute()
         {
             if (tasksToAdd.Count == 0)
@@ -96,6 +103,10 @@ namespace WhiteBoard
         }
 
         //@author U095146E
+        /// <summary>
+        /// Remove the Task that was added
+        /// </summary>
+        /// <returns>The screen state before adding the Task</returns>
         public override List<Task> Undo()
         {
             foreach (Task taskAdded in tasksToAdd)
@@ -117,6 +128,11 @@ namespace WhiteBoard
 
         //@author U096089W
         #region Private Class Helper Methods
+        /// <summary>
+        /// Checks if a given Task is a floating task
+        /// </summary>
+        /// <param name="taskToAdd">The Task that is being added</param>
+        /// <returns>True if task is floating, false if not</returns>
         private bool isFloatingTask(Task taskToAdd)
         {
             if ((taskToAdd.StartTime == null || taskToAdd.EndTime == null) && !(taskToAdd.StartTime == null && taskToAdd.EndTime != null))
