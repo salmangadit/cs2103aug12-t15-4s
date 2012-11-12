@@ -256,7 +256,9 @@ namespace WhiteBoard
         }
 
         /// <summary>
-        /// Write back the edited task to the file by serializing the edited task object.
+        /// Write back the edited task to the file by deserializing the entire xml file into a list of objects, 
+        /// looking for the task object with matching task id, replacing it with the edited task object and then,
+        /// serializing the task object list into the xml file.
         /// </summary>
         /// <param name="editedTask"> Edited task object</param>
         /// <returns> True if edited task has been successfully written to the xml file </returns>
