@@ -44,6 +44,7 @@
     <Members>
       <Field Name="archiveFlag" Hidden="true" />
       <Method Name="AssignDates" Hidden="true" />
+      <Method Name="AssignWeek" Hidden="true" />
       <Field Name="checkId" Hidden="true" />
       <Method Name="ConvertToString" Hidden="true" />
       <Field Name="currentIndex" Hidden="true" />
@@ -53,6 +54,7 @@
       <Field Name="fileHandler" Hidden="true" />
       <Field Name="firstDayFlag" Hidden="true" />
       <Field Name="inputCommand" Hidden="true" />
+      <Method Name="IsDate" Hidden="true" />
       <Method Name="IsDay" Hidden="true" />
       <Method Name="IsTime" Hidden="true" />
       <Method Name="IsValidDate" Hidden="true" />
@@ -68,6 +70,7 @@
       <Method Name="ParseTime" Hidden="true" />
       <Method Name="ParseUndo" Hidden="true" />
       <Method Name="ParseView" Hidden="true" />
+      <Method Name="ReturnUserCommandListForTesting" Hidden="true" />
       <Field Name="screenState" Hidden="true" />
       <Field Name="secondDayFlag" Hidden="true" />
       <Method Name="SplitString" Hidden="true" />
@@ -93,14 +96,14 @@
       <FileName>CommandParser.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WhiteBoard.Controller">
+  <Class Name="WhiteBoard.FacadeLayer">
     <Position X="14.75" Y="7.5" Width="2.5" />
     <Members>
       <Field Name="history" Hidden="true" />
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAABAAAAAAAAABAAAAAAEAAAAAAAAAAAgA=</HashCode>
-      <FileName>Controller.cs</FileName>
+      <FileName>FacadeLayer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WhiteBoard.DeleteCommand">
@@ -142,7 +145,7 @@
       <Event Name="updateEvent" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AACAAAAAQAAAAAAAQAAECAAAAABAAEBCRAACgAACgAA=</HashCode>
+      <HashCode>AACAAAAAQAAAAAAAQAAECAAIAABAAEBCRAACgAACgAA=</HashCode>
       <FileName>FileHandler.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -167,7 +170,7 @@
       <Method Name="txtCommand_KeyUp" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AJKQAAAACIAQQEEAAAAQCIIAgQAAkAAQJgGAAAKgQwA=</HashCode>
+      <HashCode>AJKQAAAACIAQQEEAAAAQCIIBgQAAkAAQJgGAAAKgQwA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -201,7 +204,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAACAQABAAAgCACAAAAFgAAAIAAgAAAsAAAgAAAAAAA=</HashCode>
+      <HashCode>AAACAQABAAAgCASAAAAFgAAAIAAgAAAsAAAgAAAAAAA=</HashCode>
       <FileName>Task.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -284,7 +287,7 @@
   <Class Name="WhiteBoard.Constants" Collapsed="true">
     <Position X="28.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>oMEIGEgULgFIkLgaQihsASwinMLiKFpOsN1NKFHiBqU=</HashCode>
+      <HashCode>oNEIGEgULkFIkLgaQihsASwinMPiKFpOsN1NKFHiBqU=</HashCode>
       <FileName>Constants.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -328,13 +331,9 @@
     <Members>
       <Field Name="lblToast" Hidden="true" />
       <Field Name="log" Hidden="true" />
-      <Field Name="toastAnimationTimer" Hidden="true" />
-      <Method Name="toastAnimationTimer_Tick" Hidden="true" />
-      <Field Name="toastTimer" Hidden="true" />
-      <Method Name="toastTimer_Tick" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAEAAAAEgAAACJAAAAAAAAAEEAAACABAAAA=</HashCode>
+      <HashCode>AAAAAAAAABCAAAAEAAAACAAAABAAAAAAAAAAAgBAABA=</HashCode>
       <FileName>Toast.cs</FileName>
     </TypeIdentifier>
   </Class>
